@@ -9,9 +9,9 @@ on:
       - main
   workflow_dispatch:
 env:
-  datasource_url: jdbc:mysql://localhost/mysql?useSSL=false&allowPublicKeyRetrieval=true
-  username: root
-  password: root
+  DB_URL: jdbc:mysql://localhost/mysql?useSSL=false&allowPublicKeyRetrieval=true
+  DB_USERNAME: root
+  DB_PASSWORD: root
 
 jobs:
   test:
