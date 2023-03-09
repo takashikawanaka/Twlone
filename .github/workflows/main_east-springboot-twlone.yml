@@ -8,10 +8,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-env:
-  DB_URL: jdbc:mysql://localhost/mysql?useSSL=false&allowPublicKeyRetrieval=true
-  DB_USERNAME: root
-  DB_PASSWORD: root
 
 jobs:
   build:
@@ -25,7 +21,9 @@ jobs:
       
       - name: Show Databases
         run: mysql -uroot -e "SHOW DATABASES"
-      
+        env:
+          MYSQL_PWD: root
+
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
@@ -33,6 +31,10 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env:
+          DB_URL: jdbc:mysql://localhost/mysql?useSSL=false&allowPublicKeyRetrieval=true
+          DB_USERNAME: root
+          DB_PASSWORD: root
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
