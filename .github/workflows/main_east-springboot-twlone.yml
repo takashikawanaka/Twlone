@@ -14,20 +14,18 @@ env:
   DB_PASSWORD: root
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    env:
-      MYSQL_PWD: root
-    steps:
-      - run: sudo systemctl start mysql.service
-      - run: mysql -uroot -e "SHOW DATABASES"
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Get Up Mysql
+        run: sudo systemctl start mysql.service
+      
+      - name: Show Databases
+        run: mysql -uroot -e "SHOW DATABASES"
+      
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
