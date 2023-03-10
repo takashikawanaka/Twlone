@@ -16,14 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get Up Mysql
-        run: sudo systemctl start mysql.service
-      
-      - name: Show Databases
-        run: mysql -uroot -e "SHOW DATABASES"
-        env:
-          MYSQL_PWD: root
-
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
@@ -31,10 +23,6 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
-        env:
-          MYSQLCONNSTR_URL: jdbc:mysql://localhost/mysql
-          MYSQLCONNSTR_USERNAME: root
-          MYSQLCONNSTR_PASSWORD: root
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -61,5 +49,5 @@ jobs:
         with:
           app-name: 'east-springboot-twlone'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2332AA7052E444E4BE20F5910287D770 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3615E997567D4425B9C50174C32361D6 }}
           package: '*.jar'
