@@ -16,6 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Get Up Mysql
+        run: sudo systemctl start mysql.service
+      
+      - name: Show Databases
+        run: mysql -uroot -e "SHOW DATABASES"
+        env:
+          MYSQL_PWD: root
+
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
@@ -23,6 +31,10 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env:
+          MYSQLCONNSTR_URL: jdbc:mysql://localhost/mysql
+          MYSQLCONNSTR_USERNAME: root
+          MYSQLCONNSTR_PASSWORD: root
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
