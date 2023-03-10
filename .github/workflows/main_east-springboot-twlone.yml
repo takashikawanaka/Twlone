@@ -32,9 +32,9 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
         env:
-          DB_URL: jdbc:mysql://localhost/mysql?useSSL=false&allowPublicKeyRetrieval=true
-          DB_USERNAME: root
-          DB_PASSWORD: root
+          MYSQLCONNSTR_URL: jdbc:mysql://localhost/mysql
+          MYSQLCONNSTR_USERNAME: root
+          MYSQLCONNSTR_PASSWORD: root
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
