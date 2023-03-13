@@ -1,0 +1,25 @@
+INSERT
+    INTO
+        user(user_id, name, delete_flag, created_at)
+    VALUES
+        (
+            "test"
+            ,"test"
+            ,0
+            ,CURRENT_TIMESTAMP
+        );
+INSERT
+    INTO
+        authorization(
+            user_id
+            ,password
+            ,created_at
+            ,updated_at
+        )
+    VALUES
+        (
+            1
+            ,"$2a$08$clh9XaYYznpX9WDqySgiCuUu4znpSeu2oJi5l2Q00UJs42Llrbd7S"
+            ,CURRENT_TIMESTAMP
+            ,CURRENT_TIMESTAMP
+        );
