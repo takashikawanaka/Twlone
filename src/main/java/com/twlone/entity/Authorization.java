@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -29,9 +31,11 @@ public class Authorization {
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @Valid
     private User user;
 
     @Column(nullable = false)
+    @NotEmpty
     private String password;
 
     @Column(nullable = false, updatable = false)

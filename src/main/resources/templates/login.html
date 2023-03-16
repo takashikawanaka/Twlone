@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name=”viewport” content=”width=device-width,initial-scale=1″>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
+<link th:href="@{/css/output.css}" rel="stylesheet" />
+<title>Insert title here</title>
+<script>
+window.onload = function(){
+    Array.from(document.querySelectorAll("#form div")).some((div) => {
+        if(div.querySelector(".err") != null) {
+            location.hash = 'register';
+            return true;
+        }
+    });
+}
+</script>
+</head>
+<body class="h-screen flex justify-center items-center bg-neutral-100">
+  <div id="content" class="w-96 h-96 px-10 flex flex-col bg-white drop-shadow rounded-3xl">
+    <div class="w-72 h-44 pt-3 flex flex-col justify-center items-center mx-auto">
+      <div class="w-7 h-7 mb-3 rounded-full shadow-inner bg-neutral-100"></div>
+      <img th:src="@{/images/logo.png}">
+    </div>
+    <div id="register" class="peer w-64 h-52 mx-auto hidden flex-col opacity-0 target:opacity-100 target:flex">
+      <form method="post" th:action="@{/register}" th:object="${authorization}" id="form">
+        <div class="flex border-b-2 mb-3 pb-1">
+          <label for="register_name" class="flex items-center mx-1"><span class="material-icons-round"> person </span></label> <input type="text" id="register_name" th:field="*{user.userId}"
+            th:errorclass="err" name="username" class="text-2xl focus:outline-none" placeholder="UserName"><span th:errors="*{user.userId}" class="err"></span>
+        </div>
+        <div class="flex border-b-2 mb-3 pb-1">
+          <label for="register_screenname" class="flex items-center mx-1"><span class="material-icons-round"> badge </span></label> <input type="text" id="register_screenname" th:field="*{user.name}"
+            th:errorclass="err" name="name" class="text-2xl focus:outline-none" placeholder="ScreenName"><span th:errors="*{user.name}" class="err"></span>
+        </div>
+        <div class="flex border-b-2 mb-3 pb-1">
+          <label for="register_password" class="flex items-center mx-1"><span class="material-icons-round"> lock </span></label> <input type="password" id="register_password" th:field="*{password}"
+            th:errorclass="err" name="passowrd" class="text-2xl focus:outline-none" placeholder="Password"><span th:errors="*{password}" class="err"></span>
+        </div>
+        <div class="flex mt-4">
+          <div class="flex items-center">
+            <span class="material-icons-outlined"> arrow_right_alt </span> <a href="#" class="text-lg" onclick="this.href = this.href.toString().replace(/[?]error/, '')">Login</a>
+          </div>
+          <input type="image" th:src="@{/images/register.svg}" class="mr-3 ml-auto">
+        </div>
+      </form>
+    </div>
+    <div id="login" class="w-64 h-52 mx-auto flex flex-col opacity-100 peer-target:opacity-0 peer-target:hidden">
+      <p class="err" th:if="${param.error}">ERROR</p>
+      <form method="post" th:action="@{/login}">
+        <div class="flex border-b-2 mb-3 pb-1">
+          <label for="login_name" class="flex items-center mx-1"><span class="material-icons-round"> person </span></label> <input type="text" id="login_name" name="username"
+            class="text-2xl focus:outline-none" placeholder="UserName">
+        </div>
+        <div class="flex border-b-2 mb-3 pb-1">
+          <label for="login_password" class="flex items-center mx-1"><span class="material-icons-round"> lock </span> </label> <input type="password" id="login_password" name="password"
+            class="text-2xl focus:outline-none" placeholder="Password">
+        </div>
+        <div class="flex mt-4">
+          <div class="flex items-center">
+            <span class="material-icons-outlined"> arrow_right_alt </span> <a href="#register" class="text-lg" onclick="this.href = this.href.toString().replace(/[?]error/, '')">Register</a>
+          </div>
+          <input type="image" th:src="@{/images/login.svg}" class="mr-5 ml-auto">
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

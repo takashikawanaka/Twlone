@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
@@ -28,9 +30,12 @@ public class User {
     private Integer id;
 
     @Column(unique = true, nullable = false)
+    @Pattern(regexp = "^[a-zA-Z0-9]+$")
+    @NotEmpty
     private String userId;
 
     @Column(nullable = false)
+    @NotEmpty
     private String name;
 
     @Column()
