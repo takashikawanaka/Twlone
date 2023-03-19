@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name=”viewport” content=”width=device-width,initial-scale=1″>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<head th:replace="head::head_fragment('Insert title here', ~{::script}, ~{::link})">
 <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
 <link th:href="@{/css/output.css}" rel="stylesheet" />
-<title>Insert title here</title>
 <script>
 window.onload = function(){
     Array.from(document.querySelectorAll("#form div")).some((div) => {
@@ -20,10 +14,10 @@ window.onload = function(){
 }
 </script>
 </head>
-<body class="h-screen flex justify-center items-center bg-neutral-100">
+<body class="h-screen flex justify-center items-center bg-neutral-200">
   <div id="content" class="w-96 h-96 px-10 flex flex-col bg-white drop-shadow rounded-3xl">
     <div class="w-72 h-44 pt-3 flex flex-col justify-center items-center mx-auto">
-      <div class="w-7 h-7 mb-3 rounded-full shadow-inner bg-neutral-100"></div>
+      <div class="w-7 h-7 mb-3 rounded-full shadow-inner bg-neutral-200"></div>
       <img th:src="@{/images/logo.png}">
     </div>
     <div id="register" class="peer w-64 h-52 mx-auto hidden flex-col opacity-0 target:opacity-100 target:flex">

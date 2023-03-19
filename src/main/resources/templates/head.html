@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head_fragment(title, scripts, links)">
+<meta charset="UTF-8">
+<meta name=”viewport” content=”width=device-width,initial-scale=1″>
+<title th:text="${title}"></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<th:block th:replace="${links}" />
+
+<th:block th:replace="${scripts}" />
+</head>
+<body>
+
+</body>
+</html>
