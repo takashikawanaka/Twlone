@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="head::head_fragment('Insert title here', ~{}, ~{::link})">
+<link th:href="@{/css/output.css}" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
+</head>
+<body class="h-screen w-screen bg-neutral-200">
+  <!--  min 375 max 744 -->
+  <div id="main" class="h-screen min-w-[375px] max-w-[744px] flex">
+    <header class="h-auto w-20 flex flex-col items-center flex-none pt-28">
+      <a href="#tw"><span class="material-icons-outlined" style="font-size: 36px;"> send </span></a>
+    </header>
+    <div id="content" class="h-auto w-auto relative flex flex-col mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+      <div id="profile" th:object="${user}">
+        <div class="w-full overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
+          <img th:src="@{/images/sample/1.jpg}" class="object-cover">
+        </div>
+        <div class="h-20 flex content-end flex-wrap">
+          <div id="user" class="w-1/4 aspect-square rounded-full ">
+            <img th:src="@{/images/default/1.png}" class="object-cover">
+            <!--
+        <div class="w-11/12 aspect-square overflow-hidden rounded-full">
+          <img th:src="@{/images/default/1.png}" class="object-cover">
+        </div>
+         -->
+          </div>
+        </div>
+
+        <div class="px-5">
+          <p th:text="*{name}"></p>
+          <p th:text="*{userId}"></p>
+          <p>太陽が昇り、新しい一日が始まった。空は青く澄み渡り、鳥たちがさえずっている。私は目を覚まし、窓を開けると、そよ風が部屋に入ってきた。外を見ると、人々が通勤や買い物に出かけている。私も身支度をして、家を出た。街中は活気に満ちており、新鮮な空気と光に包まれていた。</p>
+          <p th:text="*{icon}"></p>
+          <p th:text="*{back}"></p>
+        </div>
+      </div>
+      <div id="twlist">
+        <div th:each="tw : ${twlist}" class="border">
+          <p th:text="${tw.user.name}"></p>
+          <p th:text="${tw.user.userId}"></p>
+          <p th:text="${tw.content}"></p>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div id="tw" class="h-full w-full absolute hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex">
+    <div class="w-96 h-auto bg-neutral-50 rounded-3xl">
+      <form method="post" th:action="@{/{id}/tw/(id=${user.id})}">
+        <label for="message" class="block mb-2 text-sm text-2xl">Your message</label>
+        <textarea id="message" name="content" rows="4" class="text-2xl rounded-lg" placeholder="Write your thoughts here..."></textarea>
+        <input type="submit" value="投稿"></input>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

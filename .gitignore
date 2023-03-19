@@ -33,4 +33,6 @@ build/
 .vscode/
 
 
+### TailwindCSS ###
 node_modules/*
+src/main/resources/static/css/output.css

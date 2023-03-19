@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+  <div id="content">
+    <h1>Home Page</h1>
+    <form method="post" th:action="@{/logout}">
+      <input type="submit" value="logout">
+    </form>
+    <form method="post" th:action="@{/tw}">
+      <label for="message" class="block mb-2 text-sm text-2xl">Your message</label>
+      <textarea id="message" name="content" rows="4" class="text-2xl rounded-lg" placeholder="Write your thoughts here..."></textarea>
+      <input type="submit" value="投稿"></input>
+    </form>
+  </div>
+</body>
+</html>

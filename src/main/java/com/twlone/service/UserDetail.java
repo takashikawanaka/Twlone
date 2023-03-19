@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.twlone.entity.Authorization;
+import com.twlone.entity.User;
 
 public class UserDetail implements UserDetails {
     private static final long serialVersionUID = 1L;
@@ -28,6 +29,10 @@ public class UserDetail implements UserDetails {
         return authorities;
     }
 
+    public User getUser() {
+        return authorization.getUser();
+    }
+
     @Override
     public String getPassword() {
         return authorization.getPassword();
@@ -35,7 +40,7 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return authorization.getUser().getUserId();
+        return getUser().getUserId();
     }
 
     @Override

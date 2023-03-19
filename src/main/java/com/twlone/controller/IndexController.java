@@ -1,6 +1,8 @@
 package com.twlone.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,23 +10,31 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.twlone.entity.Authorization;
+import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.service.AuthorizationService;
+import com.twlone.service.TwService;
+import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 
 @Controller
 public class IndexController {
     AuthorizationService authorizationService;
     UserService userService;
+    TwService twService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public IndexController(AuthorizationService service, UserService service2) {
+    public IndexController(AuthorizationService service, UserService service2, TwService service3) {
         this.authorizationService = service;
         this.userService = service2;
+        this.twService = service3;
     }
 
     @GetMapping("/")
@@ -46,6 +56,17 @@ public class IndexController {
         authorization.setUser(user);
         authorizationService.saveAuthorization(authorization);
         return "redirect:/login";
+    }
+
+    @PostMapping("/tw")
+    public String postTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String content) {
+        Tw tw = new Tw();
+        tw.setUser(userDetail.getUser());
+        tw.setContent(content);
+        tw.setDeleteFlag(0);
+        twService.saveTw(tw);
+        //remove redirect
+        return "redirect:/";
     }
 
     @GetMapping("/login")
