@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -18,7 +20,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tw", uniqueConstraints = { @UniqueConstraint(name = "tw_user", columnNames = { "user_id" }) })
+@Table(name = "tw")
 public class Tw {
 
     @Id
@@ -27,13 +29,17 @@ public class Tw {
 
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    //private Tw reTwId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "retw_id")
+    private Tw reTwId;
 
-    //private Tw replyTwId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "replytw_id")
+    private Tw replyTwId;
 
     @Column(nullable = false)
     private Integer deleteFlag;
