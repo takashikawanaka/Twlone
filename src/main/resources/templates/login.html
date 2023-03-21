@@ -24,15 +24,15 @@ window.onload = function(){
       <form method="post" th:action="@{/register}" th:object="${authorization}" id="form">
         <div class="flex border-b-2 mb-3 pb-1">
           <label for="register_name" class="flex items-center mx-1"><span class="material-icons-round"> person </span></label> <input type="text" id="register_name" th:field="*{user.userId}"
-            th:errorclass="err" name="username" class="text-2xl focus:outline-none" placeholder="UserName"><span th:errors="*{user.userId}" class="err"></span>
+            th:errorclass="err" name="username" class="w-56 text-2xl focus:outline-none" placeholder="UserName"><span th:errors="*{user.userId}" class="err"></span>
         </div>
         <div class="flex border-b-2 mb-3 pb-1">
           <label for="register_screenname" class="flex items-center mx-1"><span class="material-icons-round"> badge </span></label> <input type="text" id="register_screenname" th:field="*{user.name}"
-            th:errorclass="err" name="name" class="text-2xl focus:outline-none" placeholder="ScreenName"><span th:errors="*{user.name}" class="err"></span>
+            th:errorclass="err" name="name" class="w-56 text-2xl focus:outline-none" placeholder="ScreenName"><span th:errors="*{user.name}" class="err"></span>
         </div>
         <div class="flex border-b-2 mb-3 pb-1">
           <label for="register_password" class="flex items-center mx-1"><span class="material-icons-round"> lock </span></label> <input type="password" id="register_password" th:field="*{password}"
-            th:errorclass="err" name="passowrd" class="text-2xl focus:outline-none" placeholder="Password"><span th:errors="*{password}" class="err"></span>
+            th:errorclass="err" name="passowrd" class="w-56 text-2xl focus:outline-none" placeholder="Password"><span th:errors="*{password}" class="err"></span>
         </div>
         <div class="flex mt-4">
           <div class="flex items-center">
@@ -47,11 +47,11 @@ window.onload = function(){
       <form method="post" th:action="@{/login}">
         <div class="flex border-b-2 mb-3 pb-1">
           <label for="login_name" class="flex items-center mx-1"><span class="material-icons-round"> person </span></label> <input type="text" id="login_name" name="username"
-            class="text-2xl focus:outline-none" placeholder="UserName">
+            class="w-56 text-2xl focus:outline-none" placeholder="UserName">
         </div>
         <div class="flex border-b-2 mb-3 pb-1">
           <label for="login_password" class="flex items-center mx-1"><span class="material-icons-round"> lock </span> </label> <input type="password" id="login_password" name="password"
-            class="text-2xl focus:outline-none" placeholder="Password">
+            class="w-56 text-2xl focus:outline-none" placeholder="Password">
         </div>
         <div class="flex mt-4">
           <div class="flex items-center">
