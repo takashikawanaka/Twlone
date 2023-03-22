@@ -10,9 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -25,7 +23,7 @@ public class Tw {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer twId;
+    private Integer id;
 
     private String content;
 
@@ -34,12 +32,12 @@ public class Tw {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "retw_id")
-    private Tw reTwId;
+    @JoinColumn(name = "retw_id", updatable = false)
+    private Tw reTw;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "replytw_id")
-    private Tw replyTwId;
+    @JoinColumn(name = "replytw_id", updatable = false)
+    private Tw replyTw;
 
     @Column(nullable = false)
     private Integer deleteFlag;

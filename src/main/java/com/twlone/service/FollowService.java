@@ -1,8 +1,5 @@
 package com.twlone.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -19,24 +16,8 @@ public class FollowService {
         this.followRepository = repository;
     }
 
-    public List<Follow> getFollowListByUser(User user) {
-        return followRepository.findByUser(user);
-    }
-
-    public List<Follow> getFollowListByTargetUser(User user) {
-        return followRepository.findByTargetUser(user);
-    }
-
-    public Boolean getBooleanByUserIdAndTargetUserId(User user, User targetUser) {
+    public Boolean getBooleanByUserIdAndTargetUser(User user, User targetUser) {
         return followRepository.existsByUserAndTargetUser(user, targetUser);
-    }
-
-    public long getFollowingCountByUserId(User user) {
-        return followRepository.countByUser(user);
-    }
-
-    public long getFollowerCountByTargetUserId(User user) {
-        return followRepository.countByTargetUser(user);
     }
 
     @Transactional

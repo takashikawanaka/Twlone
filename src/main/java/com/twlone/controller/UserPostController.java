@@ -43,7 +43,6 @@ public class UserPostController {
         twService.saveTw(tw);
     }
 
-    // 切り替えたほうがいいのか？問題ないのか？
     @PostMapping("/follow")
     @ResponseStatus(HttpStatus.OK)
     public void postFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
