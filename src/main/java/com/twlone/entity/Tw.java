@@ -1,6 +1,7 @@
 package com.twlone.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -32,18 +34,34 @@ public class Tw {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "retw_id", updatable = false)
+    @JoinColumn(name = "re_tw_id", updatable = false)
     private Tw reTw;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "replytw_id", updatable = false)
+    @JoinColumn(name = "reply_tw_id", updatable = false)
     private Tw replyTw;
 
     @Column(nullable = false)
-    private Integer deleteFlag;
+    private Integer deleteFlag = 0;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    protected Tw() {
+    }
+
+    public Tw(User user, String content) {
+        this.user = user;
+        this.content = content;
+    }
+
+    @OneToMany(mappedBy = "reTw", fetch = FetchType.LAZY)
+    private List<Tw> reTwList;
+
+    @OneToMany(mappedBy = "replyTw", fetch = FetchType.LAZY)
+    private List<Tw> replyTwList;
+
+    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    private List<Favorite> favoriteList;
 }

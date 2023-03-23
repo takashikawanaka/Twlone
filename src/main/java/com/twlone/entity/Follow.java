@@ -26,4 +26,13 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "target_user_id", nullable = false, updatable = false)
     private User targetUser;
+
+    protected Follow() {
+    }
+
+    public Follow(User user, User targetUser) {
+        this.user = user;
+        this.targetUser = targetUser;
+    }
+
 }

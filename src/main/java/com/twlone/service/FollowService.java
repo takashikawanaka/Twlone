@@ -21,8 +21,12 @@ public class FollowService {
     }
 
     @Transactional
-    public Follow saveFollow(Follow follow) {
-        return followRepository.save(follow);
+    public void saveFollow(Follow follow) {
+        followRepository.save(follow);
+    }
+
+    public void saveFollow(User user, User targetUser) {
+        saveFollow(new Follow(user, targetUser));
     }
 
     @Transactional

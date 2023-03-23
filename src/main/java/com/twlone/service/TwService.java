@@ -27,7 +27,12 @@ public class TwService {
     }
 
     @Transactional
-    public Tw saveTw(Tw tw) {
-        return twRepository.save(tw);
+    public void saveTw(Tw tw) {
+        twRepository.save(tw);
     }
+
+    public void saveTw(User user, String content) {
+        saveTw(new Tw(user, content));
+    }
+
 }

@@ -47,7 +47,7 @@ public class User {
     private String back;// Edit
 
     @Column(nullable = false)
-    private Integer deleteFlag;
+    private Integer deleteFlag = 0;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
@@ -57,8 +57,11 @@ public class User {
     private List<Tw> twList;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Follow> following;
+    private List<Follow> followingList;
 
     @OneToMany(mappedBy = "targetUser", fetch = FetchType.LAZY)
-    private List<Follow> follower;
+    private List<Follow> followerList;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Favorite> favoriteList;
 }

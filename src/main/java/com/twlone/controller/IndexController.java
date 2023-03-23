@@ -40,6 +40,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model) {
+        //Will Remove
         List<User> userlist = userService.getUserList();
         model.addAttribute("userlist", userlist);
         return "index";
@@ -51,12 +52,9 @@ public class IndexController {
             return getLogin(authorization);// forward??
         }
         User user = authorization.getUser();
-        user.setDeleteFlag(0);
-        authorization.setUser(user);
         userService.saveUser(user);
         String passwordString = passwordEncoder.encode(authorization.getPassword());
         authorization.setPassword(passwordString);
-        authorization.setUser(user);
         authorizationService.saveAuthorization(authorization);
         return "redirect:/login";
     }

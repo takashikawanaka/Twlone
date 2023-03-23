@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.twlone.entity.Favorite;
 import com.twlone.entity.Follow;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
@@ -36,26 +37,30 @@ public class UserPostController {
     @PostMapping("/tw")
     @ResponseStatus(HttpStatus.OK)
     public void postTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String content) {
-        Tw tw = new Tw();
-        tw.setUser(userDetail.getUser());
-        tw.setContent(content);
-        tw.setDeleteFlag(0);
-        twService.saveTw(tw);
+        twService.saveTw(userDetail.getUser(), content);
     }
 
     @PostMapping("/follow")
     @ResponseStatus(HttpStatus.OK)
     public void postFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
-        Follow follow = new Follow();
-        follow.setUser(userDetail.getUser());
-        User targetUser = userService.getUserById(Integer.parseInt(id));
-        follow.setTargetUser(targetUser);
-        followService.saveFollow(follow);
+        followService.saveFollow(userDetail.getUser(), userService.getUserById(Integer.parseInt(id)));
     }
 
     @PostMapping("/unfollow")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         followService.deleteByUserAndTargetUser(userDetail.getUser(), userService.getUserById(Integer.parseInt(id)));
+    }
+
+    @PostMapping("/favorite")
+    @ResponseStatus(HttpStatus.OK)
+    public void postFavorite(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
+        favoriteService.saveFavorite(twService.getTwById(Integer.parseInt(id)), userDetail.getUser());
+    }
+
+    @PostMapping("/unfavorite")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteFavorite(@AuthenticationPrincipal UserDetail user, @RequestParam String id) {
+        favoriteService.deleteByTwAndUser(twService.getTwById(Integer.parseInt(id)), user.getUser());
     }
 }

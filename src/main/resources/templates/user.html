@@ -4,6 +4,11 @@
 <link th:href="@{/css/output.css}" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
 <script th:src="@{/js/post.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+        const isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+    /*]]>*/
+</script>
 </head>
 <body class="h-screen w-screen bg-neutral-200">
   <!--  min 375 max 744 -->
@@ -13,6 +18,7 @@
     </header>
     <div id="content" th:object="${user}" class="h-auto w-auto relative flex flex-col mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <div id="profile">
+        <!--  EDIT  -->
         <div class="w-full overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
           <img th:src="@{/images/sample/1.jpg}" class="object-cover">
         </div>
@@ -34,36 +40,46 @@
           </div>
           <p th:text="*{description}" class="mt-2"></p>
           <div class="flex space-x-2 mt-2">
-            <p th:text="'Following:' + *{following.size()}"></p>
-            <p th:text="'Follower:' + *{follower.size()}"></p>
+            <p th:text="'Following:' + *{followingList.size()}"></p>
+            <p th:text="'Follower:' + *{followerList.size()}"></p>
           </div>
         </div>
       </div>
       <div id="twlist" class="px-5">
-        <div th:each="tw : *{twList}" class="w-auto flex space-x-2 pt-2 border-t-2 border-dotted">
+        <div th:each="tw : *{twList}" class="w-auto flex space-x-2 pt-2 border-t-2 border-dotted border-neutral-200">
           <div class="w-12 aspect-square">
-            <img th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg  ">
+            <img th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg">
           </div>
           <div class="flex-1">
-            <div class="flex space-x-2">
+            <div class="flex flex-wrap space-x-1">
               <p th:text="${tw.user.name}" class="font-black"></p>
               <p th:text="'@' + ${tw.user.userId}" class="font-thin"></p>
             </div>
             <p th:text="${tw.content}"></p>
-            <div class="w-4/5 flex justify-between mt-2 pl-1">
-              <button type="button">
-                <span class="material-icons-round" style="font-size: 18px;"> comment </span>
-              </button>
-              <button type="button">
-                <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
-              </button>
-              <button type="button">
-                <span class="material-icons-round" style="font-size: 18px;"> favorite_border </span>
-              </button>
+            <form method="post" th:action="@{/user}" class="w-3/4 h-5 flex justify-between my-2 pl-1">
+              <input type="hidden" name="id" th:value="${tw.id}">
+              <div class="flex space-x-1 items-center">
+                <button type="button" onclick="postReply(this)" class="flex items-center">
+                  <span class="material-icons-round" style="font-size: 18px;"> comment </span>
+                </button>
+                <p th:text="${tw.replyTwList.size()}">
+              </div>
+              <div class="flex space-x-1 items-center">
+                <button type="button" onclick="postReTweet(this)" th:formaction="@{/user/retw}" class="flex items-center">
+                  <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
+                </button>
+                <p th:text="${tw.reTwList.size()}">
+              </div>
+              <div class="flex space-x-1 items-center">
+                <button type="button" onclick="postFavorite(this)" th:formaction="@{/user/favorite}" class="flex items-center">
+                  <span class="material-icons-round" style="font-size: 18px;"> favorite_border </span>
+                </button>
+                <p th:text="${tw.favoriteList.size()}">
+              </div>
               <button type="button">
                 <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -79,6 +95,9 @@
       </form>
        -->
     </div>
+  </div>
+  <div id="login" class="h-full w-full absolute hidden justify-center">
+    <div class="w-96 h-auto"></div>
   </div>
 </body>
 </html>
