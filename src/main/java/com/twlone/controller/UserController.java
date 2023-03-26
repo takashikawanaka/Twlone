@@ -1,15 +1,20 @@
 package com.twlone.controller;
 
+import java.util.List;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
 import com.twlone.service.FollowService;
 import com.twlone.service.TwService;
+import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 
 @Controller
@@ -28,8 +33,17 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public String getUser(@PathVariable("userId") String id, Model model) {
+    public String getUser(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("userId") String id,
+            Model model) {
         User user = userService.getUserByUserId(id);
+        if (userDetail != null) {
+            //User loggedUser = userDetail.getUser();
+            user.setIsFollow(followService.getBooleanByUserIdAndTargetUser(userDetail.getUser(), user));
+            for (Tw tw : user.getTwList()) {
+                tw.setIsFavorite(favoriteService.getBooleanByTwAndUser(tw, userDetail.getUser()));
+            }
+            model.addAttribute("logged", userDetail.getUser());
+        }
         model.addAttribute("user", user);
         return "user";
     }

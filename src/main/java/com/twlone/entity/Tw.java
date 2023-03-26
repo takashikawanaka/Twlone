@@ -13,8 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import lombok.Data;
 
@@ -27,6 +29,8 @@ public class Tw {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(length = 280)
+    @Type(type = "text")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,4 +68,10 @@ public class Tw {
 
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
+
+    @Transient
+    private Boolean isReTw = false;
+
+    @Transient
+    private Boolean isFavorite = false;
 }

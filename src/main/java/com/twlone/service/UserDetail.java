@@ -17,11 +17,14 @@ public class UserDetail implements UserDetails {
     private final Authorization authorization;
     private final List<SimpleGrantedAuthority> authorities;
 
+    private final User user;
+
     public UserDetail(Authorization authorization) {
         this.authorization = authorization;
         List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("user"));
         this.authorities = authorities;
+        this.user = authorization.getUser();
     }
 
     @Override
@@ -30,7 +33,7 @@ public class UserDetail implements UserDetails {
     }
 
     public User getUser() {
-        return authorization.getUser();
+        return user;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getUser().getUserId();
+        return user.getUserId();
     }
 
     @Override

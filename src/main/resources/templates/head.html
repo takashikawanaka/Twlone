@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head_fragment(title, scripts, links)">
+<head th:fragment="head_fragment(title, metas, scripts, links)">
 <meta charset="UTF-8">
 <meta name=”viewport” content=”width=device-width,initial-scale=1″>
+<th:block th:replace="${metas}" />
 <title th:text="${title}"></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

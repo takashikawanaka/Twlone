@@ -14,7 +14,6 @@ import lombok.Data;
 @Entity
 @Table(name = "follow")
 public class Follow {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -34,5 +33,4 @@ public class Follow {
         this.user = user;
         this.targetUser = targetUser;
     }
-
 }

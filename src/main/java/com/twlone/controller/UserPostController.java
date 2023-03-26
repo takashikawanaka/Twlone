@@ -40,6 +40,12 @@ public class UserPostController {
         twService.saveTw(userDetail.getUser(), content);
     }
 
+    @PostMapping("/deletetw")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String content) {
+        //twService.saveTw(userDetail.getUser(), content);
+    }
+
     @PostMapping("/follow")
     @ResponseStatus(HttpStatus.OK)
     public void postFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
