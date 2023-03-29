@@ -30,9 +30,4 @@ public class TwService {
     public void saveTw(Tw tw) {
         twRepository.save(tw);
     }
-
-    public void saveTw(User user, String content) {
-        saveTw(new Tw(user, content));
-    }
-
 }

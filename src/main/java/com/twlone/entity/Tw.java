@@ -55,9 +55,8 @@ public class Tw {
     protected Tw() {
     }
 
-    public Tw(User user, String content) {
+    public Tw(User user) {
         this.user = user;
-        this.content = content;
     }
 
     @OneToMany(mappedBy = "reTw", fetch = FetchType.LAZY)
@@ -68,6 +67,12 @@ public class Tw {
 
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
+
+    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    private List<Media> mediaList;
+
+    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    private List<RelatedTwHashTag> hashtags;
 
     @Transient
     private Boolean isReTw = false;

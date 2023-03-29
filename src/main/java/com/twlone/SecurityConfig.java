@@ -22,7 +22,7 @@ public class SecurityConfig {
             .logout(logout -> logout.logoutSuccessUrl("/login"))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                    .mvcMatchers("/register", "/user/**").permitAll()
+                    .mvcMatchers("/register", "/user/**", "/media/***").permitAll()
                     .anyRequest().authenticated());
         return http.build();
     }

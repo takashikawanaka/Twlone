@@ -32,7 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-
 ### TailwindCSS ###
 node_modules/*
 src/main/resources/static/css/output.css
+
+### Media ###
+medias/*
