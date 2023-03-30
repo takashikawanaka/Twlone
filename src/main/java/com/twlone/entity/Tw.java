@@ -75,8 +75,5 @@ public class Tw {
     private List<RelatedTwHashTag> hashtags;
 
     @Transient
-    private Boolean isReTw = false;
-
-    @Transient
     private Boolean isFavorite = false;
 }

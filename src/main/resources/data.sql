@@ -586,3 +586,85 @@ INSERT
             ,0
             ,CURRENT_TIMESTAMP
         );
+-- Follow
+INSERT
+    INTO
+        Follow(
+            user_id
+            ,target_user_id
+        )
+    VALUES
+        (
+            1
+            ,2
+        )
+        ,(
+            2
+            ,1
+        );
+-- Favorite
+INSERT
+    INTO
+        Favorite(
+            tw_id
+            ,user_id
+        )
+    VALUES
+        (
+            1
+            ,1
+        );
+-- ReTw && ReTw with Content
+INSERT
+    INTO
+        Tw(
+            content
+            ,user_id
+            ,re_tw_id
+            ,delete_flag
+            ,created_at
+        )
+    VALUES
+        (
+            ""
+            ,1
+            ,1
+            ,0
+            ,CURRENT_TIMESTAMP
+        )
+        ,(
+            "Good"
+            ,1
+            ,1
+            ,0
+            ,CURRENT_TIMESTAMP
+        );
+-- Media
+INSERT
+    INTO
+        Tw(
+            content
+            ,user_id
+            ,delete_flag
+            ,created_at
+        )
+    VALUES
+        (
+            "Media"
+            ,1
+            ,0
+            ,CURRENT_TIMESTAMP
+        );
+INSERT
+    INTO
+        Media(
+            tw_id
+            ,type
+            ,path
+        )
+        VALUES
+        (
+            33
+            ,'jpeg'
+            ,"test.jpeg"
+        );
