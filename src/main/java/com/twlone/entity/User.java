@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "user")
-//@Where(clause = "deleteFlag = 0")
+@Where(clause = "delete_flag = 0")
 public class User {
 
     @Id
@@ -58,7 +58,7 @@ public class User {
 
     @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @Where(clause = "reply_tw_id IS null")
+    @Where(clause = "reply_tw_id is null and delete_flag = 0")
     private List<Tw> twList;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

@@ -1,4 +1,9 @@
-// Fav Follow Button
+// Show Media
+function openMedia(media) {
+    document.getElementById('full_media').src = media.src;
+    location.hash = 'media';
+}
+
 function postCSRF(url, id, callback) {
     const form = new FormData();
     form.append('id', id);
@@ -16,6 +21,7 @@ function postCSRF(url, id, callback) {
     });
 }
 
+// Follow Button
 function postFollow(node, id) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
@@ -37,6 +43,7 @@ function postFollow(node, id) {
     }
 }
 
+// Fav Button
 function postFavorite(node, id) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
@@ -60,4 +67,13 @@ function postFavorite(node, id) {
             p.textContent = parseInt(p.textContent) + 1;
         })
     }
+}
+
+// Delete Button
+function deleteTw(id) {
+    if (window.confirm('Delete Tw??\n' + document.getElementById('content_' + id).textContent)) {
+        postCSRF(baseURL() + '/user/deletetw', id , (_) => {
+            document.getElementById('tw_' + id).remove();
+        })
+    };
 }

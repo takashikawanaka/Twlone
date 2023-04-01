@@ -5,11 +5,6 @@ function checkAuthenticated() {
     return false;
 }
 
-function openMedia(media) {
-    document.getElementById('full_media').src = media.src;
-    location.hash = 'media';
-}
-
 function closeWindow() {
     const scroll = window.scrollY;
     location.hash = '';

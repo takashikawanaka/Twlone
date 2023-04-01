@@ -116,8 +116,10 @@ public class UserPostController {
     // Add Code
     @PostMapping("/deletetw")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String content) {
-        // twService.saveTw(userDetail.getUser(), content);
+    public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
+        Tw tw = twService.getTwById(Integer.parseInt(id));
+        tw.setDeleteFlag(1);
+        twService.saveTw(tw);
     }
 
     @PostMapping("/follow")

@@ -116,7 +116,8 @@
                   <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>
                 </button>
                 <div>
-                  <button type="button" class="flex items-center" th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
+                  <button type="button" th:onclick="|deleteTw(${tw.id});|" class="flex items-center"
+                    th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
                     <span class="material-icons-round" style="font-size: 18px;"> delete_outline </span>
                   </button>
                 </div>
