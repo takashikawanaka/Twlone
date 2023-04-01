@@ -19,7 +19,7 @@ import lombok.Data;
 @Table(name = "media")
 public class Media {
     public static enum MediaType {
-        jpeg("image/jpeg"), png("image/png"), gif("image/gig"), bmp("image/bmp"), webp("image/webp"), mp4("movie/mp4"),
+        jpeg("image/jpeg"), png("image/png"), gif("image/gif"), bmp("image/bmp"), webp("image/webp"), mp4("movie/mp4"),
         webm("movie/webm"), ogg("movie/ogg"), quicktime("movie/quicktime"), mpeg("movie/mpeg");
 
         private final String contentType;

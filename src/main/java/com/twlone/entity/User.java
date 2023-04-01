@@ -17,6 +17,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 
 import lombok.Data;
 
@@ -57,6 +58,7 @@ public class User {
 
     @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Where(clause = "reply_tw_id IS null")
     private List<Tw> twList;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

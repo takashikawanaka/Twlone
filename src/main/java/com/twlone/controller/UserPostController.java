@@ -41,8 +41,6 @@ public class UserPostController {
     FavoriteService favoriteService;
     MediaService mediaService;
 
-    List<String> permissionImageFile = List.of(".jpg", ".png", ".gif");
-    List<String> permissionMovieFile = List.of(".mp4");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     public UserPostController(UserService service, TwService service2, FollowService service3, FavoriteService service4,
@@ -73,12 +71,13 @@ public class UserPostController {
             isContent = true;
         }
         if (replyTw.isPresent() && !replyTw.map(String::isEmpty).orElse(false)) {
-            System.out.println(replyTw);
             tw.setReplyTw(twService.getTwById(Integer.parseInt(replyTw.get())));
-            isContent = true;
         }
         List<Media> mediaList = null;
         if (medias.isPresent()) {
+            if (4 < medias.get().size()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
             isContent = true;
             try {
                 mediaList = saveMedias(medias.get(), tw);
@@ -114,6 +113,7 @@ public class UserPostController {
         return mediaList;
     }
 
+    // Add Code
     @PostMapping("/deletetw")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String content) {
