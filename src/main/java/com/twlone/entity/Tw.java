@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -59,12 +60,15 @@ public class Tw {
         this.user = user;
     }
 
+    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "reTw", fetch = FetchType.LAZY)
     private List<Tw> reTwList;
 
+    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "replyTw", fetch = FetchType.LAZY)
     private List<Tw> replyTwList;
 
+    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
 

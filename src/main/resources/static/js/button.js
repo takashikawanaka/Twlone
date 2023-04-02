@@ -4,6 +4,7 @@ function openMedia(media) {
     location.hash = 'media';
 }
 
+// Post with CSRF
 function postCSRF(url, id, callback) {
     const form = new FormData();
     form.append('id', id);
@@ -72,7 +73,7 @@ function postFavorite(node, id) {
 // Delete Button
 function deleteTw(id) {
     if (window.confirm('Delete Tw??\n' + document.getElementById('content_' + id).textContent)) {
-        postCSRF(baseURL() + '/user/deletetw', id , (_) => {
+        postCSRF(baseURL() + '/user/deletetw', id, (_) => {
             document.getElementById('tw_' + id).remove();
         })
     };

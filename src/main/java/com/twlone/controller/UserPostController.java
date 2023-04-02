@@ -113,7 +113,6 @@ public class UserPostController {
         return mediaList;
     }
 
-    // Add Code
     @PostMapping("/deletetw")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {

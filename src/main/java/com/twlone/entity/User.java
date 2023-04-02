@@ -61,12 +61,15 @@ public class User {
     @Where(clause = "reply_tw_id is null and delete_flag = 0")
     private List<Tw> twList;
 
+    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Follow> followingList;
 
+    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "targetUser", fetch = FetchType.LAZY)
     private List<Follow> followerList;
 
+    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
 

@@ -45,7 +45,7 @@ public class Media {
     @Column(nullable = false, updatable = false)
     private MediaType type;
 
-    @Column(nullable = false, updatable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private String path;
 
     protected Media() {

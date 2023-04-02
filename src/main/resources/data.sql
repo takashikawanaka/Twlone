@@ -791,11 +791,50 @@ INSERT
             ,delete_flag
             ,created_at
         )
-        VALUES
-(
+        VALUES (
         "Test Reply"
         , 1
         , 1
         , 0
         ,CURRENT_TIMESTAMP
+        );
+--Long Image
+INSERT
+    INTO
+        Tw(
+            content
+            ,user_id
+            ,delete_flag
+            ,created_at
+        )
+        VALUES (
+        "Long Image"
+        , 1
+        , 0
+        ,CURRENT_TIMESTAMP
+        );
+INSERT
+    INTO
+        Media(
+            tw_id
+            ,type
+            ,path
+        )
+        VALUES
+        (
+            44
+            ,'png'
+            ,"test11.png"
+        ),(
+            44
+            ,'png'
+            ,"test12.png"
+        ),(
+            44
+            ,'png'
+            ,"test13.png"
+        ),(
+            44
+            ,'png'
+            ,"test14.png"
         );
