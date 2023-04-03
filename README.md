@@ -1,12 +1,34 @@
-# Twlone
+# Twlone(ポートフォリオ用)
 
-このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「リツイート」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
+このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
+
+## Todo
+### 目標
+- [x] ログイン機能
+- [x] つぶやきの実装
+- [x] ユーザのフォローフォロワー機能
+- [x] いいね機能
+- [ ] ユーザ画面
+- [x] シェア、リプライ機能
+- [x] 画像添付の実装
+- [ ] つぶやき単体画面
+- [ ] ハッシュタグの実装
+
+### 追加実装予定
+- [ ] アイコン・背景画像のアップロード
+- [ ] 動画添付の実装
+- [ ] メール送信によるユーザ登録の実装
+- [ ] 一部テーブルをNoSQLへ変更
+
+## DB設計
+![ダウンロード](https://user-images.githubusercontent.com/123621760/229478168-bff6a582-5a82-42ce-a3e2-dfcfe80a6794.png)
 
 ## 使用技術
 ### エディタ・サービス
 Spring Tool Suite 4: 4.17.1.RELEASE  
 Figma(大雑把なデザインを作る際に使用)  
+InkScape(ロゴの作成、カーニング調整、SVGの出力の際)  
 Bing Chat(質問によるJava・CSSのコード提案, エラーメッセージからの訂正提案, ダミーデータの作成, README作成アシスタント)  
 Azure WebApp(アップロード予定)  
 
@@ -28,3 +50,16 @@ Thymeleaf: 3.0.15
 Lombok: 1.18.26  
 Spring Boot DevTools  
 GitHub Actions
+
+### 素材
+[Material Icons](https://fonts.google.com/icons)(ボタンアイコン)  
+[FLAT ICON DESIGN](http://flat-icon-design.com)(デフォルトユーザアイコン)  
+[Pexels](https://www.pexels.com/de-de/suche/desktop%20hintergrundbilder/)(デフォルトユーザ背景画像)  
+[SVG SILH](https://svgsilh.com/image/310517.html)(ロゴ)  
+[Againts](https://pixelbuddha.net/fonts/free-font-againts-typeface)(ロゴフォント、ボタン)  
+
+
+## 動作動画
+### ユーザ登録からのログイン
+https://user-images.githubusercontent.com/123621760/229481304-1efc3a74-accb-4022-a9c9-57e312a9edb1.mp4
+
