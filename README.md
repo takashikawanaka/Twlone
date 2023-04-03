@@ -55,7 +55,7 @@ GitHub Actions
 [Material Icons](https://fonts.google.com/icons)(ボタンアイコン)  
 [FLAT ICON DESIGN](http://flat-icon-design.com)(デフォルトユーザアイコン)  
 [Pexels](https://www.pexels.com/de-de/suche/desktop%20hintergrundbilder/)(デフォルトユーザ背景画像)  
-[SVG SILH](https://svgsilh.com/image/310517.html)(ロゴ)  
+[SVG SILH](https://svgsilh.com/image/310517.html)(ロゴ素材)  
 [Againts](https://pixelbuddha.net/fonts/free-font-againts-typeface)(ロゴフォント、ボタン)  
 [いやすとや](https://www.irasutoya.com)(テスト用画像)
 
