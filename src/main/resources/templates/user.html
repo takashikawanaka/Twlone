@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
-<head th:replace="head::head_fragment('Insert title here', ~{::meta}, ~{::script}, ~{::link})">
+<head th:replace="fragment/head::head_fragment('Insert title here', ~{::meta}, ~{::script}, ~{::link})">
 <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_username" th:cotnent="${#authentication.principal.username}" th:if="${#authorization.expression('isAuthenticated()')}" />
 <link th:href="@{/css/output.css}" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet" />
 <script th:src="@{/js/post.js}"></script>
 <script th:src="@{/js/button.js}"></script>
 <script th:inline="javascript">
@@ -17,97 +17,94 @@
 </head>
 <body>
   <!--/*  min 375 max 744 */-->
-  <div id="main" class="min-h-screen h-full min-w-[375px] flex bg-neutral-200">
+  <div id="main" class="min-h-screen h-full min-w-[375px] w-full flex bg-neutral-200">
     <span class="grow"></span>
-    <header class="min-w-[80px] w-20">
-      <div class="w-20 flex flex-col items-center fixed top-24">
-        <div class="w-16">
-          <img th:src="@{/images/logo.svg}">
-        </div>
-        <button type="button" onclick="openTw()">
-          <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> send </span>
-        </button>
-      </div>
-    </header>
-    <section id="main_content" th:object="${user}" class="h-auto min-w-[295px] max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
-      <section id="profile">
+    <header th:replace="fragment/header::header"></header>
+    <section id="main_content" th:object="${user}" class="h-auto min-w-[295px] w-full max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+      <section id="profile" class="w-full border-b-2 border-neutral-300 shadow">
         <div class="w-full overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
-          <img th:src="@{/images/sample/2.jpg}" class="object-scale-down">
+          <img th:src="@{/images/sample/2.jpg}" class="object-cover">
         </div>
         <div class="w-auto relative flex content-end justify-end flex-wrap mx-5" style="aspect-ratio: 8">
           <div id="user" class="w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-2/4 aspect-square rounded-3xl">
             <img th:src="@{/images/{image} (image=*{icon})}" class="rounded-3xl">
           </div>
-          <button type="button" th:onclick="|postFollow(this, *{id})|" class="w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
+          <button type="button" th:attr="data-id=*{id}" onclick="postFollow(this);" class="w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
             th:unless="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }" th:text="*{isFollow} ? Following : Follow"></button>
         </div>
         <div class="px-5 py-3">
           <div>
             <p th:text="*{name}" class="font-black text-2xl"></p>
-            <p th:text="'@' + *{userId}" class="font-thin text-sm"></p>
+            <p th:text="'@' + *{userId}" class="font-thin text-sm text-neutral-500"></p>
           </div>
           <p th:text="*{description}" class="mt-2"></p>
-          <div class="flex space-x-1 mt-2">
-            <div class="flex">
-              <p>Following:</p>
+          <div class="flex space-x-2 mt-2">
+            <div class="flex items-end">
               <p id="following" th:text="*{followingList.size()}"></p>
+              <p class="text-sm font-thin text-neutral-500">Following</p>
             </div>
-            <p>/</p>
-            <div class="flex">
-              <p>Follower:</p>
+            <div class="flex items-end">
               <p id="follower" th:text="*{followerList.size()}"></p>
+              <p class="text-sm font-thin text-neutral-500">Follower</p>
             </div>
           </div>
         </div>
       </section>
-      <section id="twlist" class="px-5">
-        <div th:each="tw : *{twList}" th:id="'tw_' + ${tw.id}" class="min-w-[265px] pt-2 border-t-2 border-dotted border-neutral-300">
-          <div th:if="${tw.reTw != null && #strings.isEmpty(tw.content)}" class="flex space-x-2 ml-8">
+      <section id="twlist" class="w-full px-5">
+        <div th:each="tw : *{twList}" th:id="'tw_' + ${tw.id}" class="min-w-[265px] pt-2 border-t-2 first:border-t-0 border-dotted border-neutral-300">
+          <div th:if="${tw.reTw != null && #strings.isEmpty(tw.content) && #lists.isEmpty(tw.mediaList)}" class="flex space-x-2 ml-8">
             <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
             <p class="text-sm" th:text="*{name} + ' ReTwed'"></p>
           </div>
-          <div class="flex space-x-3" th:with="tw=${tw.reTw != null && #strings.isEmpty(tw.content)} ? ${tw.reTw} : ${tw}">
-            <a th:href="@{/user/{id}/(id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s avater '" class="flex-none w-12 h-12"> <img th:id="'icon_' + ${tw.id}"
-              th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg"></a>
+          <div class="flex space-x-3 pt-1 pb-3" th:with="tw=${tw.reTw != null && #strings.isEmpty(tw.content) && #lists.isEmpty(tw.mediaList)} ? ${tw.reTw} : ${tw}"
+            th:attr="data-userid=${tw.user.userId},data-twid=${tw.id}" onclick="moveToTwPage(this);">
+            <!--/* User Space */-->
+            <a th:href="@{/user/{id}/(id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s avater '" class="flex-none w-12 h-12" onclick="event.stopPropagation();"> <img
+              th:id="'icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg"></a>
             <div class="min-w-[205px] grow">
-              <a th:href="@{/user/{id}/(id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'" class="flex flex-wrap w-fit space-x-1"><span th:id="'name_' + ${tw.id}"
-                th:text="${tw.user.name}" class="font-black whitespace-nowrap"></span><span th:id="'userid_' + ${tw.id}" th:text="'@' + ${tw.user.userId}" class="font-thin"></span></a>
+              <!--/* Tw Space */-->
+              <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'" class="flex flex-wrap w-fit space-x-1" onclick="event.stopPropagation();"><span
+                th:id="'name_' + ${tw.id}" th:text="${tw.user.name}" class="font-black whitespace-nowrap"></span><span th:id="'userid_' + ${tw.id}" th:text="'@' + ${tw.user.userId}"
+                class="text-neutral-500 font-thin"></span></a>
               <p th:id="'content_' + ${tw.id}" th:text="${tw.content}" class="max-w-[566px] mt-1 whitespace-pre-wrap"></p>
-              <div th:id="'medias_' + ${tw.id}" class="grid gap-1 h-auto mt-1 rounded-2xl overflow-hidden" th:if="${not #lists.isEmpty(tw.mediaList)}"
+              <div th:id="'medias_' + ${tw.id}" class="grid gap-1 h-auto mt-0.5 rounded-2xl overflow-hidden" th:if="${not #lists.isEmpty(tw.mediaList)}"
                 th:style="|grid-template-columns: repeat(${#lists.size(tw.mediaList) == 1 ? 1 : 2}, ${#lists.size(tw.mediaList) == 1 ? '100%' : '50%'});
-                grid-template-rows: repeat(${#lists.size(tw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|">
-                <img th:each="media : ${tw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this)">
+                grid-template-rows: repeat(${#lists.size(tw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
+                onclick="event.stopPropagation();">
+                <img th:each="media : ${tw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
               </div>
-              <div th:id="'reTw_' + ${tw.id}" th:if="${tw.reTw} != null" class="w-auto border p-2 mt-1 rounded-lg border-neutral-300">
-                <div class="flex space-x-1 mb-1 overflow-hidden">
-                  <div class="flex-none w-6">
-                    <img th:id="'reTw_icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.reTw.user.icon})}" class="rounded">
-                  </div>
-                  <p th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="${tw.reTw.user.name}"></p>
-                  <p th:id="'reTw_userid_' + ${tw.id}" class="font-thin" th:text="${tw.reTw.user.userId}"></p>
-                </div>
+              <!--/* ReTw Space */-->
+              <div th:id="'reTw_' + ${tw.id}" th:if="${tw.reTw} != null" class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=${tw.reTw.user.userId},data-twid=${tw.reTw.id}"
+                onclick="event.stopPropagation();moveToTwPage(this);">
+                <a th:href="@{/user/{id}/(id=${tw.reTw.user.userId})}" class="flex w-fit space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
+                    th:id="'reTw_icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.reTw.user.icon})}" class="rounded">
+                </span> <span th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="${tw.reTw.user.name}"></span> <span th:id="'reTw_userid_' + ${tw.id}" class="text-neutral-500 font-thin"
+                  th:text="'@' + ${tw.reTw.user.userId}"></span>
+                </a>
                 <p th:id="'reTw_content_' + ${tw.id}" class="text-sm whitespace-pre-wrap" th:text="${tw.reTw.content}"></p>
                 <div th:id="'reTw_medias_' + ${tw.id}" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" th:if="${not #lists.isEmpty(tw.reTw.mediaList)}"
                   th:style="|grid-template-columns: repeat(${#lists.size(tw.reTw.mediaList) == 1 ? 1 : 2}, ${#lists.size(tw.reTw.mediaList) == 1 ? '100%' : '50%'});
-                  grid-template-rows: repeat(${#lists.size(tw.reTw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.reTw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|">
-                  <img th:each="media : ${tw.reTw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this)">
+                  grid-template-rows: repeat(${#lists.size(tw.reTw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.reTw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
+                  onclick="event.stopPropagation();">
+                  <img th:each="media : ${tw.reTw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
                 </div>
               </div>
-              <div class="h-5 flex justify-between my-2 px-1">
+              <!--/* Button Space */-->
+              <div class="h-5 flex justify-between mt-3 px-1" onclick="event.stopPropagation();">
                 <div class="flex space-x-1 items-center">
-                  <button type="button" th:onclick="|openReplyTw(${tw.id});|" class="flex items-center">
+                  <button type="button" th:attr="data-id=${tw.id}" onclick="openReplyTw(this);" class="flex items-center">
                     <span class="material-icons-round" style="font-size: 18px;"> reply </span>
                   </button>
                   <p class="pt-1" th:text="${tw.replyTwList.size()}"></p>
                 </div>
                 <div class="flex space-x-1 items-center">
-                  <button type="button" th:onclick="|openReTw(${tw.id});|" class="flex items-center">
+                  <button type="button" th:attr="data-id=${tw.id}" onclick="openReTw(this);" class="flex items-center">
                     <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
                   </button>
                   <p class="pt-1" th:text="${tw.reTwList.size()}"></p>
                 </div>
                 <div class="flex space-x-1 items-center">
-                  <button type="button" th:onclick="|postFavorite(this, ${tw.id});|" class="flex items-center">
+                  <button type="button" th:attr="data-id=${tw.id}" onclick="postFavorite(this);" class="flex items-center">
                     <span class="material-icons-outlined" th:classappend="${tw.isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="${tw.isFavorite} ? favorite : favorite_border"></span>
                   </button>
                   <p class="pt-1" th:text="${tw.favoriteList.size()}"></p>
@@ -116,7 +113,7 @@
                   <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>
                 </button>
                 <div>
-                  <button type="button" th:onclick="|deleteTw(${tw.id});|" class="flex items-center"
+                  <button type="button" th:attr="data-id=${tw.id}" onclick="deleteTw(this);" class="flex items-center"
                     th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
                     <span class="material-icons-round" style="font-size: 18px;"> delete_outline </span>
                   </button>
@@ -127,87 +124,8 @@
         </div>
       </section>
     </section>
+    <footer></footer>
     <span class="grow"></span>
-  </div>
-  <div id="media" class="h-screen w-full min-w-[375px] fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow()">
-    <div class="min-w-[295px] w-5/6 h-auto bg-neutral-50" onclick="event.stopPropagation()">
-      <img id="full_media">
-    </div>
-  </div>
-  <div id="tw" class="h-screen w-full min-w-[375px] fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow()"
-    th:if="${#authorization.expression('isAuthenticated()')}">
-    <div class="min-w-[295px] w-11/12 max-w-[664px] h-auto bg-neutral-50 rounded-3xl px-10 py-8" onclick="event.stopPropagation()">
-      <form id="tw_form" method="post" th:action="@{/user/tw}">
-        <div class="flex flex-col h-auto">
-          <!--/* Tw ReplyTw Space */-->
-          <div id="replytw" class="hidden flex space-x-4">
-            <div class="flex-none w-20">
-              <img id="replytw_icon" class="rounded-xl">
-              <div class="w-0.5 h-full bg-neutral-300 mx-auto"></div>
-            </div>
-            <div class="grow">
-              <div class="flex flex-wrap w-fit space-x-1">
-                <p id="replytw_name" class="font-black whitespace-nowrap"></p>
-                <p id="replytw_userid" class="font-thin"></p>
-              </div>
-              <p id="replytw_content" class="text-sm mt-1 whitespace-pre-wrap"></p>
-              <div id="replytw_retw" class="hidden w-auto border p-2 mt-1 rounded-lg border-neutral-300">
-                <div class="flex space-x-1 mb-1 overflow-hidden">
-                  <div class="flex-none w-6">
-                    <img id="replytw_retw_icon" class="rounded">
-                  </div>
-                  <p id="replytw_retw_name" class="font-black whitespace-nowrap"></p>
-                  <p id="replytw_retw_userid" class="font-thin"></p>
-                </div>
-                <p id="replytw_retw_content" class="text-sm whitespace-pre-wrap"></p>
-              </div>
-              <div id="space" class="mt-14"></div>
-            </div>
-          </div>
-          <!--/* Tw Main Space */-->
-          <div class="flex space-x-4 mb-2">
-            <label for="content" class="block w-20 h-20 aspect-square"><img th:src="@{/images/{image} (image=${logged.icon})}" class="rounded-xl"></label>
-            <textarea id="content" name="content" rows="5" class="w-full text-2xl resize-none bg-transparent focus:outline-none" placeholder="What's happening"></textarea>
-          </div>
-          <div id="preview" class="w-full max-h-24 mb-2 flex"></div>
-          <input id="retw_id" type="hidden" name="reTw"><input id="replytw_id" type="hidden" name="replyTw">
-          <!--/* Tw ReTw Space */-->
-          <div id="retw" class="hidden w-auto border p-2 mb-2 rounded-lg border-neutral-300">
-            <div class="flex space-x-1 mb-1 overflow-hidden">
-              <div class="flex-none w-6">
-                <img id="retw_icon" class="rounded">
-              </div>
-              <p id="retw_name" class="font-black whitespace-nowrap"></p>
-              <p id="retw_userid" class="font-thin"></p>
-            </div>
-            <p id="retw_content" class="text-sm whitespace-pre-wrap"></p>
-            <div id="retw_retw" class="hidden w-auto border p-2 mt-1 rounded-lg border-neutral-300">
-              <div class="flex space-x-1 mb-1 overflow-hidden">
-                <div class="flex-none w-6">
-                  <img id="retw_retw_icon" class="rounded">
-                </div>
-                <p id="retw_retw_name" class="font-black whitespace-nowrap"></p>
-                <p id="retw_retw_userid" class="font-thin"></p>
-              </div>
-              <p id="retw_retw_content" class="text-sm whitespace-pre-wrap"></p>
-            </div>
-          </div>
-          <div class="flex flex-warp justify-end content-center text-center space-x-3 pt-2 border-t-2 border-dotted border-neutral-300">
-            <button type="button" class="flex items-center ml-0 mr-auto" onclick="clearForm()">
-              <span class="material-icons-round" style="font-size: 36px;"> delete_outline </span>
-            </button>
-            <div id="progress" class="h-10 w-10 flex flex-wrap content-center justify-center rounded-full">
-              <div id="mask" class="h-8 w-8 flex flex-wrap content-center justify-center rounded-full bg-neutral-50">
-                <span id="value" class="text-sm"></span>
-              </div>
-            </div>
-            <label for="fileInput" class="h-7 my-auto border-2 border-dotted border-neutral-600 rounded-full"> <span class="material-icons-round text-neutral-600"> add </span></label> <input
-              type="file" id="fileInput" name="fileInput" class="hidden" accept="video/*, image/*" multiple> <input type="button" onclick="postTw(this.form)" value="Submit"
-              class="w-28 h-10 font-bold text-neutral-900 border border-neutral-900 rounded-3xl">
-          </div>
-        </div>
-      </form>
-    </div>
   </div>
   <div id="login" class="h-full w-full absolute hidden justify-center">
     <div class="w-96 h-auto"></div>

@@ -29,6 +29,10 @@ function clearForm() {
     removeReTw();
 }
 
+function moveToTwPage(node) {
+    window.location.href = `/user/${node.dataset.userid}/status/${node.dataset.twid}`;
+}
+
 function clearWordCounter() {
     const area = document.getElementById('content');
     const progress = document.getElementById('progress');
@@ -107,11 +111,12 @@ function openTw() {
 }
 
 // ReTw
-function openReTw(twid) {
+function openReTw(node) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
         return;
     }
+    const twid = node.dataset.id;
     removeReTw();
 
     document.getElementById('replytw').classList.add('hidden');
@@ -193,12 +198,12 @@ function postTw(form) {
 }
 
 // Reply Tw
-function openReplyTw(twid) {
+function openReplyTw(node) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
         return;
     }
-
+    const twid = node.dataset.id;
     removeReplyTw();
 
     document.getElementById('retw').classList.add('hidden');
@@ -211,7 +216,7 @@ function openReplyTw(twid) {
     document.getElementById('replytw_content').textContent = document.getElementById('content_' + twid).textContent;
     const source_medias = document.getElementById('medias_' + twid);
     if (source_medias != null) {
-        const medias = (new DOMParser).parseFromString(`<div id="replytw_medias" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" style="grid-template-columns: repeat(${source_medias.childElementCount == 1 ? 1 : 2}, 1fr);grid-template-rows: repeat(${source_medias.childElementCount < 3 ? 1 : 2}, 1fr); aspect-ratio: 3/2;"></div>`, 'text/html').body.firstChild;
+        const medias = (new DOMParser).parseFromString(`<div id="replytw_medias" class="grid gap-0.5 h-auto mt-0.5 rounded-lg overflow-hidden" style="grid-template-columns: repeat(${source_medias.childElementCount == 1 ? 1 : 2},  ${source_medias.childElementCount == 1 ? '100%' : '50%'});grid-template-rows: repeat(${source_medias.childElementCount < 3 ? 1 : 2},  ${source_medias.childElementCount < 3 ? '100%' : '50%'}); aspect-ratio: 3/2;"></div>`, 'text/html').body.firstChild;
         medias.innerHTML = source_medias.innerHTML;
         document.getElementById('replytw_content').after(medias);
     }
@@ -224,7 +229,7 @@ function openReplyTw(twid) {
         document.getElementById('replytw_retw_content').textContent = document.getElementById('reTw_content_' + twid).textContent;
         const retw_source_medias = document.getElementById('reTw_medias_' + twid);
         if (retw_source_medias != null) {
-            const retw_medias = (new DOMParser).parseFromString(`<div id="replytw_retw_medias" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" style="grid-template-columns: repeat(${retw_source_medias.childElementCount == 1 ? 1 : 2}, 1fr);grid-template-rows: repeat(${retw_source_medias.childElementCount < 3 ? 1 : 2}, 1fr); aspect-ratio: 3/2;"></div>`, 'text/html').body.firstChild;
+            const retw_medias = (new DOMParser).parseFromString(`<div id="replytw_retw_medias" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" style="grid-template-columns: repeat(${retw_source_medias.childElementCount == 1 ? 1 : 2}, ${retw_source_medias.childElementCount == 1 ? '100%' : '50%'});grid-template-rows: repeat(${retw_source_medias.childElementCount < 3 ? 1 : 2}, ${retw_source_medias.childElementCount < 3 ? '100%' : '50%'}); aspect-ratio: 3/2;"></div>`, 'text/html').body.firstChild;
             retw_medias.innerHTML = retw_source_medias.innerHTML;
             document.getElementById('replytw_retw').appendChild(retw_medias);
         }

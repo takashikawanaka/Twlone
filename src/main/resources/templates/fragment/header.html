@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <header th:fragment="header" class="min-w-[80px] w-20">
+    <div class="w-20 flex flex-col items-center fixed top-24">
+      <div class="w-16">
+        <img th:src="@{/images/logo.svg}">
+      </div>
+      <button type="button" onclick="openTw();">
+        <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> send </span>
+      </button>
+    </div>
+    <div id="tw" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow();"
+      th:if="${#authorization.expression('isAuthenticated()')}">
+      <div class="min-w-[295px] w-11/12 max-w-[664px] h-auto bg-neutral-50 rounded-3xl px-10 py-8" onclick="event.stopPropagation();">
+        <form id="tw_form" method="post" th:action="@{/user/tw}">
+          <div class="flex flex-col h-auto">
+            <!--/* Tw ReplyTw Space */-->
+            <div id="replytw" class="hidden flex space-x-4">
+              <div class="flex-none w-20">
+                <img id="replytw_icon" class="rounded-xl">
+                <div class="w-0.5 h-full bg-neutral-300 mx-auto"></div>
+              </div>
+              <div class="grow">
+                <div class="flex flex-wrap w-fit space-x-1">
+                  <p id="replytw_name" class="font-black whitespace-nowrap"></p>
+                  <p id="replytw_userid" class="font-thin text-neutral-500"></p>
+                </div>
+                <p id="replytw_content" class="mt-1 whitespace-pre-wrap"></p>
+                <div id="replytw_retw" class="hidden w-auto border p-3 mt-1 rounded-lg border-neutral-300">
+                  <div class="flex space-x-1 mb-1 overflow-hidden">
+                    <div class="flex-none w-6">
+                      <img id="replytw_retw_icon" class="rounded">
+                    </div>
+                    <p id="replytw_retw_name" class="font-black whitespace-nowrap"></p>
+                    <p id="replytw_retw_userid" class="font-thin text-neutral-500"></p>
+                  </div>
+                  <p id="replytw_retw_content" class="text-sm whitespace-pre-wrap"></p>
+                </div>
+                <div id="space" class="mt-14"></div>
+              </div>
+            </div>
+            <!--/* Tw Main Space */-->
+            <div class="flex space-x-4 mb-2">
+              <label for="content" class="block w-20 h-20 aspect-square"><img th:src="@{/images/{image} (image=${logged.icon})}" class="rounded-xl"></label>
+              <textarea id="content" name="content" rows="5" class="w-full text-2xl resize-none bg-transparent focus:outline-none" placeholder="What's happening"></textarea>
+            </div>
+            <div id="preview" class="w-full max-h-24 mb-2 flex"></div>
+            <input id="retw_id" type="hidden" name="reTw"><input id="replytw_id" type="hidden" name="replyTw">
+            <!--/* Tw ReTw Space */-->
+            <div id="retw" class="hidden w-auto border p-3 mb-2 rounded-lg border-neutral-300">
+              <div class="flex space-x-1 mb-1 overflow-hidden">
+                <div class="flex-none w-6">
+                  <img id="retw_icon" class="rounded">
+                </div>
+                <p id="retw_name" class="font-black whitespace-nowrap"></p>
+                <p id="retw_userid" class="font-thin text-neutral-500"></p>
+              </div>
+              <p id="retw_content" class="text-sm whitespace-pre-wrap"></p>
+              <div id="retw_retw" class="hidden w-auto border p-3 mt-1 rounded-lg border-neutral-300">
+                <div class="flex space-x-1 mb-1 overflow-hidden">
+                  <div class="flex-none w-6">
+                    <img id="retw_retw_icon" class="rounded">
+                  </div>
+                  <p id="retw_retw_name" class="font-black whitespace-nowrap"></p>
+                  <p id="retw_retw_userid" class="font-thin text-neutral-500"></p>
+                </div>
+                <p id="retw_retw_content" class="text-sm whitespace-pre-wrap"></p>
+              </div>
+            </div>
+            <div class="flex flex-warp justify-end content-center text-center space-x-3 pt-2 border-t-2 border-dotted border-neutral-300">
+              <button type="button" class="flex items-center ml-0 mr-auto" onclick="clearForm();">
+                <span class="material-icons-round" style="font-size: 36px;"> delete_outline </span>
+              </button>
+              <div id="progress" class="h-10 w-10 flex flex-wrap content-center justify-center rounded-full">
+                <div id="mask" class="h-8 w-8 flex flex-wrap content-center justify-center rounded-full bg-neutral-50">
+                  <span id="value" class="text-sm"></span>
+                </div>
+              </div>
+              <label for="fileInput" class="h-7 my-auto border-2 border-dotted border-neutral-600 rounded-full"> <span class="material-icons-round text-neutral-600"> add </span></label> <input
+                type="file" id="fileInput" name="fileInput" class="hidden" accept="video/*, image/*" multiple> <input type="button" onclick="postTw(this.form)" value="Submit"
+                class="w-28 h-10 font-bold text-neutral-900 border border-neutral-900 rounded-3xl">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="media" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeMedia();">
+      <div class="min-w-[295px] w-5/6 h-auto bg-neutral-50" onclick="event.stopPropagation();">
+        <img id="full_media">
+      </div>
+    </div>
+  </header>
+</body>
+</html>

@@ -1,7 +1,18 @@
-// Show Media
+let hash = '';
+// Open Close Media
 function openMedia(media) {
+    hash = location.hash;
     document.getElementById('full_media').src = media.src;
     location.hash = 'media';
+}
+
+function closeMedia() {
+    if (hash) {
+        location.hash = hash;
+        hash = '';
+    } else {
+        closeWindow();
+    }
 }
 
 // Post with CSRF
@@ -23,12 +34,12 @@ function postCSRF(url, id, callback) {
 }
 
 // Follow Button
-function postFollow(node, id) {
+function postFollow(node) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
         return;
     }
-
+    const id = node.dataset.id;
     if (node.textContent == 'Follow') {
         postCSRF(baseURL() + '/user/follow', id, (_) => {
             node.textContent = 'Following';
@@ -45,12 +56,12 @@ function postFollow(node, id) {
 }
 
 // Fav Button
-function postFavorite(node, id) {
+function postFavorite(node) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
         return;
     }
-
+    const id = node.dataset.id;
     if (node.firstElementChild.textContent == 'favorite') {
         postCSRF(baseURL() + '/user/unfavorite', id, (_) => {
             const span = node.firstElementChild;
@@ -71,7 +82,8 @@ function postFavorite(node, id) {
 }
 
 // Delete Button
-function deleteTw(id) {
+function deleteTw(node) {
+    const id = node.dataset.id;
     if (window.confirm('Delete Tw??\n' + document.getElementById('content_' + id).textContent)) {
         postCSRF(baseURL() + '/user/deletetw', id, (_) => {
             document.getElementById('tw_' + id).remove();

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head th:replace="fragment/head::head_fragment('Insert title here', ~{::meta}, ~{::script}, ~{::link})">
+<meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_username" th:cotnent="${#authentication.principal.username}" th:if="${#authorization.expression('isAuthenticated()')}" />
+<link th:href="@{/css/output.css}" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet" />
+<script th:src="@{/js/post.js}"></script>
+<script th:src="@{/js/button.js}"></script>
+<script th:inline="javascript">
+    window.onload = function(){
+        location.hash = '';
+    };
+</script>
+</head>
+<body>
+  <div id="main" class="min-h-screen h-full min-w-[375px] flex bg-neutral-200">
+    <span class="grow"></span>
+    <header th:replace="fragment/header::header"></header>
+    <section id="main_content" class="h-auto min-w-[295px] w-full max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+      <div th:id="'tw_' + ${tw.id}" class="px-5 pt-5 border-b-2 border-neutral-300 shadow">
+        <div>
+          <div class="flex space-x-3">
+            <a th:href="@{/user/{id}/(id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s avater '" class="flex-none w-12 h-12"><img th:id="'icon_' + ${tw.id}"
+              th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg"></a>
+            <div class="w-fit">
+              <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'"><span th:id="'name_' + ${tw.id}" th:text="${tw.user.name}"
+                class="font-black whitespace-nowrap"></span></a> <br> <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'"><span
+                th:id="'userid_' + ${tw.id}" th:text="'@' + ${tw.user.userId}" class="text-neutral-500 font-thin"></span></a>
+            </div>
+          </div>
+          <p th:id="'content_' + ${tw.id}" th:text="${tw.content}" class="max-w-[566px] mt-2 whitespace-pre-wrap"></p>
+          <div th:id="'medias_' + ${tw.id}" class="grid gap-1 h-auto mt-0.5 rounded-2xl overflow-hidden" th:if="${not #lists.isEmpty(tw.mediaList)}"
+            th:style="|grid-template-columns: repeat(${#lists.size(tw.mediaList) == 1 ? 1 : 2}, ${#lists.size(tw.mediaList) == 1 ? '100%' : '50%'});
+                grid-template-rows: repeat(${#lists.size(tw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|">
+            <img th:each="media : ${tw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+          </div>
+          <p class="my-4 text-sm font-thin" th:text="${#temporals.format(tw.createdAt, 'yyyy年MM月dd日 HH時mm分ss秒')}"></p>
+        </div>
+        <div class="h-[50px] flex items-center space-x-2 border-t-2 border-dotted border-neutral-300" th:if="${tw.reTwList.size() != 0 || tw.favoriteList.size() != 0}">
+          <div class="flex items-end" th:if="${tw.reTwList.size() != 0}">
+            <p th:text="${tw.reTwList.size()}"></p>
+            <p class="text-sm font-thin text-neutral-500 mb-0.5">件のリツイート</p>
+          </div>
+          <div class="flex items-end" th:if="${tw.favoriteList.size() != 0}">
+            <p th:text="${tw.favoriteList.size()}"></p>
+            <p class="text-sm font-thin text-neutral-500 mb-0.5">件のいいね</p>
+          </div>
+        </div>
+        <div class="h-auto flex justify-around py-3 px-1 border-t-2 border-dotted border-neutral-300">
+          <button type="button" th:attr="data-id=${tw.id}" onclick="openReplyTw(this);" class="flex items-center">
+            <span class="material-icons-round" style="font-size: 24px;"> reply </span>
+          </button>
+          <button type="button" th:attr="data-id=${tw.id}" onclick="openReTw(this);" class="flex items-center">
+            <span class="material-icons-round" style="font-size: 24px;"> repeat </span>
+          </button>
+          <button type="button" th:attr="data-id=${tw.id}" onclick="postFavorite(this);" class="flex items-center">
+            <span class="material-icons-outlined" th:classappend="${tw.isFavorite} ? text-rose-600 : ''" style="font-size: 24px;" th:text="${tw.isFavorite} ? favorite : favorite_border"></span>
+          </button>
+          <button type="button" class="flex items-center">
+            <span class="material-icons-round" style="font-size: 24px;"> ios_share </span>
+          </button>
+          <button type="button" th:attr="data-id=${tw.id}" onclick="deleteTw(this);" class="flex items-center"
+            th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
+            <span class="material-icons-round" style="font-size: 24px;"> delete_outline </span>
+          </button>
+        </div>
+      </div>
+      <div th:each="replyTw : ${tw.replyTwList}" class="flex space-x-3 px-5">
+        <a th:href="@{/user/{id}/(id=${replyTw.user.userId})}" th:title="${replyTw.user.userId} + '\'s avater '" class="flex-none w-12 h-12"> <img th:id="'icon_' + ${tw.id}"
+          th:src="@{/images/{image} (image=${replyTw.user.icon})}" class="rounded-lg"></a>
+        <div class="min-w-[205px] grow">
+          <!--/* Tw Space */-->
+          <a th:href="@{/user/{id}/ (id=${replyTw.user.userId})}" th:title="${replyTw.user.userId} + '\'s screen name'" class="flex flex-wrap w-fit space-x-1"><span th:id="'name_' + ${tw.id}"
+            th:text="${replyTw.user.name}" class="font-black whitespace-nowrap"></span><span th:id="'userid_' + ${replyTw.id}" th:text="'@' + ${replyTw.user.userId}" class="font-thin"></span></a>
+          <p th:id="'content_' + ${replyTw.id}" th:text="${replyTw.content}" class="max-w-[566px] mt-1 whitespace-pre-wrap"></p>
+          <div th:id="'medias_' + ${replyTw.id}" class="grid gap-1 h-auto mt-1 rounded-2xl overflow-hidden" th:if="${not #lists.isEmpty(replyTw.mediaList)}"
+            th:style="|grid-template-columns: repeat(${#lists.size(replyTw.mediaList) == 1 ? 1 : 2}, ${#lists.size(replyTw.mediaList) == 1 ? '100%' : '50%'});
+                grid-template-rows: repeat(${#lists.size(replyTw.mediaList) < 3 ? 1 : 2}, ${#lists.size(replyTw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|">
+            <img th:each="media : ${replyTw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+          </div>
+        </div>
+      </div>
+    </section>
+    <span class="grow"></span>
+  </div>
+</body>
+</html>

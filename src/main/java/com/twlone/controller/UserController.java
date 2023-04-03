@@ -1,7 +1,5 @@
 package com.twlone.controller;
 
-import java.util.List;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +35,7 @@ public class UserController {
             Model model) {
         User user = userService.getUserByUserId(id);
         if (userDetail != null) {
-            //User loggedUser = userDetail.getUser();
+            // User loggedUser = userDetail.getUser();
             user.setIsFollow(followService.getBooleanByUserIdAndTargetUser(userDetail.getUser(), user));
             for (Tw tw : user.getTwList()) {
                 tw.setIsFavorite(favoriteService.getBooleanByTwAndUser(tw, userDetail.getUser()));
@@ -64,8 +62,14 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/status/{tweetId}")
-    public String getTweet(@PathVariable("") Integer id) {
-        return "";
+    public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("tweetId") Integer id,
+            Model model) {
+        Tw tw = twService.getTwById(id);
+        if (userDetail != null) {
+            tw.setIsFavorite(favoriteService.getBooleanByTwAndUser(tw, userDetail.getUser()));
+            model.addAttribute("logged", userDetail.getUser());
+        }
+        model.addAttribute("tw", tw);
+        return "tw";
     }
-
 }
