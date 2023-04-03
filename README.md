@@ -25,7 +25,7 @@
 ![ダウンロード](https://user-images.githubusercontent.com/123621760/229478168-bff6a582-5a82-42ce-a3e2-dfcfe80a6794.png)
 
 ## 使用技術
-### エディタ・サービス
+### 開発環境・サービス
 Spring Tool Suite 4: 4.17.1.RELEASE  
 Figma(大雑把なデザインを作る際に使用)  
 InkScape(ロゴの作成、カーニング調整、SVGの出力の際)  
