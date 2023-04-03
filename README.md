@@ -3,6 +3,11 @@
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
 
+output.cssの出力
+```
+npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resources\static\css\output.css
+```
+
 ## Todo
 ### 目標
 - [x] ログイン機能
