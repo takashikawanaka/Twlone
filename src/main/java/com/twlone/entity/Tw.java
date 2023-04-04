@@ -80,4 +80,7 @@ public class Tw {
 
     @Transient
     private Boolean isFavorite = false;
+
+    @Transient
+    private Boolean dayHasPassed = false;
 }

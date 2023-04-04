@@ -57,67 +57,41 @@
             <p class="text-sm" th:text="*{name} + ' ReTwed'"></p>
           </div>
           <div class="flex space-x-3 pt-1 pb-3" th:with="tw=${tw.reTw != null && #strings.isEmpty(tw.content) && #lists.isEmpty(tw.mediaList)} ? ${tw.reTw} : ${tw}"
-            th:attr="data-userid=${tw.user.userId},data-twid=${tw.id}" onclick="moveToTwPage(this);">
+            th:attr="data-userid=${tw.user.userId},data-twid=${tw.id}" onmousedown="mousedown()" onmousemove="mousemove()" onclick="moveToTwPage(this);">
             <!--/* User Space */-->
             <a th:href="@{/user/{id}/(id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s avater '" class="flex-none w-12 h-12" onclick="event.stopPropagation();"> <img
               th:id="'icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg"></a>
             <div class="min-w-[205px] grow">
               <!--/* Tw Space */-->
-              <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'" class="flex flex-wrap w-fit space-x-1" onclick="event.stopPropagation();"><span
-                th:id="'name_' + ${tw.id}" th:text="${tw.user.name}" class="font-black whitespace-nowrap"></span><span th:id="'userid_' + ${tw.id}" th:text="'@' + ${tw.user.userId}"
-                class="text-neutral-500 font-thin"></span></a>
-              <p th:id="'content_' + ${tw.id}" th:text="${tw.content}" class="max-w-[566px] mt-1 whitespace-pre-wrap"></p>
-              <div th:id="'medias_' + ${tw.id}" class="grid gap-1 h-auto mt-0.5 rounded-2xl overflow-hidden" th:if="${not #lists.isEmpty(tw.mediaList)}"
-                th:style="|grid-template-columns: repeat(${#lists.size(tw.mediaList) == 1 ? 1 : 2}, ${#lists.size(tw.mediaList) == 1 ? '100%' : '50%'});
-                grid-template-rows: repeat(${#lists.size(tw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
-                onclick="event.stopPropagation();">
-                <img th:each="media : ${tw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+              <div class="flex space-x-1 text-neutral-500 font-thin whitespace-nowrap">
+                <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'" class="flex shrink min-w-0 overflow-hidden space-x-1"
+                  onclick="event.stopPropagation();"><span th:id="'name_' + ${tw.id}" th:text="${tw.user.name}" class="font-black"></span><span th:id="'userid_' + ${tw.id}"
+                  th:text="'@' + ${tw.user.userId}"></span></a>
+                <p>·</p>
+                <p th:text="${#temporals.format(tw.createdAt, tw.dayHasPassed ? 'M月d日' : 'H時mm分')}"></p>
+              </div>
+              <p th:id="'content_' + ${tw.id}" th:text="${tw.content}" class="mt-1 whitespace-pre-wrap"></p>
+              <!--/* Media Fragment Space */-->
+              <div th:id="'medias_' + ${tw.id}" th:if="${not #lists.isEmpty(tw.mediaList)}" th:object="${tw}">
+                <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
               </div>
               <!--/* ReTw Space */-->
               <div th:id="'reTw_' + ${tw.id}" th:if="${tw.reTw} != null" class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=${tw.reTw.user.userId},data-twid=${tw.reTw.id}"
-                onclick="event.stopPropagation();moveToTwPage(this);">
-                <a th:href="@{/user/{id}/(id=${tw.reTw.user.userId})}" class="flex w-fit space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
-                    th:id="'reTw_icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.reTw.user.icon})}" class="rounded">
-                </span> <span th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="${tw.reTw.user.name}"></span> <span th:id="'reTw_userid_' + ${tw.id}" class="text-neutral-500 font-thin"
-                  th:text="'@' + ${tw.reTw.user.userId}"></span>
+                onmousedown="mousedown()" onmousemove="mousemove()" onclick="event.stopPropagation();moveToTwPage(this);">
+                <a th:href="@{/user/{id}/(id=${tw.reTw.user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6">
+                    <img th:id="'reTw_icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.reTw.user.icon})}" class="rounded">
+                </span> <span th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="${tw.reTw.user.name}"></span> <span th:id="'reTw_userid_' + ${tw.id}"
+                  class="text-neutral-500 font-thin" th:text="'@' + ${tw.reTw.user.userId}"></span>
                 </a>
+                <!--/* Media Fragment Space */-->
                 <p th:id="'reTw_content_' + ${tw.id}" class="text-sm whitespace-pre-wrap" th:text="${tw.reTw.content}"></p>
-                <div th:id="'reTw_medias_' + ${tw.id}" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" th:if="${not #lists.isEmpty(tw.reTw.mediaList)}"
-                  th:style="|grid-template-columns: repeat(${#lists.size(tw.reTw.mediaList) == 1 ? 1 : 2}, ${#lists.size(tw.reTw.mediaList) == 1 ? '100%' : '50%'});
-                  grid-template-rows: repeat(${#lists.size(tw.reTw.mediaList) < 3 ? 1 : 2}, ${#lists.size(tw.reTw.mediaList) < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
-                  onclick="event.stopPropagation();">
-                  <img th:each="media : ${tw.reTw.mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+                <div th:id="'reTw_medias_' + ${tw.id}" th:if="${not #lists.isEmpty(tw.reTw.mediaList)}" th:object="${tw.reTw}">
+                  <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
                 </div>
               </div>
-              <!--/* Button Space */-->
-              <div class="h-5 flex justify-between mt-3 px-1" onclick="event.stopPropagation();">
-                <div class="flex space-x-1 items-center">
-                  <button type="button" th:attr="data-id=${tw.id}" onclick="openReplyTw(this);" class="flex items-center">
-                    <span class="material-icons-round" style="font-size: 18px;"> reply </span>
-                  </button>
-                  <p class="pt-1" th:text="${tw.replyTwList.size()}"></p>
-                </div>
-                <div class="flex space-x-1 items-center">
-                  <button type="button" th:attr="data-id=${tw.id}" onclick="openReTw(this);" class="flex items-center">
-                    <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
-                  </button>
-                  <p class="pt-1" th:text="${tw.reTwList.size()}"></p>
-                </div>
-                <div class="flex space-x-1 items-center">
-                  <button type="button" th:attr="data-id=${tw.id}" onclick="postFavorite(this);" class="flex items-center">
-                    <span class="material-icons-outlined" th:classappend="${tw.isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="${tw.isFavorite} ? favorite : favorite_border"></span>
-                  </button>
-                  <p class="pt-1" th:text="${tw.favoriteList.size()}"></p>
-                </div>
-                <button type="button" class="flex items-center">
-                  <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>
-                </button>
-                <div>
-                  <button type="button" th:attr="data-id=${tw.id}" onclick="deleteTw(this);" class="flex items-center"
-                    th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
-                    <span class="material-icons-round" style="font-size: 18px;"> delete_outline </span>
-                  </button>
-                </div>
+              <!--/* Button Fragment Space */-->
+              <div class="mt-2" th:object="${tw}">
+                <div th:replace="fragment/part::button(*{id}, *{replyTwList.size()}, *{reTwList.size()}, *{isFavorite}, *{favoriteList.size()}, *{user.userId})"></div>
               </div>
             </div>
           </div>

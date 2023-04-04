@@ -56,7 +56,7 @@ function postFollow(node) {
 }
 
 // Fav Button
-function postFavorite(node) {
+function postFavorite(node, hasCounter) {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
         return;
@@ -67,16 +67,20 @@ function postFavorite(node) {
             const span = node.firstElementChild;
             span.textContent = 'favorite_border';
             span.className = 'material-icons-outlined';
-            const p = node.nextElementSibling;
-            p.textContent = parseInt(p.textContent) - 1;
+            if (hasCounter) {
+                const p = node.nextElementSibling;
+                p.textContent = parseInt(p.textContent) - 1;
+            }
         });
     } else {
         postCSRF(baseURL() + '/user/favorite', id, (_) => {
             const span = node.firstElementChild;
             span.textContent = 'favorite';
             span.className = 'material-icons-outlined text-rose-600';
-            const p = node.nextElementSibling;
-            p.textContent = parseInt(p.textContent) + 1;
+            if (hasCounter) {
+                const p = node.nextElementSibling;
+                p.textContent = parseInt(p.textContent) + 1;
+            }
         })
     }
 }

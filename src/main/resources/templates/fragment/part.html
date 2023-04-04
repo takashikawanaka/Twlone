@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <!--/* Reaction Button */-->
+  <div th:fragment="button(id, replytw_count, retw_count, isFavorite, favorite_count, user_id)" class="h-5 flex justify-between px-1" onclick="event.stopPropagation();">
+    <div class="flex space-x-1 items-center">
+      <button type="button" th:attr="data-id=${id}" onclick="openReplyTw(this);" class="flex items-center">
+        <span class="material-icons-round" style="font-size: 18px;"> reply </span>
+      </button>
+      <p class="pt-1" th:text="${replytw_count}"></p>
+    </div>
+    <div class="flex space-x-1 items-center">
+      <button type="button" th:attr="data-id=${id}" onclick="openReTw(this);" class="flex items-center">
+        <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
+      </button>
+      <p class="pt-1" th:text="${retw_count}"></p>
+    </div>
+    <div class="flex space-x-1 items-center">
+      <button type="button" th:attr="data-id=${id}" onclick="postFavorite(this, true);" class="flex items-center">
+        <span class="material-icons-outlined" th:classappend="${isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="${isFavorite} ? favorite : favorite_border"></span>
+      </button>
+      <p class="pt-1" th:text="${favorite_count}"></p>
+    </div>
+    <button type="button" class="flex items-center">
+      <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>
+    </button>
+    <div>
+      <button type="button" th:attr="data-id=${id}" onclick="deleteTw(this);" class="flex items-center"
+        th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == user_id }">
+        <span class="material-icons-round" style="font-size: 18px;"> delete_outline </span>
+      </button>
+    </div>
+  </div>
+  <!--/* Media Grid */-->
+  <div th:fragment="medias(id, mediaList)" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" th:with="listSize=${#lists.size(mediaList)}"
+    th:style="|grid-template-columns: repeat(${listSize == 1 ? 1 : 2}, ${listSize == 1 ? '100%' : '50%'});
+                  grid-template-rows: repeat(${listSize < 3 ? 1 : 2}, ${listSize < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
+    onclick="event.stopPropagation();">
+    <img th:each="media : ${mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+  </div>
+</body>
+</html>

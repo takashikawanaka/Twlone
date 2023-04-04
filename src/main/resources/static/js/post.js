@@ -29,8 +29,20 @@ function clearForm() {
     removeReTw();
 }
 
+let isClick = false;
+function mousedown() {
+    isClick = true;
+}
+
+function mousemove() {
+    isClick = false;
+}
+
 function moveToTwPage(node) {
-    window.location.href = `/user/${node.dataset.userid}/status/${node.dataset.twid}`;
+    if (isClick) {
+        window.location.href = `/user/${node.dataset.userid}/status/${node.dataset.twid}`;
+        isClick = false;
+    }
 }
 
 function clearWordCounter() {

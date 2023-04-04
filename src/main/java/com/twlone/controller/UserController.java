@@ -1,5 +1,7 @@
 package com.twlone.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +43,12 @@ public class UserController {
                 tw.setIsFavorite(favoriteService.getBooleanByTwAndUser(tw, userDetail.getUser()));
             }
             model.addAttribute("logged", userDetail.getUser());
+        }
+        LocalDate date = LocalDate.now();
+        for (Tw tw : user.getTwList()) {
+            if (!tw.getCreatedAt().toLocalDate().isEqual(date)) {
+                tw.setDayHasPassed(true);
+            }
         }
         model.addAttribute("user", user);
         return "user";

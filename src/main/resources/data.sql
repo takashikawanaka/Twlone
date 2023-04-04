@@ -392,49 +392,49 @@ INSERT
             '今日のランチはラーメンだった。美味しかった！'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)
         )
         ,(
             '明日の天気は晴れだって。散歩に行こうかな。'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 21 HOUR)
         )
         ,(
             '仕事が終わったら、ジムに行く予定。'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 HOUR)
         )
         ,(
             '最近、読んでいる本が面白い。おすすめだよ。'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 15 HOUR)
         )
         ,(
             '昨日の夜、星空が綺麗だった。'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 HOUR)
         )
         ,(
             'テレビで面白い番組を見つけた。毎週楽しみ！'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 9 HOUR)
         )
         ,(
             '友達とカフェでおしゃべりしてきた。楽しかった！'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 HOUR)
         )
         ,(
             '今週末は家族でピクニックに行く予定。'
             ,3
             ,0
-            ,CURRENT_TIMESTAMP
+            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR)
         )
         ,(
             '新しい趣味として、ギターを始めようかな。'
@@ -792,7 +792,7 @@ INSERT
             ,created_at
         )
         VALUES (
-        "Test Reply"
+        "@taro_yamada Test Reply"
         , 1
         , 1
         , 0
@@ -837,4 +837,41 @@ INSERT
             44
             ,'png'
             ,"test14.png"
+        );
+-- Long ReplyTw
+INSERT
+    INTO
+        Tw(
+            content
+            ,user_id
+            ,delete_flag
+            ,created_at
+        )
+        VALUES (
+        "ChatGPTは、オープンソースの自然言語処理ツールであるOpenAI GPT-2をベースにしたチャットボットです。GPT-2は、大規模なテキストコーパスから学習したニューラルネットワークであり、任意のテキストに続く文を生成することができます。ChatGPTは、GPT-2をチャットボットに適用するために、以下のような工夫をしています。"
+        , 1
+        , 0
+        ,CURRENT_TIMESTAMP
+        );
+INSERT
+    INTO
+        Tw(
+            content
+            ,user_id
+            ,reply_tw_id
+            ,delete_flag
+            ,created_at
+        )
+        VALUES (
+        "@test\n- チャットボットの対話データセットからファインチューニングすることで、対話的な文体や応答性を向上させています。\n- ユーザーの発話に対して、複数の候補文を生成し、それらをランキングすることで、最も適切な応答を選択しています。\n- 生成された文に対して、品質や安全性を評価するフィルターをかけることで、不適切な内容や誤りを排除しています。\n- ユーザーの属性や興味に応じて、パーソナリティやトピックを調整することで、個性的で魅力的な会話を実現しています。"
+        , 1
+        , 45
+        , 0
+        ,CURRENT_TIMESTAMP
+        ), (
+        "@test\nChatGPTは、自然言語処理の最先端技術を用いて、人間らしい会話を生成することができるチャットボットです。しかし、まだ完璧ではありません。ChatGPTは、学習したテキストコーパスに依存しており、その中に含まれるバイアスや偏見を反映する可能性があります。また、常識や論理性に欠ける文や、事実と異なる文を生成することもあります。そのため、ChatGPTと会話する際には、その限界や課題を理解し、適切な距離感を持って楽しむことが重要です。"
+        , 1
+        , 46
+        , 0
+        ,CURRENT_TIMESTAMP
         );
