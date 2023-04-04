@@ -1,5 +1,5 @@
 # Twlone(ポートフォリオ用)
-![](https://img.shields.io/github/commit-activity/m/takashikawanaka/Twlone)  
+![](https://img.shields.io/github/commit-activity/w/takashikawanaka/Twlone)  
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
 
@@ -14,11 +14,12 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [x] つぶやきの実装
 - [x] ユーザのフォローフォロワー機能
 - [x] いいね機能
-- [ ] ユーザ画面
+- [x] ユーザ画面
 - [x] シェア、リプライ機能
 - [x] 画像添付の実装
-- [ ] つぶやき単体画面
+- [x] つぶやき単体画面
 - [ ] ハッシュタグの実装
+- [ ] プロフィールの編集機能
 - [ ] ホームタイムラインの実装
 
 ### 追加実装予定
