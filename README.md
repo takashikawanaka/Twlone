@@ -23,10 +23,12 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [ ] ホームタイムラインの実装
 
 ### 追加実装予定
+- [ ] URLテーブルの実装・表示の実装
 - [ ] アイコン・背景画像のアップロード
 - [ ] 動画添付の実装
 - [ ] メール送信によるユーザ登録の実装
 - [ ] 一部テーブルをNoSQLへ変更
+
 
 ## DB設計
 ![ダウンロード](https://user-images.githubusercontent.com/123621760/229478168-bff6a582-5a82-42ce-a3e2-dfcfe80a6794.png)
