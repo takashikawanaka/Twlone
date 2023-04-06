@@ -19,11 +19,24 @@ public class TwService {
     }
 
     public Tw getTwById(Integer id) {
-        return twRepository.findById(id).get();
+        return twRepository.findById(id)
+                .get();
     }
 
     public List<Tw> getTwListByUser(User user) {
         return twRepository.findByUser(user);
+    }
+
+    public Integer getCountReTwByTw(Tw tw) {
+        return twRepository.countReTwByTw(tw);
+    }
+
+    public Integer getCountReplyTwByTw(Tw tw) {
+        return twRepository.countReplyTwByTw(tw);
+    }
+
+    public Integer getCountFavoriteByTw(Tw tw) {
+        return twRepository.countFavoriteByTw(tw);
     }
 
     @Transactional

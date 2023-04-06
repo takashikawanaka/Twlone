@@ -21,11 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.twlone.dto.PostTw;
+import com.twlone.dto.PostTwDTO;
 import com.twlone.entity.Media;
 import com.twlone.entity.Media.MediaType;
 import com.twlone.entity.Tw;
-import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
 import com.twlone.service.FollowService;
 import com.twlone.service.MediaService;
@@ -55,27 +54,30 @@ public class UserPostController {
 
     @PostMapping("/tw")
     @ResponseStatus(HttpStatus.OK)
-    public void postTw(@AuthenticationPrincipal UserDetail userDetail, PostTw postTw) {
+    public void postTw(@AuthenticationPrincipal UserDetail userDetail, PostTwDTO postTw) {
         if (postTw.isIllegale())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         Tw tw = new Tw(userDetail.getUser());
         if (!postTw.isBlankContent())
             tw.setContent(postTw.getContent());
-        postTw.getReTwID().ifPresent(id -> tw.setReTw(twService.getTwById(id)));
-        postTw.getReplyTwID().ifPresent(id -> tw.setReplyTw(twService.getTwById(id)));
-        postTw.getMedia().ifPresent(medias -> {
-            try {
-                if (4 < medias.size())
-                    throw new IllegalArgumentException();
-                tw.setMediaList(saveMedias(medias, tw));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        });
+        postTw.getReTwID()
+                .ifPresent(id -> tw.setReTw(twService.getTwById(id)));
+        postTw.getReplyTwID()
+                .ifPresent(id -> tw.setReplyTw(twService.getTwById(id)));
+        postTw.getMedia()
+                .ifPresent(medias -> {
+                    try {
+                        if (4 < medias.size())
+                            throw new IllegalArgumentException();
+                        tw.setMediaList(saveMedias(medias, tw));
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                });
         twService.saveTw(tw);
     }
 
@@ -83,9 +85,11 @@ public class UserPostController {
         List<Media> mediaList = new ArrayList<>();
         for (int i = 0; i < medias.size(); i++) {
             MultipartFile media = medias.get(i);
-            String extention = media.getContentType().split("/")[1];
+            String extention = media.getContentType()
+                    .split("/")[1];
             MediaType type = MediaType.valueOf(extention);
-            String fileName = tw.getUser().getId() + formatter.format(LocalDateTime.now()) + i + "." + extention;
+            String fileName = tw.getUser()
+                    .getId() + formatter.format(LocalDateTime.now()) + i + "." + extention;
             Path filePath = Paths.get("./medias", fileName);
             try (InputStream inputStream = media.getInputStream();
                     OutputStream outputStream = Files.newOutputStream(filePath)) {

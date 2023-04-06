@@ -7,19 +7,19 @@
       <button type="button" th:attr="data-id=*{id}" onclick="openReplyTw(this);" class="flex items-center">
         <span class="material-icons-round" style="font-size: 18px;"> reply </span>
       </button>
-      <p class="pt-1" th:text="*{replyTwList.size()}"></p>
+      <p class="pt-1" th:text="*{replyTwListSize}"></p>
     </div>
     <div class="flex space-x-1 items-center">
       <button type="button" th:attr="data-id=*{id}" onclick="openReTw(this);" class="flex items-center">
         <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
       </button>
-      <p class="pt-1" th:text="*{reTwList.size()}"></p>
+      <p class="pt-1" th:text="*{reTwListSize}"></p>
     </div>
     <div class="flex space-x-1 items-center">
       <button type="button" th:attr="data-id=*{id}" onclick="postFavorite(this, true);" class="flex items-center">
         <span class="material-icons-outlined" th:classappend="*{isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="*{isFavorite} ? favorite : favorite_border"></span>
       </button>
-      <p class="pt-1" th:text="*{favoriteList.size()}"></p>
+      <p class="pt-1" th:text="*{favoriteListSize}"></p>
     </div>
     <button type="button" class="flex items-center">
       <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>

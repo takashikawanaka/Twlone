@@ -8,11 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.Data;
 
 @Data
-public class PostTw {
+public class PostTwDTO {
     private String content;
     private Optional<Integer> reTwID;
     private Optional<Integer> replyTwID;
     private List<MultipartFile> media;
+    private List<String> hashTags;
 
     public Boolean isIllegale() {
         if (!isBlankContent() || reTwID.isPresent() || media != null)

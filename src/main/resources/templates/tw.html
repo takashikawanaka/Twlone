@@ -21,63 +21,63 @@
     <header th:replace="fragment/header::header"></header>
     <section id="main_content" class="h-auto min-w-[295px] w-full max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section class="px-5 pt-5 border-b-2 border-neutral-300 shadow">
-        <div id="tw_replytw" th:if="${tw.replyTw} != null">
-          <div th:insert="fragment/part::tw(${tw.replyTw}, true)"></div>
+        <div id="tw_replytw" th:if="${twDTO.replyTw} != null">
+          <div th:insert="fragment/part::tw(${twDTO.replyTw}, true)"></div>
         </div>
-        <div th:id="'tw_' + ${tw.id}">
+        <div th:id="'tw_' + ${twDTO.id}">
           <div class="flex space-x-3">
-            <a th:href="@{/user/{id}/(id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s avater '" class="flex-none w-12 h-12"><img th:id="'icon_' + ${tw.id}"
-              th:src="@{/images/{image} (image=${tw.user.icon})}" class="rounded-lg"></a>
+            <a th:href="@{/user/{id}/(id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s avater '" class="flex-none w-12 h-12"><img th:id="'icon_' + ${twDTO.id}"
+              th:src="@{/images/{image} (image=${twDTO.user.icon})}" class="rounded-lg"></a>
             <div class="w-fit">
-              <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'"><span th:id="'name_' + ${tw.id}" th:text="${tw.user.name}"
-                class="font-black whitespace-nowrap"></span></a> <br> <a th:href="@{/user/{id}/ (id=${tw.user.userId})}" th:title="${tw.user.userId} + '\'s screen name'"><span
-                th:id="'userid_' + ${tw.id}" th:text="'@' + ${tw.user.userId}" class="text-neutral-500 font-thin"></span></a>
+              <a th:href="@{/user/{id}/ (id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s screen name'"><span th:id="'name_' + ${twDTO.id}" th:text="${twDTO.user.name}"
+                class="font-black whitespace-nowrap"></span></a> <br> <a th:href="@{/user/{id}/ (id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s screen name'"><span
+                th:id="'userid_' + ${twDTO.id}" th:text="'@' + ${twDTO.user.userId}" class="text-neutral-500 font-thin"></span></a>
             </div>
           </div>
-          <p th:id="'content_' + ${tw.id}" th:text="${tw.content}" class="max-w-[566px] mt-2 whitespace-pre-wrap"></p>
+          <p th:id="'content_' + ${twDTO.id}" th:text="${twDTO.content}" class="max-w-[566px] mt-2 whitespace-pre-wrap"></p>
           <!--/* Media Fragment Space */-->
-          <div th:id="'medias_' + ${tw.id}" th:if="${not #lists.isEmpty(tw.mediaList)}" th:object="${tw}">
+          <div th:id="'medias_' + ${twDTO.id}" th:if="${not #lists.isEmpty(twDTO.mediaList)}" th:object="${twDTO}">
             <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
           </div>
           <!--/* ReTw Space */-->
-          <div th:id="'reTw_' + ${tw.id}" th:if="${tw.reTw} != null">
-            <div th:replace="fragment/part::reTw(${tw.id}, ${tw.reTw})"></div>
+          <div th:id="'reTw_' + ${twDTO.id}" th:if="${twDTO.reTw} != null">
+            <div th:replace="fragment/part::reTw(${twDTO.id}, ${twDTO.reTw})"></div>
           </div>
-          <p class="my-4 text-sm font-thin" th:text="${#temporals.format(tw.createdAt, 'yyyy年MM月dd日 HH時mm分ss秒')}"></p>
+          <p class="my-4 text-sm font-thin" th:text="${#temporals.format(twDTO.createdAt, 'yyyy年MM月dd日 HH時mm分ss秒')}"></p>
         </div>
         <!--/* Reaction Counter Space */-->
-        <div class="h-[50px] flex items-center space-x-2 border-t-2 border-dotted border-neutral-300" th:if="${tw.reTwList.size() != 0 || tw.favoriteList.size() != 0}">
-          <div class="flex items-end" th:if="${tw.reTwList.size() != 0}">
-            <p th:text="${tw.reTwList.size()}"></p>
+        <div class="h-[50px] flex items-center space-x-2 border-t-2 border-dotted border-neutral-300" th:if="${twDTO.reTwListSize != 0 || twDTO.favoriteListSize != 0}">
+          <div class="flex items-end" th:if="${twDTO.reTwListSize != 0}">
+            <p th:text="${twDTO.reTwListSize}"></p>
             <p class="text-sm font-thin text-neutral-500 mb-0.5">件のリツイート</p>
           </div>
-          <div class="flex items-end" th:if="${tw.favoriteList.size() != 0}">
-            <p th:text="${tw.favoriteList.size()}"></p>
+          <div class="flex items-end" th:if="${twDTO.favoriteListSize != 0}">
+            <p th:text="${twDTO.favoriteListSize}"></p>
             <p class="text-sm font-thin text-neutral-500 mb-0.5">件のいいね</p>
           </div>
         </div>
         <!--/* Button Space */-->
         <div class="h-auto flex justify-around py-3 px-1 border-t-2 border-dotted border-neutral-300">
-          <button type="button" th:attr="data-id=${tw.id}" onclick="openReplyTw(this);" class="flex items-center">
+          <button type="button" th:attr="data-id=${twDTO.id}" onclick="openReplyTw(this);" class="flex items-center">
             <span class="material-icons-round"> reply </span>
           </button>
-          <button type="button" th:attr="data-id=${tw.id}" onclick="openReTw(this);" class="flex items-center">
+          <button type="button" th:attr="data-id=${twDTO.id}" onclick="openReTw(this);" class="flex items-center">
             <span class="material-icons-round"> repeat </span>
           </button>
-          <button type="button" th:attr="data-id=${tw.id}" onclick="postFavorite(this, false);" class="flex items-center">
-            <span class="material-icons-outlined" th:classappend="${tw.isFavorite} ? text-rose-600 : ''" th:text="${tw.isFavorite} ? favorite : favorite_border"></span>
+          <button type="button" th:attr="data-id=${twDTO.id}" onclick="postFavorite(this, false);" class="flex items-center">
+            <span class="material-icons-outlined" th:classappend="${twDTO.isFavorite} ? text-rose-600 : ''" th:text="${twDTO.isFavorite} ? favorite : favorite_border"></span>
           </button>
           <button type="button" class="flex items-center">
             <span class="material-icons-round"> ios_share </span>
           </button>
-          <button type="button" th:attr="data-id=${tw.id}" onclick="deleteTw(this);" class="flex items-center"
-            th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
+          <button type="button" th:attr="data-id=${twDTO.id}" onclick="deleteTw(this);" class="flex items-center"
+            th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == twDTO.user.userId }">
             <span class="material-icons-round"> delete_outline </span>
           </button>
         </div>
       </section>
       <section id="reply" class="w-full px-5">
-        <div th:each="replyTw : ${tw.replyTwList}" th:id="'tw_' + ${replyTw.id}" class="min-w-[265px] border-t-2 first:border-t-0 border-dotted border-neutral-300">
+        <div th:each="replyTw : ${twDTO.replyTwList}" th:id="'tw_' + ${replyTw.id}" class="min-w-[265px] border-t-2 first:border-t-0 border-dotted border-neutral-300">
           <div class="py-3" th:insert="fragment/part::tw(${replyTw}, false)"></div>
         </div>
       </section>

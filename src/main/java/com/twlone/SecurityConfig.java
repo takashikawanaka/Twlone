@@ -12,23 +12,25 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.formLogin(login -> login
-                .loginProcessingUrl("/login")
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.formLogin(login -> login.loginProcessingUrl("/login")
                 .loginPage("/login")
                 .defaultSuccessUrl("/")
                 .failureUrl("/login?error")
                 .permitAll())
-            .logout(logout -> logout.logoutSuccessUrl("/login"))
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                    .mvcMatchers("/register", "/user/*", "/user/*/status/*", "/media/*").permitAll()
-                    .anyRequest().authenticated());
+                .logout(logout -> logout.logoutSuccessUrl("/login"))
+                .authorizeHttpRequests(auth -> auth.requestMatchers(PathRequest.toStaticResources()
+                        .atCommonLocations())
+                        .permitAll()
+                        .mvcMatchers("/register", "/user/*", "/user/*/status/*", "/media/*")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated());
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

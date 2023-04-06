@@ -76,12 +76,8 @@ public class Tw {
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Media> mediaList;
 
-    public void addMedia(Media media) {
-        mediaList.add(media);
-    }
-
-    // @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
-    // private List<RelatedTwHashTag> hashtags;
+    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    private List<RelatedTwHashTag> hashtagList;
 
     @Transient
     private Boolean isFavorite = false;

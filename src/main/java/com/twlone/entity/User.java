@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,11 +33,11 @@ public class User {
 
     @Column(unique = true, nullable = false, length = 25) // Edit length
     @Pattern(regexp = "^[a-zA-Z0-9]+$")
-    @NotEmpty
+    @NotBlank
     private String userId;
 
     @Column(nullable = false)
-    @NotEmpty
+    @NotBlank
     private String name;
 
     @Column()
