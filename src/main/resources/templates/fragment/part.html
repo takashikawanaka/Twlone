@@ -2,41 +2,82 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
   <!--/* Reaction Button */-->
-  <div th:fragment="button(id, replytw_count, retw_count, isFavorite, favorite_count, user_id)" class="h-5 flex justify-between px-1" onclick="event.stopPropagation();">
+  <div th:fragment="button(tw)" th:object="${tw}" class="h-5 flex justify-between px-1" onclick="event.stopPropagation();">
     <div class="flex space-x-1 items-center">
-      <button type="button" th:attr="data-id=${id}" onclick="openReplyTw(this);" class="flex items-center">
+      <button type="button" th:attr="data-id=*{id}" onclick="openReplyTw(this);" class="flex items-center">
         <span class="material-icons-round" style="font-size: 18px;"> reply </span>
       </button>
-      <p class="pt-1" th:text="${replytw_count}"></p>
+      <p class="pt-1" th:text="*{replyTwList.size()}"></p>
     </div>
     <div class="flex space-x-1 items-center">
-      <button type="button" th:attr="data-id=${id}" onclick="openReTw(this);" class="flex items-center">
+      <button type="button" th:attr="data-id=*{id}" onclick="openReTw(this);" class="flex items-center">
         <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
       </button>
-      <p class="pt-1" th:text="${retw_count}"></p>
+      <p class="pt-1" th:text="*{reTwList.size()}"></p>
     </div>
     <div class="flex space-x-1 items-center">
-      <button type="button" th:attr="data-id=${id}" onclick="postFavorite(this, true);" class="flex items-center">
-        <span class="material-icons-outlined" th:classappend="${isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="${isFavorite} ? favorite : favorite_border"></span>
+      <button type="button" th:attr="data-id=*{id}" onclick="postFavorite(this, true);" class="flex items-center">
+        <span class="material-icons-outlined" th:classappend="*{isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="*{isFavorite} ? favorite : favorite_border"></span>
       </button>
-      <p class="pt-1" th:text="${favorite_count}"></p>
+      <p class="pt-1" th:text="*{favoriteList.size()}"></p>
     </div>
     <button type="button" class="flex items-center">
       <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>
     </button>
-    <div>
-      <button type="button" th:attr="data-id=${id}" onclick="deleteTw(this);" class="flex items-center"
-        th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == user_id }">
+    <div class="flex items-end">
+      <button type="button" th:attr="data-id=*{id}" onclick="deleteTw(this);" class="flex items-center"
+        th:if="*{#authorization.expression('isAuthenticated()') && #authentication.principal.username == user.userId }">
         <span class="material-icons-round" style="font-size: 18px;"> delete_outline </span>
       </button>
     </div>
   </div>
+
   <!--/* Media Grid */-->
   <div th:fragment="medias(id, mediaList)" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" th:with="listSize=${#lists.size(mediaList)}"
     th:style="|grid-template-columns: repeat(${listSize == 1 ? 1 : 2}, ${listSize == 1 ? '100%' : '50%'});
                   grid-template-rows: repeat(${listSize < 3 ? 1 : 2}, ${listSize < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
     onclick="event.stopPropagation();">
     <img th:each="media : ${mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+  </div>
+
+  <!--/* Tw */-->
+  <div th:fragment="tw(tw, isReply)" th:object="${tw}" class="flex space-x-3" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()" onmousemove="mousemove()"
+    onclick="moveToTwPage(this);">
+    <div class="flex-none w-12">
+      <a th:href="@{/user/{id}/(id=*{user.userId})}" th:title="*{user.userId} + '\'s avater '" class="w-12 h-12" onclick="event.stopPropagation();"> <img th:id="'icon_' + *{id}"
+        th:src="@{/images/{image} (image=*{user.icon})}" class="rounded-lg"></a>
+      <div class="w-0.5 h-full bg-neutral-300 mx-auto" th:if="${isReply}"></div>
+    </div>
+    <div class="min-w-[205px] grow">
+      <div class="flex space-x-1 text-neutral-500 font-thin whitespace-nowrap">
+        <a th:href="@{/user/{id}/ (id=*{user.userId})}" th:title="*{user.userId} + '\'s screen name'" class="flex shrink min-w-0 overflow-hidden space-x-1" onclick="event.stopPropagation();"><span
+          th:id="'name_' + *{id}" th:text="*{user.name}" class="font-black text-black"></span><span th:id="'userid_' + *{id}" th:text="'@' + *{user.userId}"></span></a>
+        <p>·</p>
+        <p th:text="*{#temporals.format(createdAt, dayHasPassed ? 'M月d日' : 'H時mm分')}" th:title="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}"></p>
+      </div>
+      <p th:id="'content_' + *{id}" th:text="*{content}" class="mt-1 whitespace-pre-wrap"></p>
+      <div th:id="'medias_' + *{id}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
+      <div th:id="'reTw_' + *{id}" th:if="*{reTw} != null" th:insert="::reTw(*{id}, *{reTw})"></div>
+      <!--/* Button Fragment Space */-->
+      <div class="mt-2">
+        <div th:replace="::button(${tw})"></div>
+      </div>
+      <div id="space" class="mt-5" th:if="${isReply}"></div>
+    </div>
+  </div>
+
+  <!--/* ReTw */-->
+  <div th:fragment="reTw(twid, reTw)" th:object="${reTw}">
+    <div class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()" onmousemove="mousemove()"
+      onclick="event.stopPropagation();moveToTwPage(this);">
+      <a th:href="@{/user/{id}/(id=*{user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
+          th:id="'reTw_icon_' + ${twid}" th:src="@{/images/{image} (image=*{user.icon})}" class="rounded">
+      </span> <span th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
+        th:text="'@' + *{user.userId}"></span>
+      </a>
+      <p th:id="'reTw_content_' + ${twid}" class="text-sm whitespace-pre-wrap" th:text="*{content}"></p>
+      <div th:id="'reTw_medias_' + ${twid}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
+    </div>
   </div>
 </body>
 </html>

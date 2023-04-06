@@ -22,50 +22,7 @@
     <section id="main_content" class="h-auto min-w-[295px] w-full max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section class="px-5 pt-5 border-b-2 border-neutral-300 shadow">
         <div id="tw_replytw" th:if="${tw.replyTw} != null">
-          <div class="flex space-x-3" th:id="'tw_' + ${tw.replyTw.id}" th:attr="data-userid=${tw.replyTw.user.userId},data-twid=${tw.replyTw.id}" onmousedown="mousedown()" onmousemove="mousemove()"
-            onclick="moveToTwPage(this);">
-            <!--/* User Space */-->
-            <div class="flex-none w-12">
-              <a th:href="@{/user/{id}/(id=${tw.replyTw.user.userId})}" th:title="${tw.replyTw.user.userId} + '\'s avater '" class="flex-none w-12 h-12" onclick="event.stopPropagation();"> <img
-                th:id="'icon_' + ${tw.replyTw.id}" th:src="@{/images/{image} (image=${tw.replyTw.user.icon})}" class="rounded-lg"></a>
-              <div class="w-0.5 h-full bg-neutral-300 mx-auto"></div>
-            </div>
-            <div class="min-w-[205px] grow">
-              <!--/* Tw Space */-->
-              <div class="flex space-x-1 text-neutral-500 font-thin whitespace-nowrap">
-                <a th:href="@{/user/{id}/ (id=${tw.replyTw.user.userId})}" th:title="${tw.replyTw.user.userId} + '\'s screen name'" class="flex  shrink min-w-0 overflow-hidden space-x-1"
-                  onclick="event.stopPropagation();"><span th:id="'name_' + ${tw.replyTw.id}" th:text="${tw.replyTw.user.name}" class="font-black"></span><span th:id="'userid_' + ${tw.replyTw.id}"
-                  th:text="'@' + ${tw.replyTw.user.userId}"></span></a>
-                <p>·</p>
-                <p th:text="${#temporals.format(tw.createdAt, tw.dayHasPassed ? 'M月d日' : 'H時mm分')}"></p>
-              </div>
-              <p th:id="'content_' + ${tw.replyTw.id}" th:text="${tw.replyTw.content}" class="max-w-[566px] mt-1 whitespace-pre-wrap"></p>
-              <!--/* Media Fragment Space */-->
-              <div th:id="'medias_' + ${tw.replyTw.id}" th:if="${not #lists.isEmpty(tw.replyTw.mediaList)}" th:object="${tw.replyTw}">
-                <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
-              </div>
-              <!--/* ReTw Space */-->
-              <div th:id="'reTw_' + ${tw.replyTw.id}" th:if="${tw.replyTw.reTw} != null" class="w-auto border p-3 rounded-lg border-neutral-300"
-                th:attr="data-userid=${tw.replyTw.reTw.user.userId},data-twid=${tw.replyTw.reTw.id}" onmousedown="mousedown()" onmousemove="mousemove()"
-                onclick="event.stopPropagation();moveToTwPage(this);">
-                <a th:href="@{/user/{id}/(id=${tw.replyTw.reTw.user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span
-                  class="flex-none w-6"> <img th:id="'reTw_icon_' + ${tw.replyTw.id}" th:src="@{/images/{image} (image=${tw.replyTw.reTw.user.icon})}" class="rounded">
-                </span> <span th:id="'reTw_name_' + ${tw.replyTw.id}" class="font-black whitespace-nowrap" th:text="${tw.replyTw.reTw.user.name}"></span> <span th:id="'reTw_userid_' + ${tw.replyTw.id}"
-                  class="text-neutral-500 font-thin" th:text="'@' + ${tw.replyTw.reTw.user.userId}"></span>
-                </a>
-                <p th:id="'reTw_content_' + ${tw.replyTw.id}" class="text-sm whitespace-pre-wrap" th:text="${tw.replyTw.reTw.content}"></p>
-                <!--/* Media Fragment Space */-->
-                <div th:id="'reTw_medias_' + ${tw.replyTw.id}" th:if="${not #lists.isEmpty(tw.replyTw.reTw.mediaList)}" th:object="${tw.replyTw.reTw}">
-                  <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
-                </div>
-              </div>
-              <!--/* Button Fragment Space */-->
-              <div class="mt-2" th:object="${tw.replyTw}">
-                <div th:replace="fragment/part::button(*{id}, *{replyTwList.size()}, *{reTwList.size()}, *{isFavorite}, *{favoriteList.size()}, *{user.userId})"></div>
-              </div>
-              <div id="space" class="mt-5"></div>
-            </div>
-          </div>
+          <div th:insert="fragment/part::tw(${tw.replyTw}, true)"></div>
         </div>
         <div th:id="'tw_' + ${tw.id}">
           <div class="flex space-x-3">
@@ -83,18 +40,8 @@
             <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
           </div>
           <!--/* ReTw Space */-->
-          <div th:id="'reTw_' + ${tw.id}" th:if="${tw.reTw} != null" class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=${tw.reTw.user.userId},data-twid=${tw.reTw.id}"
-            onmousedown="mousedown()" onmousemove="mousemove()" onclick="event.stopPropagation();moveToTwPage(this);">
-            <a th:href="@{/user/{id}/(id=${tw.reTw.user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6">
-                <img th:id="'reTw_icon_' + ${tw.id}" th:src="@{/images/{image} (image=${tw.reTw.user.icon})}" class="rounded">
-            </span> <span th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="${tw.reTw.user.name}"></span> <span th:id="'reTw_userid_' + ${tw.id}"
-              class="text-neutral-500 font-thin" th:text="'@' + ${tw.reTw.user.userId}"></span>
-            </a>
-            <p th:id="'reTw_content_' + ${tw.id}" class="text-sm whitespace-pre-wrap" th:text="${tw.reTw.content}"></p>
-            <!--/* Media Fragment Space */-->
-            <div th:id="'reTw_medias_' + ${tw.id}" th:if="${not #lists.isEmpty(tw.reTw.mediaList)}" th:object="${tw.reTw}">
-              <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
-            </div>
+          <div th:id="'reTw_' + ${tw.id}" th:if="${tw.reTw} != null">
+            <div th:replace="fragment/part::reTw(${tw.id}, ${tw.reTw})"></div>
           </div>
           <p class="my-4 text-sm font-thin" th:text="${#temporals.format(tw.createdAt, 'yyyy年MM月dd日 HH時mm分ss秒')}"></p>
         </div>
@@ -129,33 +76,11 @@
           </button>
         </div>
       </section>
-      <div id="reply" class="w-full px-5">
-        <div th:each="replyTw : ${tw.replyTwList}" th:id="'tw_' + ${replyTw.id}" class="min-w-[265px] py-3 border-t-2 first:border-t-0 border-dotted border-neutral-300">
-          <div class="flex space-x-3" th:attr="data-userid=${replyTw.user.userId},data-twid=${replyTw.id}" onmousedown="mousedown()" onmousemove="mousemove()" onclick="moveToTwPage(this);">
-            <a th:href="@{/user/{id}/(id=${replyTw.user.userId})}" th:title="${replyTw.user.userId} + '\'s avater '" class="flex-none w-12 h-12" onclick="event.stopPropagation();"> <img
-              th:id="'icon_' + ${replyTw.id}" th:src="@{/images/{image} (image=${replyTw.user.icon})}" class="rounded-lg"></a>
-            <div class="min-w-[205px] grow">
-              <!--/* Tw Space */-->
-              <div class="flex space-x-1 text-neutral-500 font-thin whitespace-nowrap">
-                <a th:href="@{/user/{id}/ (id=${replyTw.user.userId})}" th:title="${replyTw.user.userId} + '\'s screen name'" class="flex shrink min-w-0 overflow-hidden space-x-1"
-                  onclick="event.stopPropagation();"><span th:id="'name_' + ${replyTw.id}" th:text="${replyTw.user.name}" class="font-black"></span><span th:id="'userid_' + ${replyTw.id}"
-                  th:text="'@' + ${replyTw.user.userId}"></span></a>
-                <p>·</p>
-                <p th:text="${#temporals.format(tw.createdAt, tw.dayHasPassed ? 'M月d日' : 'H時mm分')}"></p>
-              </div>
-              <p th:id="'content_' + ${replyTw.id}" th:text="${replyTw.content}" class="mt-1 whitespace-pre-wrap"></p>
-              <!--/* Media Fragment Space */-->
-              <div th:id="'medias_' + ${replyTw.id}" th:if="${not #lists.isEmpty(replyTw.mediaList)}" th:object="${replyTw}">
-                <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
-              </div>
-              <!--/* Button Fragment Space */-->
-              <div class="mt-2" th:object="${replyTw}">
-                <div th:replace="fragment/part::button(*{id}, *{replyTwList.size()}, *{reTwList.size()}, *{isFavorite}, *{favoriteList.size()}, *{user.userId})"></div>
-              </div>
-            </div>
-          </div>
+      <section id="reply" class="w-full px-5">
+        <div th:each="replyTw : ${tw.replyTwList}" th:id="'tw_' + ${replyTw.id}" class="min-w-[265px] border-t-2 first:border-t-0 border-dotted border-neutral-300">
+          <div class="py-3" th:insert="fragment/part::tw(${replyTw}, false)"></div>
         </div>
-      </div>
+      </section>
     </section>
     <span class="grow"></span>
   </div>

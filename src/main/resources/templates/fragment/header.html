@@ -6,9 +6,13 @@
       <div class="w-16">
         <img th:src="@{/images/logo.svg}">
       </div>
-      <button type="button" onclick="openTw();">
-        <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> send </span>
-      </button>
+      <div class="w-20 flex flex-col space-y-2 items-center mt-1">
+        <button type="button" class="w-12 h-12" onclick="openTw();">
+          <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> send </span>
+        </button>
+        <a href="https://github.com/takashikawanaka/Twlone" class="w-12 h-12"><span class="material-icons-outlined" style="font-size: 48px;"> code </span></a>
+      </div>
+
     </div>
     <div id="tw" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow();"
       th:if="${#authorization.expression('isAuthenticated()')}">
