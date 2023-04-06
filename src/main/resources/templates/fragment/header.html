@@ -17,7 +17,7 @@
     <div id="tw" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow();"
       th:if="${#authorization.expression('isAuthenticated()')}">
       <div class="min-w-[295px] w-11/12 max-w-[664px] h-auto bg-neutral-50 rounded-3xl px-10 py-8" onclick="event.stopPropagation();">
-        <form id="tw_form" method="post" th:action="@{/user/tw}">
+        <form id="tw_form" th:object="${postTw}" method="post" th:action="@{/user/tw}">
           <div class="flex flex-col h-auto">
             <!--/* Tw ReplyTw Space */-->
             <div id="replytw" class="hidden flex space-x-4">
@@ -50,7 +50,7 @@
               <textarea id="content" name="content" rows="5" class="w-full text-2xl resize-none bg-transparent focus:outline-none" placeholder="What's happening"></textarea>
             </div>
             <div id="preview" class="w-full max-h-24 mb-2 flex"></div>
-            <input id="retw_id" type="hidden" name="reTw"><input id="replytw_id" type="hidden" name="replyTw">
+            <input id="retw_id" type="hidden" name="reTwID"><input id="replytw_id" type="hidden" name="replyTwID">
             <!--/* Tw ReTw Space */-->
             <div id="retw" class="hidden w-auto border p-3 mb-2 rounded-lg border-neutral-300">
               <div class="flex space-x-1 mb-1 overflow-hidden">
@@ -81,8 +81,8 @@
                   <span id="value" class="text-sm"></span>
                 </div>
               </div>
-              <label for="fileInput" class="h-7 my-auto border-2 border-dotted border-neutral-600 rounded-full"> <span class="material-icons-round text-neutral-600"> add </span></label> <input
-                type="file" id="fileInput" name="fileInput" class="hidden" accept="video/*, image/*" multiple> <input type="button" onclick="postTw(this.form)" value="Submit"
+              <label for="mediaInput" class="h-7 my-auto border-2 border-dotted border-neutral-600 rounded-full"> <span class="material-icons-round text-neutral-600"> add </span></label> <input
+                type="file" id="mediaInput" name="fileInput" class="hidden" accept="video/*, image/*" multiple> <input type="button" onclick="postTw(this.form)" value="Submit"
                 class="w-28 h-10 font-bold text-neutral-900 border border-neutral-900 rounded-3xl">
             </div>
           </div>

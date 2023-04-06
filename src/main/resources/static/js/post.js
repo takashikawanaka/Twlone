@@ -79,10 +79,10 @@ function initTwForm() {
         value.textContent = 280 - area.value.length;
     });
     // Add Media Input
-    const fileInput = document.getElementById('fileInput');
+    const mediaInput = document.getElementById('mediaInput');
     const media = document.getElementById('preview');
     const parser = new DOMParser();
-    fileInput.addEventListener('change', e => {
+    mediaInput.addEventListener('change', e => {
         const { files } = e.target;
         if (4 < files.length + media.childElementCount) {
             console.log("Too many files selected. Please select 4 or fewer files");
@@ -96,7 +96,7 @@ function initTwForm() {
             const div = parser.parseFromString(`<div class="h-24 relative overflow-hidden">`, 'text/html').body.firstChild;
             const img = parser.parseFromString(`<img class="object-contain h-24">`, 'text/html').body.firstChild;
             const button = parser.parseFromString(`<button type="button" onclick="deletePreview(this.parentElement)" class="absolute top-0 right-0"> <span class="material-icons-round" style="font-size: 36px;">cancel</span></button>`, 'text/html').body.firstChild;
-            const dom = parser.parseFromString(`<input type="file" id="file${i}" name="file" style="display: none;">`, 'text/html').body.firstChild;
+            const dom = parser.parseFromString(`<input type="file" id="file${i}" name="media" style="display: none;">`, 'text/html').body.firstChild;
             dom.files = dt.files;
             div.appendChild(img);
             div.appendChild(button);
@@ -108,7 +108,7 @@ function initTwForm() {
             });
             reader.readAsDataURL(files[i]);
         }
-        fileInput.value = '';
+        mediaInput.value = '';
     }, false)
 }
 
@@ -130,6 +130,8 @@ function openReTw(node) {
     }
     const twid = node.dataset.id;
     removeReTw();
+    document.getElementById('retw_id').value = '';
+    document.getElementById('replytw_id').value = '';
 
     document.getElementById('replytw').classList.add('hidden');
     document.getElementById('retw').classList.remove('hidden');
@@ -189,7 +191,7 @@ function postTw(form) {
     }
 
     let formData = new FormData(form);
-    formData.delete('fileInput');
+    formData.delete('mediaInput');
     fetch(baseURL() + '/user/tw', {
         method: "POST",
         body: formData
@@ -217,6 +219,8 @@ function openReplyTw(node) {
     }
     const twid = node.dataset.id;
     removeReplyTw();
+    document.getElementById('retw_id').value = '';
+    document.getElementById('replytw_id').value = '';
 
     document.getElementById('retw').classList.add('hidden');
     document.getElementById('replytw').classList.remove('hidden');

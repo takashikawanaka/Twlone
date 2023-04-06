@@ -1,5 +1,6 @@
 package com.twlone.controller;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -9,22 +10,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.twlone.dto.PostTw;
 import com.twlone.entity.Media;
 import com.twlone.entity.Media.MediaType;
 import com.twlone.entity.Tw;
+import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
 import com.twlone.service.FollowService;
 import com.twlone.service.MediaService;
@@ -32,7 +33,7 @@ import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 
-@Controller
+@RestController
 @RequestMapping("user")
 public class UserPostController {
     UserService userService;
@@ -54,47 +55,31 @@ public class UserPostController {
 
     @PostMapping("/tw")
     @ResponseStatus(HttpStatus.OK)
-    public void postTw(@AuthenticationPrincipal UserDetail userDetail,
-            @RequestParam(name = "content", required = false) String content,
-            @RequestParam(name = "reTw", required = false) Optional<String> reTw,
-            @RequestParam(name = "replyTw", required = false) Optional<String> replyTw,
-            @RequestPart(name = "file", required = false) Optional<List<MultipartFile>> medias) {
-
-        Boolean isContent = false;
-        Tw tw = new Tw(userDetail.getUser());
-        if (!content.isEmpty()) {
-            tw.setContent(content);
-            isContent = true;
-        }
-        if (reTw.isPresent() && !reTw.map(String::isEmpty).orElse(false)) {
-            tw.setReTw(twService.getTwById(Integer.parseInt(reTw.get())));
-            isContent = true;
-        }
-        if (replyTw.isPresent() && !replyTw.map(String::isEmpty).orElse(false)) {
-            tw.setReplyTw(twService.getTwById(Integer.parseInt(replyTw.get())));
-        }
-        List<Media> mediaList = null;
-        if (medias.isPresent()) {
-            if (4 < medias.get().size()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-            isContent = true;
-            try {
-                mediaList = saveMedias(medias.get(), tw);
-            } catch (IllegalArgumentException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
-        }
-        if (isContent) {
-            twService.saveTw(tw);
-            if (mediaList != null)
-                mediaList.forEach(media -> mediaService.saveMedia(media));
-        } else {
+    public void postTw(@AuthenticationPrincipal UserDetail userDetail, PostTw postTw) {
+        if (postTw.isIllegale())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        Tw tw = new Tw(userDetail.getUser());
+        if (!postTw.isBlankContent())
+            tw.setContent(postTw.getContent());
+        postTw.getReTwID().ifPresent(id -> tw.setReTw(twService.getTwById(id)));
+        postTw.getReplyTwID().ifPresent(id -> tw.setReplyTw(twService.getTwById(id)));
+        postTw.getMedia().ifPresent(medias -> {
+            try {
+                if (4 < medias.size())
+                    throw new IllegalArgumentException();
+                tw.setMediaList(saveMedias(medias, tw));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        });
+        twService.saveTw(tw);
     }
 
-    public List<Media> saveMedias(List<MultipartFile> medias, Tw tw) {
+    public List<Media> saveMedias(List<MultipartFile> medias, Tw tw) throws IOException {
         List<Media> mediaList = new ArrayList<>();
         for (int i = 0; i < medias.size(); i++) {
             MultipartFile media = medias.get(i);
@@ -105,8 +90,6 @@ public class UserPostController {
             try (InputStream inputStream = media.getInputStream();
                     OutputStream outputStream = Files.newOutputStream(filePath)) {
                 inputStream.transferTo(outputStream);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
             mediaList.add(new Media(tw, type, fileName));
         }

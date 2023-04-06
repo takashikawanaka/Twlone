@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.twlone.dto.PostTw;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
@@ -43,6 +44,7 @@ public class UserController {
                 tw.setIsFavorite(favoriteService.getBooleanByTwAndUser(tw, userDetail.getUser()));
             }
             model.addAttribute("logged", userDetail.getUser());
+            model.addAttribute("postTw", new PostTw());
         }
         LocalDate date = LocalDate.now();
         for (Tw tw : user.getTwList()) {
@@ -76,6 +78,20 @@ public class UserController {
         if (userDetail != null) {
             tw.setIsFavorite(favoriteService.getBooleanByTwAndUser(tw, userDetail.getUser()));
             model.addAttribute("logged", userDetail.getUser());
+            model.addAttribute("postTw", new PostTw());
+        }
+        LocalDate date = LocalDate.now();
+        if (!tw.getCreatedAt().toLocalDate().isEqual(date)) {
+            tw.setDayHasPassed(true);
+        }
+        Tw replyTw = tw.getReplyTw();
+        if (replyTw != null && !replyTw.getCreatedAt().toLocalDate().isEqual(date)) {
+            replyTw.setDayHasPassed(true);
+        }
+        for (Tw reply : tw.getReplyTwList()) {
+            if (!reply.getCreatedAt().toLocalDate().isEqual(date)) {
+                reply.setDayHasPassed(true);
+            }
         }
         model.addAttribute("tw", tw);
         return "tw";

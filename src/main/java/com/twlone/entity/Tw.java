@@ -3,6 +3,7 @@ package com.twlone.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -72,11 +73,15 @@ public class Tw {
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
 
-    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Media> mediaList;
 
-    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
-    private List<RelatedTwHashTag> hashtags;
+    public void addMedia(Media media) {
+        mediaList.add(media);
+    }
+
+    // @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    // private List<RelatedTwHashTag> hashtags;
 
     @Transient
     private Boolean isFavorite = false;
