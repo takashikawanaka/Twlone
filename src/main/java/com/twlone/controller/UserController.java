@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.twlone.dto.MiniUserDTO;
 import com.twlone.dto.PostTwDTO;
 import com.twlone.dto.TwDTO;
+import com.twlone.dto.UserDTO;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
@@ -41,20 +43,11 @@ public class UserController {
             Model model) {
         User user = userService.getUserByUserId(id);
         if (userDetail != null) {
-            user.setIsFollow(followService.getBooleanByUserIdAndTargetUser(userDetail.getUser(), user));
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("user", user);
-            model.addAttribute("twDTOList", user.getTwList()
-                    .stream()
-                    .map(tw -> convertTwDTO(tw, userDetail.getUser()))
-                    .collect(Collectors.toList()));
+            model.addAttribute("user", this.convertFullUserDTO(userDetail.getUser(), user));
         } else {
-            model.addAttribute("user", user);
-            model.addAttribute("twDTOList", user.getTwList()
-                    .stream()
-                    .map(tw -> convertTwDTO(tw))
-                    .collect(Collectors.toList()));
+            model.addAttribute("user", this.convertFullUserDTO(user));
         }
         return "user";
     }
@@ -80,18 +73,60 @@ public class UserController {
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("twDTO", convertTwDTOReplyTw(twService.getTwById(id), userDetail.getUser()));
+            model.addAttribute("twDTO", this.convertTwDTOReplyTw(twService.getTwById(id), userDetail.getUser()));
         } else {
-            model.addAttribute("twDTO", convertTwDTOReplyTw(twService.getTwById(id)));
+            model.addAttribute("twDTO", this.convertTwDTOReplyTw(twService.getTwById(id)));
         }
         return "tw";
     }
 
+    // -- Convert MiniUserDTO --
+    public MiniUserDTO convertMiniUserDTO(User user) {
+        return MiniUserDTO.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .icon(user.getIcon())
+                .build();
+    }
+
+    // -- Convert UserDTO --
+    public UserDTO.UserDTOBuilder getFullUserDTOBuilder(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .name(user.getName())
+                .description(user.getDescription())
+                .icon(user.getIcon())
+                .back(user.getBack())
+                .followingListSize(userService.getCountFollowingByUser(user))
+                .followerListSize(userService.getCountFollowerByUser(user));
+    }
+
+    public UserDTO convertFullUserDTO(User user) {
+        return this.getFullUserDTOBuilder(user)
+                .twList(user.getTwList()
+                        .stream()
+                        .map(tw -> this.convertTwDTO(tw))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public UserDTO convertFullUserDTO(User sourceUser, User targetUser) {
+        return this.getFullUserDTOBuilder(targetUser)
+                .twList(targetUser.getTwList()
+                        .stream()
+                        .map(tw -> this.convertTwDTO(tw, sourceUser))
+                        .collect(Collectors.toList()))
+                .isFollow(followService.getBooleanByUserIdAndTargetUser(sourceUser, targetUser))
+                .build();
+    }
+
+    // -- Convert TwDTO --
     private TwDTO.TwDTOBuilder getBuilder(Tw tw) {
         return TwDTO.builder()
                 .id(tw.getId())
                 .content(tw.getContent())
-                .user(tw.getUser())
+                .user(this.convertMiniUserDTO(tw.getUser()))
                 .createdAt(tw.getCreatedAt())
                 .reTwListSize(twService.getCountReTwByTw(tw))
                 .replyTwListSize(twService.getCountReplyTwByTw(tw))
@@ -103,40 +138,43 @@ public class UserController {
     }
 
     // Recursive function
-    private TwDTO convertTwDTO(Tw tw) {
+    public TwDTO convertTwDTO(Tw tw) {
         if (tw == null)
             return null;
-        return getBuilder(tw).reTw(convertTwDTO(tw.getReTw()))
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw()))
                 .build();
     }
 
-    private TwDTO convertTwDTO(Tw tw, User user) {
+    public TwDTO convertTwDTO(Tw tw, User user) {
         if (tw == null)
             return null;
-        return getBuilder(tw).reTw(convertTwDTO(tw.getReTw(), user))
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw(), user))
                 .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
                 .build();
     }
 
     // Get TwDTO with ReplyTw
-    private TwDTO convertTwDTOReplyTw(Tw tw) {
+    public TwDTO convertTwDTOReplyTw(Tw tw) {
         List<TwDTO> twDTOList = tw.getReplyTwList()
                 .stream()
-                .map(reply -> convertTwDTO(reply))
+                .map(reply -> this.convertTwDTO(reply))
                 .collect(Collectors.toList());
-        return getBuilder(tw).reTw(convertTwDTO(tw.getReTw()))
-                .replyTw(convertTwDTO(tw.getReplyTw()))
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw()))
+                .replyTw(this.convertTwDTO(tw.getReplyTw()))
                 .replyTwList(twDTOList)
                 .build();
     }
 
-    private TwDTO convertTwDTOReplyTw(Tw tw, User user) {
+    public TwDTO convertTwDTOReplyTw(Tw tw, User user) {
         List<TwDTO> twDTOList = tw.getReplyTwList()
                 .stream()
-                .map(reply -> convertTwDTO(reply, user))
+                .map(reply -> this.convertTwDTO(reply, user))
                 .collect(Collectors.toList());
-        return getBuilder(tw).reTw(convertTwDTO(tw.getReTw(), user))
-                .replyTw(convertTwDTO(tw.getReplyTw(), user))
+        return getBuilder(tw).reTw(this.convertTwDTO(tw.getReTw(), user))
+                .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
                 .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
                 .replyTwList(twDTOList)
                 .build();

@@ -16,8 +16,8 @@ public class FollowService {
         this.followRepository = repository;
     }
 
-    public Boolean getBooleanByUserIdAndTargetUser(User user, User targetUser) {
-        return followRepository.existsByUserAndTargetUser(user, targetUser);
+    public Boolean getBooleanByUserIdAndTargetUser(User sourceUser, User targetUser) {
+        return followRepository.existsBySourceUserAndTargetUser(sourceUser, targetUser);
     }
 
     @Transactional
@@ -25,13 +25,13 @@ public class FollowService {
         followRepository.save(follow);
     }
 
-    public void saveFollow(User user, User targetUser) {
-        saveFollow(new Follow(user, targetUser));
+    public void saveFollow(User sourceUser, User targetUser) {
+        saveFollow(new Follow(sourceUser, targetUser));
     }
 
     @Transactional
-    public void deleteByUserAndTargetUser(User user, User targetUser) {
-        followRepository.deleteByUserAndTargetUser(user, targetUser);
+    public void deleteByUserAndTargetUser(User sourceUser, User targetUser) {
+        followRepository.deleteBySourceUserAndTargetUser(sourceUser, targetUser);
     }
 
 }

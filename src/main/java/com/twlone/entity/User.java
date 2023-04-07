@@ -62,7 +62,7 @@ public class User {
     private List<Tw> twList;
 
     @OrderBy(value = "id desc")
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sourceUser", fetch = FetchType.LAZY)
     private List<Follow> followingList;
 
     @OrderBy(value = "id desc")
@@ -72,7 +72,4 @@ public class User {
     @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
-
-    @Transient
-    private Boolean isFollow = false;
 }

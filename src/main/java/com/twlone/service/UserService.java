@@ -23,11 +23,21 @@ public class UserService {
     }
 
     public User getUserById(Integer id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id)
+                .get();
     }
 
     public User getUserByUserId(String id) {
-        return userRepository.findByUserId(id).get();
+        return userRepository.findByUserId(id)
+                .get();
+    }
+
+    public Integer getCountFollowingByUser(User user) {
+        return userRepository.countFollowingByUser(user);
+    }
+
+    public Integer getCountFollowerByUser(User user) {
+        return userRepository.countFollowerByUser(user);
     }
 
     @Transactional

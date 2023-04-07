@@ -21,7 +21,7 @@ public class Follow {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+    private User sourceUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_user_id", nullable = false, updatable = false)
@@ -30,8 +30,8 @@ public class Follow {
     protected Follow() {
     }
 
-    public Follow(User user, User targetUser) {
-        this.user = user;
+    public Follow(User sourceUser, User targetUser) {
+        this.sourceUser = sourceUser;
         this.targetUser = targetUser;
     }
 }

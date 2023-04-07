@@ -40,18 +40,18 @@
           <p th:text="*{description}" class="mt-2"></p>
           <div class="flex space-x-2 mt-2">
             <div class="flex items-end">
-              <p id="following" th:text="*{followingList.size()}"></p>
+              <p id="following" th:text="*{followingListSize}"></p>
               <p class="text-sm font-thin text-neutral-500">Following</p>
             </div>
             <div class="flex items-end">
-              <p id="follower" th:text="*{followerList.size()}"></p>
+              <p id="follower" th:text="*{followerListSize}"></p>
               <p class="text-sm font-thin text-neutral-500">Follower</p>
             </div>
           </div>
         </div>
       </section>
       <section id="twlist" class="w-full px-5">
-        <section th:each="tw : ${twDTOList}" th:id="'tw_' + ${tw.id}" class="min-w-[265px] pt-2 border-t-2 first:border-t-0 border-dotted border-neutral-300">
+        <section th:each="tw : *{twList}" th:id="'tw_' + ${tw.id}" class="min-w-[265px] pt-2 border-t-2 first:border-t-0 border-dotted border-neutral-300">
           <div th:if="${tw.reTw != null && #strings.isEmpty(tw.content) && #lists.isEmpty(tw.mediaList)}" class="flex space-x-2 ml-8">
             <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
             <p class="text-sm" th:text="${tw.user.name} + ' ReTwed'"></p>
