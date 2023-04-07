@@ -72,7 +72,7 @@
       onclick="event.stopPropagation();moveToTwPage(this);">
       <a th:href="@{/user/{id}/(id=*{user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
           th:id="'reTw_icon_' + ${twid}" th:src="@{/images/{image} (image=*{user.icon})}" class="rounded">
-      </span> <span th:id="'reTw_name_' + ${tw.id}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
+      </span> <span th:id="'reTw_name_' + ${twid}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
         th:text="'@' + *{user.userId}"></span>
       </a>
       <p th:id="'reTw_content_' + ${twid}" class="text-sm whitespace-pre-wrap" th:text="*{content}"></p>

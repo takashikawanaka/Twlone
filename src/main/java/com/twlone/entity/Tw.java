@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
@@ -78,10 +77,4 @@ public class Tw {
 
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
     private List<RelatedTwHashTag> hashtagList;
-
-    @Transient
-    private Boolean isFavorite = false;
-
-    @Transient
-    private Boolean dayHasPassed = false;
 }

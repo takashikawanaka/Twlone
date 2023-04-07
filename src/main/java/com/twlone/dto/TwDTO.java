@@ -27,8 +27,8 @@ public class TwDTO {
     private final List<Media> mediaList;
     // private List<RelatedTwHashTag> hashTagList;
     @Builder.Default
-    private Boolean isFavorite = false;
+    private final Boolean isFavorite = false;
     @Builder.Default
-    private Boolean dayHasPassed = false;
+    private final Boolean dayHasPassed = false;
 
 }
