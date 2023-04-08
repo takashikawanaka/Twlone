@@ -9,11 +9,7 @@
 <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round|Material+Icons+Sharp|Material+Icons+Two+Tone" rel="stylesheet" />
 <script th:src="@{/js/post.js}"></script>
 <script th:src="@{/js/button.js}"></script>
-<script th:inline="javascript">
-    window.onload = function(){
-        location.hash = '';
-    };
-</script>
+<script th:src="@{/js/utils.js}"></script>
 </head>
 <body>
   <div id="main" class="min-h-screen h-full min-w-[375px] flex bg-neutral-200">
@@ -34,7 +30,7 @@
                 th:id="'userid_' + ${twDTO.id}" th:text="'@' + ${twDTO.user.userId}" class="text-neutral-500 font-thin"></span></a>
             </div>
           </div>
-          <p th:id="'content_' + ${twDTO.id}" th:text="${twDTO.content}" class="max-w-[566px] mt-2 whitespace-pre-wrap"></p>
+          <p th:id="'content_' + ${twDTO.id}" th:text="${twDTO.content}" class="mt-2 break-words whitespace-pre-wrap"></p>
           <!--/* Media Fragment Space */-->
           <div th:id="'medias_' + ${twDTO.id}" th:if="${not #lists.isEmpty(twDTO.mediaList)}" th:object="${twDTO}">
             <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>

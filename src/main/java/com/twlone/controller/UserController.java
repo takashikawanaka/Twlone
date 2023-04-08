@@ -173,7 +173,8 @@ public class UserController {
                 .stream()
                 .map(reply -> this.convertTwDTO(reply, user))
                 .collect(Collectors.toList());
-        return getBuilder(tw).reTw(this.convertTwDTO(tw.getReTw(), user))
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw(), user))
                 .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
                 .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
                 .replyTwList(twDTOList)

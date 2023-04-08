@@ -1,8 +1,42 @@
 let hash = '';
+let isClick = false;
+
+//Open Tw Form
+function openTw() {
+    location.hash = 'tw';
+}
+
+function checkOpenTw() {
+    if (!checkAuthenticated()) {
+        window.location.href = '/login';
+        return;
+    }
+    openTw();
+}
+
+
+function closeWindow() {
+    const scroll = window.scrollY;
+    location.hash = '';
+    window.scrollTo(0, scroll);
+}
+
+// Check Drag or Click
+function mousedown() { isClick = true; }
+
+function mousemove() { isClick = false; }
+
+function moveToTwPage(node) {
+    if (isClick) {
+        window.location.href = `/user/${node.dataset.userid}/status/${node.dataset.twid}`;
+        isClick = false;
+    }
+}
+
 // Open Close Media
 function openMedia(media) {
     hash = location.hash;
-    document.getElementById('full_media').src = media.src;
+    document.getElementById('screen_media').src = media.src;
     location.hash = 'media';
 }
 

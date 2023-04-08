@@ -7,7 +7,7 @@
         <img th:src="@{/images/logo.svg}">
       </div>
       <div class="w-20 flex flex-col space-y-2 items-center mt-1">
-        <button type="button" class="w-12 h-12" onclick="openTw();">
+        <button type="button" class="w-12 h-12" onclick="checkOpenTw();">
           <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> send </span>
         </button>
         <a href="https://github.com/takashikawanaka/Twlone" class="w-12 h-12"><span class="material-icons-outlined" style="font-size: 48px;"> code </span></a>
@@ -30,7 +30,7 @@
                   <p id="replytw_name" class="font-black whitespace-nowrap"></p>
                   <p id="replytw_userid" class="font-thin text-neutral-500"></p>
                 </div>
-                <p id="replytw_content" class="mt-1 whitespace-pre-wrap"></p>
+                <p id="replytw_content" class="mt-1 break-words whitespace-pre-wrap"></p>
                 <div id="replytw_retw" class="hidden w-auto border p-3 mt-1 rounded-lg border-neutral-300">
                   <div class="flex space-x-1 mb-1 overflow-hidden">
                     <div class="flex-none w-6">
@@ -39,7 +39,7 @@
                     <p id="replytw_retw_name" class="font-black whitespace-nowrap"></p>
                     <p id="replytw_retw_userid" class="font-thin text-neutral-500"></p>
                   </div>
-                  <p id="replytw_retw_content" class="text-sm whitespace-pre-wrap"></p>
+                  <p id="replytw_retw_content" class="text-sm break-words whitespace-pre-wrap"></p>
                 </div>
                 <div id="space" class="mt-12"></div>
               </div>
@@ -60,7 +60,8 @@
                 <p id="retw_name" class="font-black whitespace-nowrap"></p>
                 <p id="retw_userid" class="font-thin text-neutral-500"></p>
               </div>
-              <p id="retw_content" class="text-sm whitespace-pre-wrap"></p>
+              <p id="retw_content" class="text-sm break-words whitespace-pre-wrap"></p>
+              <div id="retw_medias"></div>
               <div id="retw_retw" class="hidden w-auto border p-3 mt-1 rounded-lg border-neutral-300">
                 <div class="flex space-x-1 mb-1 overflow-hidden">
                   <div class="flex-none w-6">
@@ -69,7 +70,8 @@
                   <p id="retw_retw_name" class="font-black whitespace-nowrap"></p>
                   <p id="retw_retw_userid" class="font-thin text-neutral-500"></p>
                 </div>
-                <p id="retw_retw_content" class="text-sm whitespace-pre-wrap"></p>
+                <p id="retw_retw_content" class="text-sm break-words whitespace-pre-wrap"></p>
+                <div id="retw_retw_medias"></div>
               </div>
             </div>
             <div class="flex flex-warp justify-end content-center text-center space-x-3 pt-2 border-t-2 border-dotted border-neutral-300">
@@ -91,7 +93,7 @@
     </div>
     <div id="media" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeMedia();">
       <div class="min-w-[295px] w-5/6 h-auto bg-neutral-50" onclick="event.stopPropagation();">
-        <img id="full_media">
+        <img id="screen_media">
       </div>
     </div>
   </header>

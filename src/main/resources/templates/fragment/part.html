@@ -55,7 +55,7 @@
         <p>·</p>
         <p th:text="*{#temporals.format(createdAt, dayHasPassed ? 'M月d日' : 'H時mm分')}" th:title="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}"></p>
       </div>
-      <p th:id="'content_' + *{id}" th:text="*{content}" class="mt-1 whitespace-pre-wrap"></p>
+      <p th:id="'content_' + *{id}" th:text="*{content}" class="mt-1 break-words whitespace-pre-wrap"></p>
       <div th:id="'medias_' + *{id}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
       <div th:id="'reTw_' + *{id}" th:if="*{reTw} != null" th:insert="::reTw(*{id}, *{reTw})"></div>
       <!--/* Button Fragment Space */-->
@@ -75,7 +75,7 @@
       </span> <span th:id="'reTw_name_' + ${twid}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
         th:text="'@' + *{user.userId}"></span>
       </a>
-      <p th:id="'reTw_content_' + ${twid}" class="text-sm whitespace-pre-wrap" th:text="*{content}"></p>
+      <p th:id="'reTw_content_' + ${twid}" class="text-sm break-words whitespace-pre-wrap" th:text="*{content}"></p>
       <div th:id="'reTw_medias_' + ${twid}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
     </div>
   </div>
