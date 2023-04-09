@@ -1,19 +1,32 @@
 let hash = '';
 let isClick = false;
 
-//Open Tw Form
-function openTw() {
-    location.hash = 'tw';
-}
-
 function checkOpenTw() {
     if (!checkAuthenticated()) {
         window.location.href = '/login';
         return;
     }
-    openTw();
+    utils.twFormUtils.openTw();
 }
 
+function openReplyTw(node) {
+    if (!checkAuthenticated()) {
+        window.location.href = '/login';
+        return;
+    }
+    utils.twFormUtils.showReplyTw(node.dataset.id);
+}
+
+function openReTw(node) {
+    if (!checkAuthenticated()) {
+        window.location.href = '/login';
+        return;
+    }
+    utils.twFormUtils.showReTw(node.dataset.id);
+}
+
+// Remove Form Preview Media
+function deleteMedia(preview) { utils.twFormUtils.deletePreview(preview); }
 
 function closeWindow() {
     const scroll = window.scrollY;
