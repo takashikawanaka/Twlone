@@ -8,6 +8,11 @@ output.cssの出力
 npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resources\static\css\output.css
 ```
 
+## HashTag規則
+
+ハッシュタグ : `#abcd`, `#ABCD`, `#2023年`, `#A` `#B` `#C`, `#あいう`, `#アイウ`, `#日本語`  
+ハッシュタグではない : `#123`,`# ABC`, `##ABC` ,`＃aa`  
+
 ## Todo
 ### 目標
 - [x] ログイン機能
@@ -28,7 +33,6 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [ ] 動画添付の実装
 - [ ] メール送信によるユーザ登録の実装
 - [ ] 一部テーブルをNoSQLへ変更
-
 
 ## DB設計
 ![ダウンロード](https://user-images.githubusercontent.com/123621760/229478168-bff6a582-5a82-42ce-a3e2-dfcfe80a6794.png)
