@@ -11,11 +11,10 @@
 <script th:src="@{/js/button.js}"></script>
 <script th:src="@{/js/utils.js}"></script>
 </head>
-<body>
-  <div id="main" class="min-h-screen h-full min-w-[375px] flex bg-neutral-200">
-    <span class="grow"></span>
+<body class="w-full h-full grid justify-items-center bg-neutral-200">
+  <div id="main" class="min-h-screen grid grid-cols-2 auto-rows-auto" style="grid-template-columns: 80px minmax(295px, 664px) 0px;">
     <header th:replace="fragment/header::header"></header>
-    <section id="main_content" class="h-auto min-w-[295px] w-full max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+    <section id="main_content" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section class="px-5 pt-5 border-b-2 border-neutral-300 shadow">
         <div id="tw_replytw" th:if="${twDTO.replyTw} != null">
           <div th:insert="fragment/part::tw(${twDTO.replyTw}, true)"></div>
@@ -78,7 +77,6 @@
         </div>
       </section>
     </section>
-    <span class="grow"></span>
   </div>
 </body>
 </html>

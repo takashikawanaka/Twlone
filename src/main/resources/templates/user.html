@@ -11,12 +11,11 @@
 <script th:src="@{/js/button.js}"></script>
 <script th:src="@{/js/utils.js}"></script>
 </head>
-<body>
+<body class="w-full h-full grid justify-items-center bg-neutral-200">
   <!--/*  min 375 max 744 */-->
-  <article id="main" class="min-h-screen h-full min-w-[375px] w-full flex bg-neutral-200">
-    <span class="grow"></span>
+  <article id="main" class="min-h-screen grid grid-cols-2 auto-rows-auto" style="grid-template-columns: 80px minmax(295px, 664px) 0px;">
     <header th:replace="fragment/header::header"></header>
-    <article id="main_content" th:object="${user}" class="h-auto min-w-[295px] w-full max-w-[664px] mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+    <article id="main_content" th:object="${user}" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section id="profile" class="w-full border-b-2 border-neutral-300 shadow">
         <div class="w-full overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
           <img th:src="@{/images/sample/2.jpg}" class="object-cover">
@@ -57,7 +56,6 @@
       </section>
     </article>
     <footer></footer>
-    <span class="grow"></span>
   </article>
   <div id="login" class="h-full w-full absolute hidden justify-center">
     <div class="w-96 h-auto"></div>

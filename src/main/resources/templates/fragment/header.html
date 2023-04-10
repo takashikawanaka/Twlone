@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <header th:fragment="header" class="min-w-[80px] w-20">
-    <div class="w-20 flex flex-col items-center fixed top-24">
+  <header th:fragment="header">
+    <div class="w-20 flex flex-col items-center sticky top-24">
       <div class="w-16">
         <img th:src="@{/images/logo.svg}">
       </div>
@@ -12,7 +12,6 @@
         </button>
         <a href="https://github.com/takashikawanaka/Twlone" class="w-12 h-12"><span class="material-icons-outlined" style="font-size: 48px;"> code </span></a>
       </div>
-
     </div>
     <div id="tw" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow();"
       th:if="${#authorization.expression('isAuthenticated()')}">
