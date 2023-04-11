@@ -41,23 +41,21 @@ import com.twlone.service.UserService;
 @RestController
 @RequestMapping("user")
 public class UserPostController {
-    UserService userService;
-    TwService twService;
-    FollowService followService;
-    FavoriteService favoriteService;
-    MediaService mediaService;
-    HashTagService hashtagService;
+    private final UserService userService;
+    private final TwService twService;
+    private final FollowService followService;
+    private final FavoriteService favoriteService;
+    private final HashTagService hashtagService;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     public UserPostController(UserService service, TwService service2, FollowService service3, FavoriteService service4,
-            MediaService service5, HashTagService service6) {
+            HashTagService service5) {
         this.userService = service;
         this.twService = service2;
         this.followService = service3;
         this.favoriteService = service4;
-        this.mediaService = service5;
-        this.hashtagService = service6;
+        this.hashtagService = service5;
     }
 
     @PostMapping("/tw")
@@ -98,10 +96,8 @@ public class UserPostController {
         Optional<List<MultipartFile>> medias = postTw.getMedia();
         if (medias.isPresent()) {
             try {
-                if (4 < medias.get()
-                        .size()) {
+                if (4 < (medias.get()).size())
                     throw new IllegalArgumentException();
-                }
                 tw.setMediaList(saveMedias(medias.get(), tw));
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
@@ -135,7 +131,7 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (tw.isPresent()) {
+        if (!tw.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         (tw.get()).setDeleteFlag(1);
@@ -166,7 +162,7 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void postFavorite(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (tw.isPresent()) {
+        if (!tw.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         favoriteService.saveFavorite(tw.get(), userDetail.getUser());
@@ -176,7 +172,7 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteFavorite(@AuthenticationPrincipal UserDetail user, @RequestParam String id) {
         Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (tw.isPresent()) {
+        if (!tw.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         favoriteService.deleteByTwAndUser(tw.get(), user.getUser());

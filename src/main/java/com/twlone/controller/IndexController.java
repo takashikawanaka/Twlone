@@ -1,5 +1,6 @@
 package com.twlone.controller;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,9 +31,9 @@ import com.twlone.service.UserService;
 
 @Controller
 public class IndexController {
-    AuthorizationService authorizationService;
-    UserService userService;
-    MediaService mediaService;
+    private final AuthorizationService authorizationService;
+    private final UserService userService;
+    private final MediaService mediaService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -85,8 +86,9 @@ public class IndexController {
                     .getType()
                     .getContentType());
             inputStream.transferTo(response.getOutputStream());
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

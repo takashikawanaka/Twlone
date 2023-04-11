@@ -27,10 +27,10 @@ import com.twlone.service.UserService;
 @Controller
 @RequestMapping("user")
 public class UserController {
-    UserService userService;
-    TwService twService;
-    FollowService followService;
-    FavoriteService favoriteService;
+    private final UserService userService;
+    private final TwService twService;
+    private final FollowService followService;
+    private final FavoriteService favoriteService;
 
     public UserController(UserService service, TwService service2, FollowService service3, FavoriteService service4) {
         this.userService = service;

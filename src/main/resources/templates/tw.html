@@ -17,7 +17,7 @@
     <section id="main_content" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section class="px-5 pt-5 border-b-2 border-neutral-300 shadow">
         <div id="tw_replytw" th:if="${twDTO.replyTw} != null">
-          <div th:insert="fragment/part::tw(${twDTO.replyTw}, true)"></div>
+          <div th:replace="fragment/part::tw(${twDTO.replyTw}, true)"></div>
         </div>
         <div th:id="'tw_' + ${twDTO.id}">
           <div class="flex space-x-3">
@@ -25,11 +25,10 @@
               th:src="@{/images/{image} (image=${twDTO.user.icon})}" class="rounded-lg"></a>
             <div class="w-fit">
               <a th:href="@{/user/{id}/ (id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s screen name'"><span th:id="'name_' + ${twDTO.id}" th:text="${twDTO.user.name}"
-                class="font-black whitespace-nowrap"></span></a> <br> <a th:href="@{/user/{id}/ (id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s screen name'"><span
-                th:id="'userid_' + ${twDTO.id}" th:text="'@' + ${twDTO.user.userId}" class="text-neutral-500 font-thin"></span></a>
+                class="font-black whitespace-nowrap"></span><br> <span th:id="'userid_' + ${twDTO.id}" th:text="'@' + ${twDTO.user.userId}" class="text-neutral-500 font-thin"></span></a>
             </div>
           </div>
-          <p th:id="'content_' + ${twDTO.id}" class="mt-2 break-words whitespace-pre-wrap" th:insert="fragment/part::content(${twDTO.content})"></p>
+          <p th:id="'content_' + ${twDTO.id}" class="mt-2 break-words whitespace-pre-wrap"><span th:replace="fragment/part::content(${twDTO.content})"></span></p>
           <!--/* Media Fragment Space */-->
           <div th:id="'medias_' + ${twDTO.id}" th:if="${not #lists.isEmpty(twDTO.mediaList)}" th:object="${twDTO}">
             <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
@@ -42,14 +41,8 @@
         </div>
         <!--/* Reaction Counter Space */-->
         <div class="h-[50px] flex items-center space-x-2 border-t-2 border-dotted border-neutral-300" th:if="${twDTO.reTwListSize != 0 || twDTO.favoriteListSize != 0}">
-          <div class="flex items-end" th:if="${twDTO.reTwListSize != 0}">
-            <p th:text="${twDTO.reTwListSize}"></p>
-            <p class="text-sm font-thin text-neutral-500 mb-0.5">件のリツイート</p>
-          </div>
-          <div class="flex items-end" th:if="${twDTO.favoriteListSize != 0}">
-            <p th:text="${twDTO.favoriteListSize}"></p>
-            <p class="text-sm font-thin text-neutral-500 mb-0.5">件のいいね</p>
-          </div>
+          <p th:if="${twDTO.reTwListSize != 0}"><span th:text="${twDTO.reTwListSize}"></span><span class="text-sm font-thin text-neutral-500 mb-0.5">件のリツイート</span></p>
+          <p th:if="${twDTO.favoriteListSize != 0}"><span th:text="${twDTO.favoriteListSize}"></span><span class="text-sm font-thin text-neutral-500 mb-0.5">件のいいね</span></p>
         </div>
         <!--/* Button Space */-->
         <div class="h-auto flex justify-around py-3 px-1 border-t-2 border-dotted border-neutral-300">

@@ -94,5 +94,4 @@ public class TwService {
                         .toLocalDate()
                         .isEqual(LocalDate.now()));
     }
-
 }
