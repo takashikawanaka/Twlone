@@ -36,7 +36,7 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [ ] 一部テーブルをNoSQLへ変更
 
 ## DB設計
-![ダウンロード](https://user-images.githubusercontent.com/123621760/229478168-bff6a582-5a82-42ce-a3e2-dfcfe80a6794.png)
+![ダウンロード](https://user-images.githubusercontent.com/123621760/231131617-c931c77e-5769-463c-9d2e-e730ea904046.png)
 
 ## 使用技術
 ### 開発環境・サービス
@@ -76,4 +76,7 @@ GitHub Actions
 ## 動作動画
 ### ユーザ登録からのログイン
 https://user-images.githubusercontent.com/123621760/229481304-1efc3a74-accb-4022-a9c9-57e312a9edb1.mp4
+
+
+
 
