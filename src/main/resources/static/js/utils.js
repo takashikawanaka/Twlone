@@ -22,7 +22,6 @@ class WordCounter {
             else if (percent < 1) return 'rgb(245, 158, 11)' //bg-amber-500
             else return 'rgb(244, 63, 94)' //bg-rose-500
         };
-
         this.clearCounter();
         this.area.addEventListener('input', () => this.refreshCounter());
     }
@@ -35,9 +34,7 @@ class WordCounter {
 
     refreshCounter() { this.setCounter((this.area.scrollHeight < 160 ? 160 : this.area.scrollHeight), this.area.value.length / 280, this.area.value.length); }
 
-    clearCounter() {
-        this.setCounter(160, 0, 0);
-    }
+    clearCounter() { this.setCounter(160, 0, 0); }
 }
 
 class MediaPreview {
@@ -47,7 +44,7 @@ class MediaPreview {
         this.mediaInput.addEventListener('change', e => {
             const { files } = e.target;
             if (4 < files.length + this.preview.childElementCount) {
-                console.log("Too many files selected. Please select 4 or fewer files");
+                console.error('Error: Too many files selected. Please select 4 or fewer files');
                 return;
             }
             for (let i = 0; i < files.length; i++) {
@@ -73,14 +70,9 @@ class MediaPreview {
         }, false)
     }
 
-    clearPreview() {
-        while (this.preview.firstChild)
-            this.preview.removeChild(this.preview.firstChild);
-    }
+    clearPreview() { while (this.preview.firstChild) this.preview.removeChild(this.preview.firstChild); }
 
-    deleteMedia(preview) {
-        preview.remove();
-    }
+    deleteMedia(preview) { preview.remove(); }
 }
 
 class TwFormUtils {
@@ -97,7 +89,7 @@ class TwFormUtils {
 
     removePreview() { this.mediaPreview.clearPreview(); }
 
-    deletePreview(preview) { preview.remove(); }
+    deletePreview(preview) { this.mediaPreview.deletePreview(preview); }
 
     refreshForm() {
         this.form.reset();
@@ -106,22 +98,14 @@ class TwFormUtils {
     }
 
     showReTw(id) {
-        this.refreshForm();
-        if (this.isReplyTw) {
-            this.replyTwUtil.removeReplyTw();
-            this.isReplyTw = false;
-        }
+        this.cleanUp();
         this.reTwUtil.showReTw(id);
         this.isReTw = true;
         this.openTw();
     }
 
     showReplyTw(id) {
-        this.refreshForm();
-        if (this.isReTw) {
-            this.reTwUtil.removeReTw();
-            this.isReTw = false;
-        }
+        this.cleanUp();
         this.replyTwUtil.showReplyTw(id);
         this.wordCounter.refreshCounter();
         this.isReplyTw = true;
@@ -131,12 +115,12 @@ class TwFormUtils {
     cleanUp() {
         this.refreshForm();
         if (this.isReTw) {
-            this.isReTw = false;
             this.reTwUtil.removeReTw();
+            this.isReTw = false;
         }
         if (this.isReplyTw) {
-            this.isReplyTw = false;
             this.replyTwUtil.removeReplyTw();
+            this.isReplyTw = false;
         }
     }
 }
