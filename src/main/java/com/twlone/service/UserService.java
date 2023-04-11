@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.twlone.dto.MiniUserDTO;
+import com.twlone.dto.UserDTO;
 import com.twlone.entity.User;
 import com.twlone.repository.UserRepository;
 
@@ -31,16 +33,28 @@ public class UserService {
         return userRepository.findByUserId(id);
     }
 
-    public Integer getCountFollowingByUser(User user) {
-        return userRepository.countFollowingByUser(user);
-    }
-
-    public Integer getCountFollowerByUser(User user) {
-        return userRepository.countFollowerByUser(user);
-    }
-
     @Transactional
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public MiniUserDTO convertMiniUserDTO(User user) {
+        return MiniUserDTO.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .icon(user.getIcon())
+                .build();
+    }
+
+    public UserDTO.UserDTOBuilder getFullUserDTOBuilder(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .name(user.getName())
+                .description(user.getDescription())
+                .icon(user.getIcon())
+                .back(user.getBack())
+                .followingListSize(userRepository.countFollowingByUser(user))
+                .followerListSize(userRepository.countFollowerByUser(user));
     }
 }

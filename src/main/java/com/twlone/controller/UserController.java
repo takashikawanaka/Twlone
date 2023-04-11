@@ -1,12 +1,7 @@
 package com.twlone.controller;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -18,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.twlone.dto.MiniUserDTO;
 import com.twlone.dto.PostTwDTO;
 import com.twlone.dto.TwDTO;
 import com.twlone.dto.UserDTO;
@@ -38,17 +32,11 @@ public class UserController {
     FollowService followService;
     FavoriteService favoriteService;
 
-    String symbol;
-    Pattern pattern;
-
     public UserController(UserService service, TwService service2, FollowService service3, FavoriteService service4) {
         this.userService = service;
         this.twService = service2;
         this.followService = service3;
         this.favoriteService = service4;
-
-        this.symbol = "!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~";
-        this.pattern = Pattern.compile("(?<!#)#(([^\\s" + symbol + "]*[^\\s\\d" + symbol + "][^\\s" + symbol + "]*)+)");
     }
 
     @GetMapping("/{userId}")
@@ -100,30 +88,9 @@ public class UserController {
         return "tw";
     }
 
-    // -- Convert MiniUserDTO --
-    public MiniUserDTO convertMiniUserDTO(User user) {
-        return MiniUserDTO.builder()
-                .userId(user.getUserId())
-                .name(user.getName())
-                .icon(user.getIcon())
-                .build();
-    }
-
-    // -- Convert UserDTO --
-    public UserDTO.UserDTOBuilder getFullUserDTOBuilder(User user) {
-        return UserDTO.builder()
-                .id(user.getId())
-                .userId(user.getUserId())
-                .name(user.getName())
-                .description(user.getDescription())
-                .icon(user.getIcon())
-                .back(user.getBack())
-                .followingListSize(userService.getCountFollowingByUser(user))
-                .followerListSize(userService.getCountFollowerByUser(user));
-    }
-
+    // Get UserDTO
     public UserDTO convertFullUserDTO(User user) {
-        return this.getFullUserDTOBuilder(user)
+        return userService.getFullUserDTOBuilder(user)
                 .twList(user.getTwList()
                         .stream()
                         .map(tw -> this.convertTwDTO(tw))
@@ -132,7 +99,7 @@ public class UserController {
     }
 
     public UserDTO convertFullUserDTO(User sourceUser, User targetUser) {
-        return this.getFullUserDTOBuilder(targetUser)
+        return userService.getFullUserDTOBuilder(targetUser)
                 .twList(targetUser.getTwList()
                         .stream()
                         .map(tw -> this.convertTwDTO(tw, sourceUser))
@@ -141,44 +108,11 @@ public class UserController {
                 .build();
     }
 
-    private List<List<String>> splitContent(Integer count, String content) {
-        if (0 == count)
-            return content.isEmpty() ? List.of(List.of()) : List.of(List.of("none", content));
-        List<List<String>> splitList = new ArrayList<>();
-        Matcher matcher = this.pattern.matcher(content);
-        int i = 0;
-        while (matcher.find()) {
-            if (i != matcher.start())
-                splitList.add(List.of("none", content.substring(i, matcher.start())));
-            splitList.add(List.of("hashtag", matcher.group()));
-            i = matcher.end();
-        }
-        if (i != content.length())
-            splitList.add(List.of("none", content.substring(i, content.length())));
-        return splitList;
-    }
-
-    // -- Convert TwDTO --
-    private TwDTO.TwDTOBuilder getBuilder(Tw tw) {
-        return TwDTO.builder()
-                .id(tw.getId())
-                .content(splitContent(twService.getCountRelatedTwHashTagByTw(tw), tw.getContent()))
-                .user(this.convertMiniUserDTO(tw.getUser()))
-                .createdAt(tw.getCreatedAt())
-                .reTwListSize(twService.getCountReTwByTw(tw))
-                .replyTwListSize(twService.getCountReplyTwByTw(tw))
-                .favoriteListSize(twService.getCountFavoriteByTw(tw))
-                .mediaList(tw.getMediaList())
-                .dayHasPassed(!tw.getCreatedAt()
-                        .toLocalDate()
-                        .isEqual(LocalDate.now()));
-    }
-
-    // Recursive function
+    // Get TwDTO
     public TwDTO convertTwDTO(Tw tw) {
         if (tw == null)
             return null;
-        return this.getBuilder(tw)
+        return twService.getBuilder(tw)
                 .reTw(this.convertTwDTO(tw.getReTw()))
                 .build();
     }
@@ -186,7 +120,7 @@ public class UserController {
     public TwDTO convertTwDTO(Tw tw, User user) {
         if (tw == null)
             return null;
-        return this.getBuilder(tw)
+        return twService.getBuilder(tw)
                 .reTw(this.convertTwDTO(tw.getReTw(), user))
                 .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
                 .build();
@@ -198,7 +132,7 @@ public class UserController {
                 .stream()
                 .map(reply -> this.convertTwDTO(reply))
                 .collect(Collectors.toList());
-        return this.getBuilder(tw)
+        return twService.getBuilder(tw)
                 .reTw(this.convertTwDTO(tw.getReTw()))
                 .replyTw(this.convertTwDTO(tw.getReplyTw()))
                 .replyTwList(twDTOList)
@@ -210,7 +144,7 @@ public class UserController {
                 .stream()
                 .map(reply -> this.convertTwDTO(reply, user))
                 .collect(Collectors.toList());
-        return this.getBuilder(tw)
+        return twService.getBuilder(tw)
                 .reTw(this.convertTwDTO(tw.getReTw(), user))
                 .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
                 .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
