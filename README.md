@@ -23,7 +23,8 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [x] シェア、リプライ機能
 - [x] 画像添付の実装
 - [x] つぶやき単体画面
-- [ ] ハッシュタグの実装
+- [x] ハッシュタグの実装
+- [ ] 検索の実装 
 - [ ] プロフィールの編集機能
 - [ ] ホームタイムラインの実装
 
