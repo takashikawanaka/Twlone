@@ -1,6 +1,7 @@
 package com.twlone.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -22,14 +23,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(Integer id) {
-        return userRepository.findById(id)
-                .get();
+    public Optional<User> getUserById(Integer id) {
+        return userRepository.findById(id);
     }
 
-    public User getUserByUserId(String id) {
-        return userRepository.findByUserId(id)
-                .get();
+    public Optional<User> getUserByUserId(String id) {
+        return userRepository.findByUserId(id);
     }
 
     public Integer getCountFollowingByUser(User user) {

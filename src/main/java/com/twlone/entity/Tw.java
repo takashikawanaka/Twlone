@@ -32,7 +32,7 @@ public class Tw {
 
     @Column(length = 280)
     @Type(type = "text")
-    private String content;
+    private String content = "";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
@@ -75,6 +75,6 @@ public class Tw {
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Media> mediaList;
 
-    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<RelatedTwHashTag> hashtagList;
 }

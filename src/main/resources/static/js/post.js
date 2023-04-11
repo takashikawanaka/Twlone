@@ -20,11 +20,12 @@ function removePreview() { utils.twFormUtils.clearPreview(); }
 
 function postTw(form) {
     if (280 < document.getElementById('content').value.length) {
-        console.log("ERROR");
-        return
+        console.error('Error: The textarea exceeds the 280 character limit.');
+        return;
     }
-
-    let formData = new FormData(form);
+    const formData = new FormData(form);
+    const regexp = /(?<!#)#(([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*[^\s\d!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~][^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*)+)/g
+    formData.append('hashTag', [...formData.get('content').matchAll(regexp)].map((item) => item[1]));
     formData.delete('mediaInput');
     fetch(baseURL() + '/user/tw', {
         method: "POST",
@@ -34,6 +35,6 @@ function postTw(form) {
             closeWindow();
             utils.twFormUtils.cleanUp();
         }
-        else { console.log("ERROR"); }
+        else { console.error('Error: The post has failed.'); }
     });
 }

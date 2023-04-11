@@ -19,4 +19,7 @@ public interface TwRepository extends JpaRepository<Tw, Integer> {
 
     @Query("SELECT SIZE(t.favoriteList) FROM Tw t WHERE t = ?1")
     Integer countFavoriteByTw(Tw tw);
+
+    @Query("SELECT SIZE(t.hashtagList) FROM Tw t WHERE t = ?1")
+    Integer countRelatedTwHashTagByTw(Tw tw);
 }

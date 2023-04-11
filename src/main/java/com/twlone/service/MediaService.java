@@ -1,5 +1,7 @@
 package com.twlone.service;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -15,8 +17,8 @@ public class MediaService {
         this.mediaRepository = repository;
     }
 
-    public Media getMediaByPath(String path) {
-        return mediaRepository.findByPath(path).get();
+    public Optional<Media> getMediaByPath(String path) {
+        return mediaRepository.findByPath(path);
     }
 
     @Transactional

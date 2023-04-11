@@ -4,10 +4,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.entity.Authorization;
 import com.twlone.entity.Media;
@@ -73,13 +76,17 @@ public class IndexController {
 
     @GetMapping("/media/{filename}")
     public void takeFile(@PathVariable String filename, HttpServletResponse response) {
-        Media media = mediaService.getMediaByPath(filename);
+        Optional<Media> media = mediaService.getMediaByPath(filename);
+        if (!media.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         try (InputStream inputStream = Files.newInputStream(Paths.get("./medias", filename))) {
-            response.setContentType(media.getType().getContentType());
+            response.setContentType(media.get()
+                    .getType()
+                    .getContentType());
             inputStream.transferTo(response.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

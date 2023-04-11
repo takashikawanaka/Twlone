@@ -31,7 +31,9 @@
       </button>
     </div>
   </div>
-
+  <!--/* Content */-->
+  <span th:fragment="content(content_list)" th:each="span : ${content_list}" th:if="${not #lists.isEmpty(content_list[0])}"><th:block th:if="${span[0].equals('none')}" th:text="${span[1]}"></th:block><a
+    th:href="@{/search(word=${span[1]})}" th:text="${span[1]}" class="text-blue-700 hover:underline" onclick="event.stopPropagation();" th:if="${span[0].equals('hashtag')}"></a></span>
   <!--/* Media Grid */-->
   <div th:fragment="medias(id, mediaList)" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" th:with="listSize=${#lists.size(mediaList)}"
     th:style="|grid-template-columns: repeat(${listSize == 1 ? 1 : 2}, ${listSize == 1 ? '100%' : '50%'});
@@ -39,7 +41,6 @@
     onclick="event.stopPropagation();">
     <img th:each="media : ${mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
   </div>
-
   <!--/* Tw */-->
   <div th:fragment="tw(tw, isReply)" th:object="${tw}" class="flex space-x-3" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()" onmousemove="mousemove()"
     onclick="moveToTwPage(this);">
@@ -55,7 +56,7 @@
         <p>·</p>
         <p th:text="*{#temporals.format(createdAt, dayHasPassed ? 'M月d日' : 'H時mm分')}" th:title="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}"></p>
       </div>
-      <p th:id="'content_' + *{id}" th:text="*{content}" class="mt-1 break-words whitespace-pre-wrap"></p>
+      <p th:id="'content_' + *{id}" class="mt-1 break-words whitespace-pre-wrap" th:insert="::content(*{content})"></p>
       <div th:id="'medias_' + *{id}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
       <div th:id="'reTw_' + *{id}" th:if="*{reTw} != null" th:insert="::reTw(*{id}, *{reTw})"></div>
       <!--/* Button Fragment Space */-->
@@ -65,19 +66,16 @@
       <div id="space" class="mt-5" th:if="${isReply}"></div>
     </div>
   </div>
-
   <!--/* ReTw */-->
-  <div th:fragment="reTw(twid, reTw)" th:object="${reTw}">
-    <div class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()" onmousemove="mousemove()"
-      onclick="event.stopPropagation();moveToTwPage(this);">
-      <a th:href="@{/user/{id}/(id=*{user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
-          th:id="'reTw_icon_' + ${twid}" th:src="@{/images/{image} (image=*{user.icon})}" class="rounded">
-      </span> <span th:id="'reTw_name_' + ${twid}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
-        th:text="'@' + *{user.userId}"></span>
-      </a>
-      <p th:id="'reTw_content_' + ${twid}" class="text-sm break-words whitespace-pre-wrap" th:text="*{content}"></p>
-      <div th:id="'reTw_medias_' + ${twid}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
-    </div>
+  <div th:fragment="reTw(twid, reTw)" th:object="${reTw}" class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()"
+    onmousemove="mousemove()" onclick="event.stopPropagation();moveToTwPage(this);">
+    <a th:href="@{/user/{id}/(id=*{user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
+        th:id="'reTw_icon_' + ${twid}" th:src="@{/images/{image} (image=*{user.icon})}" class="rounded">
+    </span> <span th:id="'reTw_name_' + ${twid}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
+      th:text="'@' + *{user.userId}"></span>
+    </a>
+    <p th:id="'reTw_content_' + ${twid}" class="text-sm break-words whitespace-pre-wrap" th:insert="::content(*{content})"></p>
+    <div th:id="'reTw_medias_' + ${twid}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
   </div>
 </body>
 </html>

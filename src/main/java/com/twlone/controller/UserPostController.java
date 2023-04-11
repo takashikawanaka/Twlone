@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,11 +24,15 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
+import com.twlone.entity.HashTag;
 import com.twlone.entity.Media;
 import com.twlone.entity.Media.MediaType;
+import com.twlone.entity.RelatedTwHashTag;
 import com.twlone.entity.Tw;
+import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
 import com.twlone.service.FollowService;
+import com.twlone.service.HashTagService;
 import com.twlone.service.MediaService;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
@@ -40,16 +46,18 @@ public class UserPostController {
     FollowService followService;
     FavoriteService favoriteService;
     MediaService mediaService;
+    HashTagService hashtagService;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
     public UserPostController(UserService service, TwService service2, FollowService service3, FavoriteService service4,
-            MediaService service5) {
+            MediaService service5, HashTagService service6) {
         this.userService = service;
         this.twService = service2;
         this.followService = service3;
         this.favoriteService = service4;
         this.mediaService = service5;
+        this.hashtagService = service6;
     }
 
     @PostMapping("/tw")
@@ -58,26 +66,51 @@ public class UserPostController {
         if (postTw.isIllegale())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         Tw tw = new Tw(userDetail.getUser());
-        if (!postTw.isBlankContent())
+        if (!postTw.isBlankContent()) {
+            Optional<List<String>> hashtagList = postTw.getHashTag();
+            if (hashtagList.isPresent()) {
+                List<RelatedTwHashTag> relatedTwHashTagList = new ArrayList<>();
+                for (String name : hashtagList.get()) {
+                    HashTag hashtag = hashtagService.getHashTagByName(name)
+                            .orElseGet(() -> hashtagService.saveHashTag(new HashTag(name)));
+                    relatedTwHashTagList.add(new RelatedTwHashTag(tw, hashtag));
+                }
+                tw.setHashtagList(relatedTwHashTagList);
+            }
             tw.setContent(postTw.getContent());
-        postTw.getReTwID()
-                .ifPresent(id -> tw.setReTw(twService.getTwById(id)));
-        postTw.getReplyTwID()
-                .ifPresent(id -> tw.setReplyTw(twService.getTwById(id)));
-        postTw.getMedia()
-                .ifPresent(medias -> {
-                    try {
-                        if (4 < medias.size())
-                            throw new IllegalArgumentException();
-                        tw.setMediaList(saveMedias(medias, tw));
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-                    }
-                });
+        }
+        Optional<Integer> reTwID = postTw.getReTwID();
+        if (reTwID.isPresent()) {
+            Optional<Tw> retw = twService.getTwById(reTwID.get());
+            if (!retw.isPresent()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            tw.setReTw(retw.get());
+        }
+        Optional<Integer> replyTwID = postTw.getReplyTwID();
+        if (replyTwID.isPresent()) {
+            Optional<Tw> replytw = twService.getTwById(replyTwID.get());
+            if (!replytw.isPresent()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+            tw.setReplyTw(replytw.get());
+        }
+        Optional<List<MultipartFile>> medias = postTw.getMedia();
+        if (medias.isPresent()) {
+            try {
+                if (4 < medias.get()
+                        .size()) {
+                    throw new IllegalArgumentException();
+                }
+                tw.setMediaList(saveMedias(medias.get(), tw));
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
         twService.saveTw(tw);
     }
 
@@ -85,11 +118,9 @@ public class UserPostController {
         List<Media> mediaList = new ArrayList<>();
         for (int i = 0; i < medias.size(); i++) {
             MultipartFile media = medias.get(i);
-            String extention = media.getContentType()
-                    .split("/")[1];
+            String extention = (media.getContentType()).split("/")[1];
             MediaType type = MediaType.valueOf(extention);
-            String fileName = tw.getUser()
-                    .getId() + formatter.format(LocalDateTime.now()) + i + "." + extention;
+            String fileName = (tw.getUser()).getId() + formatter.format(LocalDateTime.now()) + i + "." + extention;
             Path filePath = Paths.get("./medias", fileName);
             try (InputStream inputStream = media.getInputStream();
                     OutputStream outputStream = Files.newOutputStream(filePath)) {
@@ -103,32 +134,51 @@ public class UserPostController {
     @PostMapping("/deletetw")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
-        Tw tw = twService.getTwById(Integer.parseInt(id));
-        tw.setDeleteFlag(1);
-        twService.saveTw(tw);
+        Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
+        if (tw.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        (tw.get()).setDeleteFlag(1);
+        twService.saveTw(tw.get());
     }
 
     @PostMapping("/follow")
     @ResponseStatus(HttpStatus.OK)
     public void postFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
-        followService.saveFollow(userDetail.getUser(), userService.getUserById(Integer.parseInt(id)));
+        Optional<User> targetUser = userService.getUserById(Integer.parseInt(id));
+        if (!targetUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        followService.saveFollow(userDetail.getUser(), targetUser.get());
     }
 
     @PostMapping("/unfollow")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
-        followService.deleteByUserAndTargetUser(userDetail.getUser(), userService.getUserById(Integer.parseInt(id)));
+        Optional<User> targetUser = userService.getUserById(Integer.parseInt(id));
+        if (!targetUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        followService.deleteByUserAndTargetUser(userDetail.getUser(), targetUser.get());
     }
 
     @PostMapping("/favorite")
     @ResponseStatus(HttpStatus.OK)
     public void postFavorite(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
-        favoriteService.saveFavorite(twService.getTwById(Integer.parseInt(id)), userDetail.getUser());
+        Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
+        if (tw.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        favoriteService.saveFavorite(tw.get(), userDetail.getUser());
     }
 
     @PostMapping("/unfavorite")
     @ResponseStatus(HttpStatus.OK)
     public void deleteFavorite(@AuthenticationPrincipal UserDetail user, @RequestParam String id) {
-        favoriteService.deleteByTwAndUser(twService.getTwById(Integer.parseInt(id)), user.getUser());
+        Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
+        if (tw.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        favoriteService.deleteByTwAndUser(tw.get(), user.getUser());
     }
 }

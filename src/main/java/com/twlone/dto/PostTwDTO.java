@@ -13,7 +13,7 @@ public class PostTwDTO {
     private Optional<Integer> reTwID;
     private Optional<Integer> replyTwID;
     private List<MultipartFile> media;
-    private List<String> hashTags;
+    private List<String> hashTag;
 
     public Boolean isIllegale() {
         if (!isBlankContent() || reTwID.isPresent() || media != null)
@@ -27,5 +27,9 @@ public class PostTwDTO {
 
     public Optional<List<MultipartFile>> getMedia() {
         return Optional.ofNullable(media);
+    }
+
+    public Optional<List<String>> getHashTag() {
+        return Optional.ofNullable(hashTag);
     }
 }

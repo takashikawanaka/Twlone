@@ -1,15 +1,22 @@
 package com.twlone.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.MiniUserDTO;
 import com.twlone.dto.PostTwDTO;
@@ -31,23 +38,32 @@ public class UserController {
     FollowService followService;
     FavoriteService favoriteService;
 
+    String symbol;
+    Pattern pattern;
+
     public UserController(UserService service, TwService service2, FollowService service3, FavoriteService service4) {
         this.userService = service;
         this.twService = service2;
         this.followService = service3;
         this.favoriteService = service4;
+
+        this.symbol = "!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~";
+        this.pattern = Pattern.compile("(?<!#)#(([^\\s" + symbol + "]*[^\\s\\d" + symbol + "][^\\s" + symbol + "]*)+)");
     }
 
     @GetMapping("/{userId}")
     public String getUser(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("userId") String id,
             Model model) {
-        User user = userService.getUserByUserId(id);
+        Optional<User> user = userService.getUserByUserId(id);
+        if (!user.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("user", this.convertFullUserDTO(userDetail.getUser(), user));
+            model.addAttribute("user", this.convertFullUserDTO(userDetail.getUser(), user.get()));
         } else {
-            model.addAttribute("user", this.convertFullUserDTO(user));
+            model.addAttribute("user", this.convertFullUserDTO(user.get()));
         }
         return "user";
     }
@@ -70,12 +86,16 @@ public class UserController {
     @GetMapping("/{userId}/status/{tweetId}")
     public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("tweetId") Integer id,
             Model model) {
+        Optional<Tw> tw = twService.getTwById(id);
+        if (!tw.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("twDTO", this.convertTwDTOReplyTw(twService.getTwById(id), userDetail.getUser()));
+            model.addAttribute("twDTO", this.convertTwDTOReplyTw(tw.get(), userDetail.getUser()));
         } else {
-            model.addAttribute("twDTO", this.convertTwDTOReplyTw(twService.getTwById(id)));
+            model.addAttribute("twDTO", this.convertTwDTOReplyTw(tw.get()));
         }
         return "tw";
     }
@@ -121,11 +141,28 @@ public class UserController {
                 .build();
     }
 
+    private List<List<String>> splitContent(Integer count, String content) {
+        if (0 == count)
+            return content.isEmpty() ? List.of(List.of()) : List.of(List.of("none", content));
+        List<List<String>> splitList = new ArrayList<>();
+        Matcher matcher = this.pattern.matcher(content);
+        int i = 0;
+        while (matcher.find()) {
+            if (i != matcher.start())
+                splitList.add(List.of("none", content.substring(i, matcher.start())));
+            splitList.add(List.of("hashtag", matcher.group()));
+            i = matcher.end();
+        }
+        if (i != content.length())
+            splitList.add(List.of("none", content.substring(i, content.length())));
+        return splitList;
+    }
+
     // -- Convert TwDTO --
     private TwDTO.TwDTOBuilder getBuilder(Tw tw) {
         return TwDTO.builder()
                 .id(tw.getId())
-                .content(tw.getContent())
+                .content(splitContent(twService.getCountRelatedTwHashTagByTw(tw), tw.getContent()))
                 .user(this.convertMiniUserDTO(tw.getUser()))
                 .createdAt(tw.getCreatedAt())
                 .reTwListSize(twService.getCountReTwByTw(tw))

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.twlone.entity.Media;
+import com.twlone.entity.RelatedTwHashTag;
 import com.twlone.entity.User;
 
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.Data;
 @Builder
 public class TwDTO {
     private Integer id;
-    private String content;
+    private List<List<String>> content;
     private MiniUserDTO user;
     private TwDTO reTw;
     private TwDTO replyTw;
@@ -23,7 +24,6 @@ public class TwDTO {
     private Integer replyTwListSize;
     private Integer favoriteListSize;
     private List<Media> mediaList;
-    // private List<RelatedTwHashTag> hashTagList;
     private Boolean isFavorite;
     private Boolean dayHasPassed;
 }

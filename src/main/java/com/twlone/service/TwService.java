@@ -1,6 +1,7 @@
 package com.twlone.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -18,9 +19,8 @@ public class TwService {
         this.twRepository = repository;
     }
 
-    public Tw getTwById(Integer id) {
-        return twRepository.findById(id)
-                .get();
+    public Optional<Tw> getTwById(Integer id) {
+        return twRepository.findById(id);
     }
 
     public List<Tw> getTwListByUser(User user) {
@@ -37,6 +37,10 @@ public class TwService {
 
     public Integer getCountFavoriteByTw(Tw tw) {
         return twRepository.countFavoriteByTw(tw);
+    }
+
+    public Integer getCountRelatedTwHashTagByTw(Tw tw) {
+        return twRepository.countRelatedTwHashTagByTw(tw);
     }
 
     @Transactional

@@ -392,49 +392,73 @@ INSERT
             '今日のランチはラーメンだった。美味しかった！'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 1 DAY)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 1 DAY
+            )
         )
         ,(
             '明日の天気は晴れだって。散歩に行こうかな。'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 21 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 21 HOUR
+            )
         )
         ,(
             '仕事が終わったら、ジムに行く予定。'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 18 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 18 HOUR
+            )
         )
         ,(
             '最近、読んでいる本が面白い。おすすめだよ。'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 15 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 15 HOUR
+            )
         )
         ,(
             '昨日の夜、星空が綺麗だった。'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 12 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 12 HOUR
+            )
         )
         ,(
             'テレビで面白い番組を見つけた。毎週楽しみ！'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 9 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 9 HOUR
+            )
         )
         ,(
             '友達とカフェでおしゃべりしてきた。楽しかった！'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 6 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 6 HOUR
+            )
         )
         ,(
             '今週末は家族でピクニックに行く予定。'
             ,3
             ,0
-            ,DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 3 HOUR)
+            ,DATE_SUB(
+                CURRENT_TIMESTAMP
+                ,INTERVAL 3 HOUR
+            )
         )
         ,(
             '新しい趣味として、ギターを始めようかな。'
@@ -626,7 +650,7 @@ INSERT
         )
     VALUES
         (
-            ""
+            ''
             ,1
             ,1
             ,0
@@ -734,7 +758,7 @@ INSERT
         )
     VALUES
     (
-            ""
+            ''
             ,1
             ,33
             ,0
@@ -874,4 +898,37 @@ INSERT
         , 46
         , 0
         ,CURRENT_TIMESTAMP
+        );
+-- HashTag Tw
+INSERT
+    INTO
+        HashTag(
+            name
+        )
+        VALUES (
+        "test"
+        );
+INSERT
+    INTO
+        Tw(
+            content
+            ,user_id
+            ,delete_flag
+            ,created_at
+        )
+        VALUES (
+        "hashtag test\n#test"
+        , 1
+        , 0
+        ,CURRENT_TIMESTAMP
+        );
+INSERT
+    INTO
+        Related_Tw_Hashtag(
+            tw_id
+            ,hashtag_id
+        )
+        VALUES (
+        48
+        , 1
         );

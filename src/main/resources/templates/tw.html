@@ -29,7 +29,7 @@
                 th:id="'userid_' + ${twDTO.id}" th:text="'@' + ${twDTO.user.userId}" class="text-neutral-500 font-thin"></span></a>
             </div>
           </div>
-          <p th:id="'content_' + ${twDTO.id}" th:text="${twDTO.content}" class="mt-2 break-words whitespace-pre-wrap"></p>
+          <p th:id="'content_' + ${twDTO.id}" class="mt-2 break-words whitespace-pre-wrap" th:insert="fragment/part::content(${twDTO.content})"></p>
           <!--/* Media Fragment Space */-->
           <div th:id="'medias_' + ${twDTO.id}" th:if="${not #lists.isEmpty(twDTO.mediaList)}" th:object="${twDTO}">
             <div th:replace="fragment/part::medias(*{id}, *{mediaList})"></div>
