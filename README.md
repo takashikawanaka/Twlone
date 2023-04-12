@@ -3,7 +3,17 @@
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
 
-output.cssの出力
+
+## 実行方法
+### CSSの解決(どちらか一方)
+`/src/main/resources/templates/fragment/header.html`の修正
+``` HTML
+<!-- アンコメント
+<link th:href="@{/css/input.css}" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+-->
+```
+`/css/output.css`を使う場合
 ```
 npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resources\static\css\output.css
 ```
@@ -74,8 +84,9 @@ GitHub Actions
 [いやすとや](https://www.irasutoya.com)(テスト用画像)
 
 ## 動作動画
-### ユーザ登録からのログイン
-https://user-images.githubusercontent.com/123621760/229481304-1efc3a74-accb-4022-a9c9-57e312a9edb1.mp4
+| 動作 | 動画 |
+| ------------- | ------------- |
+| ユーザ登録からのログイン | <video src="https://user-images.githubusercontent.com/123621760/229481304-1efc3a74-accb-4022-a9c9-57e312a9edb1.mp4"> |
 
 
 
