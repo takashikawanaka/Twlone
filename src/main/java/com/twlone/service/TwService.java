@@ -31,7 +31,8 @@ public class TwService {
         this.userService = service;
 
         this.symbol = "!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~";
-        this.pattern = Pattern.compile("(?<!#)#(([^\\s" + symbol + "]*[^\\s\\d" + symbol + "][^\\s" + symbol + "]*)+)");
+        this.pattern = Pattern
+                .compile("((?<!#)#|(?<!@)@)(([^\\s" + symbol + "]*[^\\s\\d" + symbol + "][^\\s" + symbol + "]*)+)");
     }
 
     public Optional<Tw> getTwById(Integer id) {
@@ -64,15 +65,24 @@ public class TwService {
     }
 
     private List<List<String>> splitContent(Integer count, String content) {
-        if (0 == count)
-            return content.isEmpty() ? List.of(List.of()) : List.of(List.of("none", content));
+        if (content.isEmpty())
+            return List.of(List.of());
         List<List<String>> splitList = new ArrayList<>();
         Matcher matcher = this.pattern.matcher(content);
         int i = 0;
         while (matcher.find()) {
             if (i != matcher.start())
                 splitList.add(List.of("none", content.substring(i, matcher.start())));
-            splitList.add(List.of("hashtag", matcher.group()));
+            String str = matcher.group();
+            if (str.startsWith("#")) {
+                splitList.add(List.of("hashtag", matcher.group(2)));
+            } else if (str.startsWith("@")) {
+                if ((userService.getUserByUserId(str.substring(1))).isPresent()) {
+                    splitList.add(List.of("reply", matcher.group(2)));
+                } else {
+                    splitList.add(List.of("none", matcher.group()));
+                }
+            }
             i = matcher.end();
         }
         if (i != content.length())
