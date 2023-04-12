@@ -10,7 +10,7 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 
 ## HashTag規則
 
-ハッシュタグ : `#abcd`, `#ABCD`, `#2023年`, `#A` `#B` `#C`, `#あいう`, `#アイウ`, `#日本語`  
+ハッシュタグ : `#abcd`, `#ABCD`, `#2023年`, `#A` `#B` `#C`, `#あいう`, `#アイウ`, `#日本語`, `#😂`  
 ハッシュタグではない : `#123`,`# ABC`, `##ABC` ,`＃aa`  
 
 ## Todo
@@ -42,7 +42,7 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 ### 開発環境・サービス
 Spring Tool Suite 4: 4.17.1.RELEASE  
 Figma(大雑把なデザインを作る際に使用)  
-InkScape(ロゴの作成、カーニング調整、SVGの出力の際)  
+InkScape(ロゴの作成、カーニング調整、SVGの出力)  
 Bing Chat(質問によるJava・CSSのコード提案, エラーメッセージからの訂正提案, ダミーデータの作成, README作成アシスタント)  
 Azure WebApp(アップロード予定)  
 
