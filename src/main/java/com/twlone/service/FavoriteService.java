@@ -17,10 +17,6 @@ public class FavoriteService {
         this.favoriteRepository = repository;
     }
 
-    public Boolean getBooleanByTwAndUser(Tw tw, User user) {
-        return favoriteRepository.existsByTwAndUser(tw, user);
-    }
-
     @Transactional
     public void saveFavorite(Favorite favorite) {
         favoriteRepository.save(favorite);

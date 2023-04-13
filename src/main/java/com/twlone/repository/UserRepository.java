@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT SIZE(u.followerList) FROM User u WHERE u = ?1")
     Integer countFollowerByUser(User user);
+
+    @Query("SELECT COUNT(f) = 1 FROM Follow f WHERE f.sourceUser = ?1 AND f.targetUser = ?2")
+    Boolean existsFollowBySourceUserAndTargetUser(User sourceUser, User targetUser);
 }

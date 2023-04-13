@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -59,6 +60,10 @@ public class TwService {
         return twRepository.countRelatedTwHashTagByTw(tw);
     }
 
+    public boolean getBooleanFavoriteByTwAndUser(Tw tw, User user) {
+        return twRepository.existsFavoriteByTwAndUser(tw, user);
+    }
+
     @Transactional
     public void saveTw(Tw tw) {
         twRepository.save(tw);
@@ -103,5 +108,49 @@ public class TwService {
                 .dayHasPassed(!tw.getCreatedAt()
                         .toLocalDate()
                         .isEqual(LocalDate.now()));
+    }
+
+    // Get TwDTO
+    public TwDTO convertTwDTO(Tw tw) {
+        if (tw == null)
+            return null;
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw()))
+                .build();
+    }
+
+    public TwDTO convertTwDTO(Tw tw, User user) {
+        if (tw == null)
+            return null;
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw(), user))
+                .isFavorite(this.getBooleanFavoriteByTwAndUser(tw, user) ? true : false)
+                .build();
+    }
+
+    // Get TwDTO with ReplyTw
+    public TwDTO convertTwDTOReplyTw(Tw tw) {
+        List<TwDTO> twDTOList = tw.getReplyTwList()
+                .stream()
+                .map(reply -> this.convertTwDTO(reply))
+                .collect(Collectors.toList());
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw()))
+                .replyTw(this.convertTwDTO(tw.getReplyTw()))
+                .replyTwList(twDTOList)
+                .build();
+    }
+
+    public TwDTO convertTwDTOReplyTw(Tw tw, User user) {
+        List<TwDTO> twDTOList = tw.getReplyTwList()
+                .stream()
+                .map(reply -> this.convertTwDTO(reply, user))
+                .collect(Collectors.toList());
+        return this.getBuilder(tw)
+                .reTw(this.convertTwDTO(tw.getReTw(), user))
+                .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
+                .isFavorite(this.getBooleanFavoriteByTwAndUser(tw, user) ? true : false)
+                .replyTwList(twDTOList)
+                .build();
     }
 }

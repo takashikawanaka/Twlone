@@ -33,6 +33,10 @@ public class UserService {
         return userRepository.findByUserId(id);
     }
 
+    public boolean getBooleanFollowBySourceUserAndTargetUser(User sourceUser, User targetUser) {
+        return userRepository.existsFollowBySourceUserAndTargetUser(sourceUser, targetUser);
+    }
+
     @Transactional
     public User saveUser(User user) {
         return userRepository.save(user);

@@ -1,6 +1,5 @@
 package com.twlone.controller;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -14,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
-import com.twlone.dto.TwDTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
-import com.twlone.service.FavoriteService;
-import com.twlone.service.FollowService;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
@@ -29,14 +25,10 @@ import com.twlone.service.UserService;
 public class UserController {
     private final UserService userService;
     private final TwService twService;
-    private final FollowService followService;
-    private final FavoriteService favoriteService;
 
-    public UserController(UserService service, TwService service2, FollowService service3, FavoriteService service4) {
+    public UserController(UserService service, TwService service2) {
         this.userService = service;
         this.twService = service2;
-        this.followService = service3;
-        this.favoriteService = service4;
     }
 
     @GetMapping("/{userId}")
@@ -81,9 +73,9 @@ public class UserController {
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("twDTO", this.convertTwDTOReplyTw(tw.get(), userDetail.getUser()));
+            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(tw.get(), userDetail.getUser()));
         } else {
-            model.addAttribute("twDTO", this.convertTwDTOReplyTw(tw.get()));
+            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(tw.get()));
         }
         return "tw";
     }
@@ -93,7 +85,7 @@ public class UserController {
         return userService.getFullUserDTOBuilder(user)
                 .twList(user.getTwList()
                         .stream()
-                        .map(tw -> this.convertTwDTO(tw))
+                        .map(tw -> twService.convertTwDTO(tw))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -102,53 +94,10 @@ public class UserController {
         return userService.getFullUserDTOBuilder(targetUser)
                 .twList(targetUser.getTwList()
                         .stream()
-                        .map(tw -> this.convertTwDTO(tw, sourceUser))
+                        .map(tw -> twService.convertTwDTO(tw, sourceUser))
                         .collect(Collectors.toList()))
-                .isFollow(followService.getBooleanByUserIdAndTargetUser(sourceUser, targetUser))
+                .isFollow(userService.getBooleanFollowBySourceUserAndTargetUser(sourceUser, targetUser))
                 .build();
     }
 
-    // Get TwDTO
-    public TwDTO convertTwDTO(Tw tw) {
-        if (tw == null)
-            return null;
-        return twService.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw()))
-                .build();
-    }
-
-    public TwDTO convertTwDTO(Tw tw, User user) {
-        if (tw == null)
-            return null;
-        return twService.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw(), user))
-                .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
-                .build();
-    }
-
-    // Get TwDTO with ReplyTw
-    public TwDTO convertTwDTOReplyTw(Tw tw) {
-        List<TwDTO> twDTOList = tw.getReplyTwList()
-                .stream()
-                .map(reply -> this.convertTwDTO(reply))
-                .collect(Collectors.toList());
-        return twService.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw()))
-                .replyTw(this.convertTwDTO(tw.getReplyTw()))
-                .replyTwList(twDTOList)
-                .build();
-    }
-
-    public TwDTO convertTwDTOReplyTw(Tw tw, User user) {
-        List<TwDTO> twDTOList = tw.getReplyTwList()
-                .stream()
-                .map(reply -> this.convertTwDTO(reply, user))
-                .collect(Collectors.toList());
-        return twService.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw(), user))
-                .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
-                .isFavorite(favoriteService.getBooleanByTwAndUser(tw, user) ? true : false)
-                .replyTwList(twDTOList)
-                .build();
-    }
 }

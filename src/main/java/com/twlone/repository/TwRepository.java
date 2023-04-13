@@ -22,4 +22,7 @@ public interface TwRepository extends JpaRepository<Tw, Integer> {
 
     @Query("SELECT SIZE(t.hashtagList) FROM Tw t WHERE t = ?1")
     Integer countRelatedTwHashTagByTw(Tw tw);
+
+    @Query("SELECT COUNT(f) = 1 FROM Favorite f WHERE f.tw = ?1 AND f.user = ?2")
+    Boolean existsFavoriteByTwAndUser(Tw tw, User user);
 }

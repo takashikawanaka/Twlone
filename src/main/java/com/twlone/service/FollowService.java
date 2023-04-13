@@ -16,10 +16,6 @@ public class FollowService {
         this.followRepository = repository;
     }
 
-    public Boolean getBooleanByUserIdAndTargetUser(User sourceUser, User targetUser) {
-        return followRepository.existsBySourceUserAndTargetUser(sourceUser, targetUser);
-    }
-
     @Transactional
     public void saveFollow(Follow follow) {
         followRepository.save(follow);
