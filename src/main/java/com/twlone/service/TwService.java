@@ -44,22 +44,6 @@ public class TwService {
         return twRepository.findByUser(user);
     }
 
-    public Integer getCountReTwByTw(Tw tw) {
-        return twRepository.countReTwByTw(tw);
-    }
-
-    public Integer getCountReplyTwByTw(Tw tw) {
-        return twRepository.countReplyTwByTw(tw);
-    }
-
-    public Integer getCountFavoriteByTw(Tw tw) {
-        return twRepository.countFavoriteByTw(tw);
-    }
-
-    public Integer getCountRelatedTwHashTagByTw(Tw tw) {
-        return twRepository.countRelatedTwHashTagByTw(tw);
-    }
-
     public boolean getBooleanFavoriteByTwAndUser(Tw tw, User user) {
         return twRepository.existsFavoriteByTwAndUser(tw, user);
     }
@@ -79,15 +63,17 @@ public class TwService {
             if (i != matcher.start())
                 splitList.add(List.of("none", content.substring(i, matcher.start())));
             String str = matcher.group();
-            if (str.startsWith("#")) {
-                splitList.add(List.of("hashtag", matcher.group(2)));
-            } else if (str.startsWith("@")) {
-                if ((userService.getUserByUserId(str.substring(1))).isPresent()) {
-                    splitList.add(List.of("reply", matcher.group(2)));
-                } else {
-                    splitList.add(List.of("none", matcher.group()));
-                }
-            }
+            splitList.add(switch (str.charAt(0)) {
+            case '#':
+                yield List.of("hashtag", matcher.group(2));
+            case '@':
+                if ((userService.getUserByUserId(str.substring(1))).isPresent())
+                    yield List.of("reply", matcher.group(2));
+                else
+                    yield List.of("none", matcher.group());
+            default: //Rewrite
+                yield List.of("none", matcher.group());
+            });
             i = matcher.end();
         }
         if (i != content.length())
@@ -98,12 +84,12 @@ public class TwService {
     public TwDTO.TwDTOBuilder getBuilder(Tw tw) {
         return TwDTO.builder()
                 .id(tw.getId())
-                .content(this.splitContent(this.getCountRelatedTwHashTagByTw(tw), tw.getContent()))
+                .content(this.splitContent(twRepository.countRelatedTwHashTagByTw(tw), tw.getContent()))
                 .user(userService.convertMiniUserDTO(tw.getUser()))
                 .createdAt(tw.getCreatedAt())
-                .reTwListSize(this.getCountReTwByTw(tw))
-                .replyTwListSize(this.getCountReplyTwByTw(tw))
-                .favoriteListSize(this.getCountFavoriteByTw(tw))
+                .reTwListSize(twRepository.countReTwByTw(tw))
+                .replyTwListSize(twRepository.countReplyTwByTw(tw))
+                .favoriteListSize(twRepository.countReplyTwByTw(tw))
                 .mediaList(tw.getMediaList())
                 .dayHasPassed(!tw.getCreatedAt()
                         .toLocalDate()
