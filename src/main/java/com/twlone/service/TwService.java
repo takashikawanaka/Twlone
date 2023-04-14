@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.twlone.dto.TwDTO;
+import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
@@ -42,30 +43,26 @@ public class TwService {
         return twRepository.findById(id);
     }
 
+    public Optional<TwDTODTO> getTwDTODTOByID(Integer id) {
+        return twRepository.findTwDTODTOById(id);
+    }
+
     public List<Tw> getTwListByUser(User user) {
         return twRepository.findByUser(user);
     }
 
-    public List<Tw> getTwListByUserDTO(UserDTO user) {
-        return twRepository.findByUserDTO(user.getId());
-    }
-
     public List<TwDTO> getTwDTOListByUserDTO(UserDTO user) {
-        return twRepository.findByUserDTO(user.getId())
+        return twRepository.findTwDTODTOListByUserDTO(user.getId())
                 .stream()
-                .map((tw) -> this.convertTwDTO(tw))
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
                 .collect(Collectors.toList());
     }
 
     public List<TwDTO> getTwDTOListByUserDTO(UserDTO user, User sourceUser) {
-        return twRepository.findByUserDTO(user.getId())
+        return twRepository.findTwDTODTOListByUserDTO(user.getId())
                 .stream()
-                .map((tw) -> this.convertTwDTO(tw, sourceUser))
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO, sourceUser))
                 .collect(Collectors.toList());
-    }
-
-    public boolean getBooleanFavoriteByTwAndUser(Tw tw, User user) {
-        return twRepository.existsFavoriteByTwAndUser(tw, user);
     }
 
     @Transactional
@@ -101,63 +98,75 @@ public class TwService {
         return splitList;
     }
 
-    public TwDTO.TwDTOBuilder getBuilder(Tw tw) {
-        Integer[] listCount = Arrays.stream(((Object[]) twRepository.countListByTw(tw)))
-                .map(o -> (Integer) o)
-                .toArray(Integer[]::new);
+    public TwDTO.TwDTOBuilder getBuilder(TwDTODTO twDTODTO) {
         return TwDTO.builder()
-                .id(tw.getId())
-                .content(this.splitContent(listCount[3], tw.getContent()))
-                .user(userService.convertMiniUserDTO(tw.getUser()))
-                .createdAt(tw.getCreatedAt())
-                .reTwListSize(listCount[0])
-                .replyTwListSize(listCount[1])
-                .favoriteListSize(listCount[2])
-                .mediaList(tw.getMediaList())
-                .dayHasPassed(!tw.dayHasPassed(LocalDate.now()));
+                .id(twDTODTO.getId())
+                .content(this.splitContent(twDTODTO.getHashtagListSize(), twDTODTO.getContent()))
+                .user(userService.convertMiniUserDTO(twDTODTO.getUser()))
+                .createdAt(twDTODTO.getCreatedAt())
+                .reTwListSize(twDTODTO.getReTwListSize())
+                .replyTwListSize(twDTODTO.getReplyTwListSize())
+                .favoriteListSize(twDTODTO.getFavoriteListSize())
+                .mediaList((twDTODTO.getMediaListSize() == 0) ? null : twRepository.findMediaByTw(twDTODTO.getId()))
+                .dayHasPassed(!twDTODTO.dayHasPassed(LocalDate.now()));
     }
 
     // Get TwDTO
-    public TwDTO convertTwDTO(Tw tw) {
-        if (tw == null)
+    public TwDTO convertTwDTO(TwDTODTO twDTODTO) {
+        if (twDTODTO == null)
             return null;
-        return this.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw()))
+        Integer reTwId = twDTODTO.getReTwId();
+        return this.getBuilder(twDTODTO)
+                .reTw(reTwId == null ? null : this.convertTwDTO((twRepository.findTwDTODTOById(reTwId)).orElse(null)))
                 .build();
     }
 
-    public TwDTO convertTwDTO(Tw tw, User user) {
-        if (tw == null)
+    public TwDTO convertTwDTO(TwDTODTO twDTODTO, User user) {
+        if (twDTODTO == null)
             return null;
-        return this.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw(), user))
-                .isFavorite(twRepository.existsFavoriteByTwAndUser(tw, user) ? true : false)
+        Integer reTwId = twDTODTO.getReTwId();
+        return this.getBuilder(twDTODTO)
+                .reTw(reTwId == null ? null : this.convertTwDTO((twRepository.findTwDTODTOById(reTwId)).orElse(null)))
+                .isFavorite(twRepository.existsFavoriteByTwIDAndUser(twDTODTO.getId(), user) ? true : false)
                 .build();
     }
 
     // Get TwDTO with ReplyTw
-    public TwDTO convertTwDTOReplyTw(Tw tw) {
-        List<TwDTO> twDTOList = tw.getReplyTwList()
-                .stream()
-                .map(reply -> this.convertTwDTO(reply))
-                .collect(Collectors.toList());
-        return this.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw()))
-                .replyTw(this.convertTwDTO(tw.getReplyTw()))
+    public TwDTO convertTwDTOReplyTw(TwDTODTO twDTODTO) {
+        List<TwDTO> twDTOList = null;
+        if (0 < twDTODTO.getReplyTwListSize()) {
+            twDTOList = twRepository.findTwDTODTOListByReplyTwId(twDTODTO.getId())
+                    .stream()
+                    .map(reply -> this.convertTwDTO(reply))
+                    .collect(Collectors.toList());
+        }
+        Integer reTwId = twDTODTO.getReTwId();
+        Integer replyTwId = twDTODTO.getReplyTwId();
+        return this.getBuilder(twDTODTO)
+                .reTw(reTwId == null ? null : this.convertTwDTO((twRepository.findTwDTODTOById(reTwId)).orElse(null)))
+                .replyTw(replyTwId == null ? null
+                        : this.convertTwDTO((twRepository.findTwDTODTOById(replyTwId)
+                                .orElse(null))))
                 .replyTwList(twDTOList)
                 .build();
     }
 
-    public TwDTO convertTwDTOReplyTw(Tw tw, User user) {
-        List<TwDTO> twDTOList = tw.getReplyTwList()
-                .stream()
-                .map(reply -> this.convertTwDTO(reply, user))
-                .collect(Collectors.toList());
-        return this.getBuilder(tw)
-                .reTw(this.convertTwDTO(tw.getReTw(), user))
-                .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
-                .isFavorite(twRepository.existsFavoriteByTwAndUser(tw, user) ? true : false)
+    public TwDTO convertTwDTOReplyTw(TwDTODTO twDTODTO, User user) {
+        List<TwDTO> twDTOList = null;
+        if (0 < twDTODTO.getReplyTwListSize()) {
+            twDTOList = twRepository.findTwDTODTOListByReplyTwId(twDTODTO.getId())
+                    .stream()
+                    .map(reply -> this.convertTwDTO(reply, user))
+                    .collect(Collectors.toList());
+        }
+        Integer reTwId = twDTODTO.getReTwId();
+        Integer replyTwId = twDTODTO.getReplyTwId();
+        return this.getBuilder(twDTODTO)
+                .reTw(reTwId == null ? null : this.convertTwDTO((twRepository.findTwDTODTOById(reTwId)).orElse(null)))
+                .replyTw(replyTwId == null ? null
+                        : this.convertTwDTO((twRepository.findTwDTODTOById(replyTwId)).orElse(null), user))
                 .replyTwList(twDTOList)
+                .isFavorite(twRepository.existsFavoriteByTwIDAndUser(twDTODTO.getId(), user) ? true : false)
                 .build();
     }
 }

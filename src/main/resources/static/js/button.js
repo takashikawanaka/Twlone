@@ -90,13 +90,13 @@ function postFollow(node) {
     if (node.textContent == 'Follow') {
         postCSRF(baseURL() + '/user/follow', id, (_) => {
             node.textContent = 'Following';
-            const counter = document.getElementById('follower');
+            const counter = document.getElementById('follower').firstElementChild;
             counter.textContent = parseInt(counter.textContent) + 1;
         });
     } else {
         postCSRF(baseURL() + '/user/unfollow', id, (_) => {
             node.textContent = 'Follow';
-            const counter = document.getElementById('follower');
+            const counter = document.getElementById('follower').firstElementChild;
             counter.textContent = parseInt(counter.textContent) - 1;
         });
     }

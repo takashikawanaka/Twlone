@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
+import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
-import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
@@ -42,7 +42,8 @@ public class UserController {
             User loggedUser = userDetail.getUser();
             model.addAttribute("logged", loggedUser);
             model.addAttribute("postTw", new PostTwDTO());
-            userDTO.setIsFollow(userService.getBooleanFollowBySourceUserAndTargetUserID(loggedUser, userDTO));
+            if (loggedUser.getUserId() != userDTO.getUserId())
+                userDTO.setIsFollow(userService.getBooleanFollowBySourceUserAndTargetUserID(loggedUser, userDTO));
             userDTO.setTwList(twService.getTwDTOListByUserDTO(userDTO, loggedUser));
             model.addAttribute("user", userDTO);
         } else {
@@ -70,16 +71,16 @@ public class UserController {
     @GetMapping("/{userId}/status/{tweetId}")
     public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("tweetId") Integer id,
             Model model) {
-        Optional<Tw> tw = twService.getTwById(id);
-        if (!tw.isPresent()) {
+        Optional<TwDTODTO> twDTODTO = twService.getTwDTODTOByID(id);
+        if (!twDTODTO.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(tw.get(), userDetail.getUser()));
+            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(twDTODTO.get(), userDetail.getUser()));
         } else {
-            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(tw.get()));
+            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(twDTODTO.get()));
         }
         return "tw";
     }
