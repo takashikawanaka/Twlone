@@ -1,7 +1,6 @@
 package com.twlone.controller;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,16 +33,21 @@ public class UserController {
     @GetMapping("/{userId}")
     public String getUser(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("userId") String id,
             Model model) {
-        Optional<User> user = userService.getUserByUserId(id);
+        Optional<UserDTO> user = userService.getUserDTOByUserId(id);
         if (!user.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        UserDTO userDTO = user.get();
         if (userDetail != null) {
-            model.addAttribute("logged", userDetail.getUser());
+            User loggedUser = userDetail.getUser();
+            model.addAttribute("logged", loggedUser);
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("user", this.convertFullUserDTO(userDetail.getUser(), user.get()));
+            userDTO.setIsFollow(userService.getBooleanFollowBySourceUserAndTargetUserID(loggedUser, userDTO));
+            userDTO.setTwList(twService.getTwDTOListByUserDTO(userDTO, loggedUser));
+            model.addAttribute("user", userDTO);
         } else {
-            model.addAttribute("user", this.convertFullUserDTO(user.get()));
+            userDTO.setTwList(twService.getTwDTOListByUserDTO(userDTO));
+            model.addAttribute("user", userDTO);
         }
         return "user";
     }
@@ -79,25 +83,4 @@ public class UserController {
         }
         return "tw";
     }
-
-    // Get UserDTO
-    public UserDTO convertFullUserDTO(User user) {
-        return userService.getFullUserDTOBuilder(user)
-                .twList(user.getTwList()
-                        .stream()
-                        .map(tw -> twService.convertTwDTO(tw))
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    public UserDTO convertFullUserDTO(User sourceUser, User targetUser) {
-        return userService.getFullUserDTOBuilder(targetUser)
-                .twList(targetUser.getTwList()
-                        .stream()
-                        .map(tw -> twService.convertTwDTO(tw, sourceUser))
-                        .collect(Collectors.toList()))
-                .isFollow(userService.getBooleanFollowBySourceUserAndTargetUser(sourceUser, targetUser))
-                .build();
-    }
-
 }

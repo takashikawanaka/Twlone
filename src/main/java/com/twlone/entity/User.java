@@ -56,9 +56,7 @@ public class User {
     @CreationTimestamp
     private Date createdAt;
 
-    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @Where(clause = "reply_tw_id is null and delete_flag = 0")
     private List<Tw> twList;
 
     @OrderBy(value = "id desc")

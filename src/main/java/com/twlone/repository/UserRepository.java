@@ -5,17 +5,17 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.twlone.dto.UserDTO;
 import com.twlone.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
+    @Query("SELECT u FROM User u JOIN FETCH u.twList WHERE u.userId = ?1")
     Optional<User> findByUserId(String userId);
 
-    @Query("SELECT SIZE(u.followingList) FROM User u WHERE u = ?1")
-    Integer countFollowingByUser(User user);
+    @Query("SELECT new com.twlone.dto.UserDTO(u.id, u.userId, u.name, u.description, u.icon, u.back, SIZE(u.followingList), SIZE(u.followerList))"
+            + "FROM User u WHERE u.userId = ?1")
+    Optional<UserDTO> findUserDTOByUser(String userId);
 
-    @Query("SELECT SIZE(u.followerList) FROM User u WHERE u = ?1")
-    Integer countFollowerByUser(User user);
-
-    @Query("SELECT COUNT(f) = 1 FROM Follow f WHERE f.sourceUser = ?1 AND f.targetUser = ?2")
-    Boolean existsFollowBySourceUserAndTargetUser(User sourceUser, User targetUser);
+    @Query("SELECT COUNT(f) = 1 FROM Follow f WHERE f.sourceUser = ?1 AND f.targetUser.id = ?2")
+    Boolean existsFollowBySourceUserAndTargetUserDTO(User sourceUser, Integer targetUser);
 }

@@ -1,5 +1,6 @@
 package com.twlone.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -53,6 +53,11 @@ public class Tw {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    public Boolean dayHasPassed(LocalDate date) {
+        return this.createdAt.toLocalDate()
+                .isEqual(date);
+    }
+
     protected Tw() {
     }
 
@@ -60,15 +65,12 @@ public class Tw {
         this.user = user;
     }
 
-    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "reTw", fetch = FetchType.LAZY)
     private List<Tw> reTwList;
 
-    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "replyTw", fetch = FetchType.LAZY)
     private List<Tw> replyTwList;
 
-    @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "tw", fetch = FetchType.LAZY)
     private List<Favorite> favoriteList;
 

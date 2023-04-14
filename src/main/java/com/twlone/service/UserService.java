@@ -33,8 +33,12 @@ public class UserService {
         return userRepository.findByUserId(id);
     }
 
-    public boolean getBooleanFollowBySourceUserAndTargetUser(User sourceUser, User targetUser) {
-        return userRepository.existsFollowBySourceUserAndTargetUser(sourceUser, targetUser);
+    public Optional<UserDTO> getUserDTOByUserId(String id) {
+        return userRepository.findUserDTOByUser(id);
+    }
+
+    public boolean getBooleanFollowBySourceUserAndTargetUserID(User sourceUser, UserDTO targetUser) {
+        return userRepository.existsFollowBySourceUserAndTargetUserDTO(sourceUser, targetUser.getId());
     }
 
     @Transactional
@@ -48,17 +52,5 @@ public class UserService {
                 .name(user.getName())
                 .icon(user.getIcon())
                 .build();
-    }
-
-    public UserDTO.UserDTOBuilder getFullUserDTOBuilder(User user) {
-        return UserDTO.builder()
-                .id(user.getId())
-                .userId(user.getUserId())
-                .name(user.getName())
-                .description(user.getDescription())
-                .icon(user.getIcon())
-                .back(user.getBack())
-                .followingListSize(userRepository.countFollowingByUser(user))
-                .followerListSize(userRepository.countFollowerByUser(user));
     }
 }

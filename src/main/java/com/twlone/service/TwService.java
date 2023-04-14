@@ -2,6 +2,7 @@ package com.twlone.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.twlone.dto.TwDTO;
+import com.twlone.dto.UserDTO;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.repository.TwRepository;
@@ -44,6 +46,24 @@ public class TwService {
         return twRepository.findByUser(user);
     }
 
+    public List<Tw> getTwListByUserDTO(UserDTO user) {
+        return twRepository.findByUserDTO(user.getId());
+    }
+
+    public List<TwDTO> getTwDTOListByUserDTO(UserDTO user) {
+        return twRepository.findByUserDTO(user.getId())
+                .stream()
+                .map((tw) -> this.convertTwDTO(tw))
+                .collect(Collectors.toList());
+    }
+
+    public List<TwDTO> getTwDTOListByUserDTO(UserDTO user, User sourceUser) {
+        return twRepository.findByUserDTO(user.getId())
+                .stream()
+                .map((tw) -> this.convertTwDTO(tw, sourceUser))
+                .collect(Collectors.toList());
+    }
+
     public boolean getBooleanFavoriteByTwAndUser(Tw tw, User user) {
         return twRepository.existsFavoriteByTwAndUser(tw, user);
     }
@@ -71,7 +91,7 @@ public class TwService {
                     yield List.of("reply", matcher.group(2));
                 else
                     yield List.of("none", matcher.group());
-            default: //Rewrite
+            default: // Rewrite
                 yield List.of("none", matcher.group());
             });
             i = matcher.end();
@@ -82,18 +102,19 @@ public class TwService {
     }
 
     public TwDTO.TwDTOBuilder getBuilder(Tw tw) {
+        Integer[] listCount = Arrays.stream(((Object[]) twRepository.countListByTw(tw)))
+                .map(o -> (Integer) o)
+                .toArray(Integer[]::new);
         return TwDTO.builder()
                 .id(tw.getId())
-                .content(this.splitContent(twRepository.countRelatedTwHashTagByTw(tw), tw.getContent()))
+                .content(this.splitContent(listCount[3], tw.getContent()))
                 .user(userService.convertMiniUserDTO(tw.getUser()))
                 .createdAt(tw.getCreatedAt())
-                .reTwListSize(twRepository.countReTwByTw(tw))
-                .replyTwListSize(twRepository.countReplyTwByTw(tw))
-                .favoriteListSize(twRepository.countReplyTwByTw(tw))
+                .reTwListSize(listCount[0])
+                .replyTwListSize(listCount[1])
+                .favoriteListSize(listCount[2])
                 .mediaList(tw.getMediaList())
-                .dayHasPassed(!tw.getCreatedAt()
-                        .toLocalDate()
-                        .isEqual(LocalDate.now()));
+                .dayHasPassed(!tw.dayHasPassed(LocalDate.now()));
     }
 
     // Get TwDTO
@@ -110,7 +131,7 @@ public class TwService {
             return null;
         return this.getBuilder(tw)
                 .reTw(this.convertTwDTO(tw.getReTw(), user))
-                .isFavorite(this.getBooleanFavoriteByTwAndUser(tw, user) ? true : false)
+                .isFavorite(twRepository.existsFavoriteByTwAndUser(tw, user) ? true : false)
                 .build();
     }
 
@@ -135,7 +156,7 @@ public class TwService {
         return this.getBuilder(tw)
                 .reTw(this.convertTwDTO(tw.getReTw(), user))
                 .replyTw(this.convertTwDTO(tw.getReplyTw(), user))
-                .isFavorite(this.getBooleanFavoriteByTwAndUser(tw, user) ? true : false)
+                .isFavorite(twRepository.existsFavoriteByTwAndUser(tw, user) ? true : false)
                 .replyTwList(twDTOList)
                 .build();
     }
