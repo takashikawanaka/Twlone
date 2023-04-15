@@ -84,10 +84,15 @@ GitHub Actions
 [いやすとや](https://www.irasutoya.com)(テスト用画像)
 
 ## 動作動画
-| 動作 | 動画 |
-| ------------- | ------------- |
-| ユーザ登録からのログイン | <video src="https://user-images.githubusercontent.com/123621760/229481304-1efc3a74-accb-4022-a9c9-57e312a9edb1.mp4"> |
+| ユーザ登録からのログイン | ハッシュタグ付きつぶやき | フォローアンフォロー機能 |
+| ------------- | ------------- | ------------- |
+| <img height="320" src="https://user-images.githubusercontent.com/123621760/232187472-f2b0fabb-30ea-4478-ba7f-9f7aa90ffb4d.gif"> | <img height="320" src="https://user-images.githubusercontent.com/123621760/232189688-c3259114-4408-449b-9bae-2795d94a06b0.gif"> | <img height="320" src="https://user-images.githubusercontent.com/123621760/232190095-656a7eec-9afd-45bf-8a65-444d6437436f.gif"> |
 
+| いいね機能 | シェア機能 | リプライ機能 |
+| ------------- | ------------- | ------------- | 
+| <img height="320" src="https://user-images.githubusercontent.com/123621760/232190425-d80ebe9c-1f75-48ae-b98c-324e687377c4.gif"> | <img height="320" src="https://user-images.githubusercontent.com/123621760/232190796-f3d5dbd4-e044-4439-a00d-4d7b29220fec.gif"> | <img height="320" src="https://user-images.githubusercontent.com/123621760/232190501-bca141fd-8833-4db8-9a50-4ba133041662.gif"> |
 
-
+| 画像添付機能 | NULL機能 | NULL機能 |
+| ------------- | ------------- | ------------- | 
+| <img height="320" src="https://user-images.githubusercontent.com/123621760/232190916-c0287466-008e-4341-a065-abc77523899b.gif"> |  |  |
 
