@@ -47,10 +47,6 @@ public class TwService {
         return twRepository.findTwDTODTOById(id);
     }
 
-    public List<Tw> getTwListByUser(User user) {
-        return twRepository.findByUser(user);
-    }
-
     public List<TwDTO> getTwDTOListByUserDTO(UserDTO user) {
         return twRepository.findTwDTODTOListByUserDTO(user.getId())
                 .stream()

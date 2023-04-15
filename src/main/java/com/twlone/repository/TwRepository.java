@@ -12,8 +12,6 @@ import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 
 public interface TwRepository extends JpaRepository<Tw, Integer> {
-    List<Tw> findByUser(User user);
-
     @Query("SELECT t FROM Tw t WHERE t.user.id = ?1 AND t.replyTw IS NULL AND t.deleteFlag = 0 ORDER BY t.id desc")
     List<Tw> findByUserDTO(Integer id);
 
@@ -34,9 +32,6 @@ public interface TwRepository extends JpaRepository<Tw, Integer> {
 
     @Query("SELECT m FROM Media m WHERE m.tw.id = ?1")
     List<Media> findMediaByTw(Integer id);
-
-    @Query("SELECT SIZE(t.reTwList), SIZE(t.replyTwList), SIZE(t.favoriteList), SIZE(t.hashtagList), SIZE(t.mediaList) FROM Tw t WHERE t = ?1")
-    Object countListByTw(Tw tw);
 
     @Query("SELECT COUNT(f) = 1 FROM Favorite f WHERE f.tw.id = ?1 AND f.user = ?2")
     Boolean existsFavoriteByTwIDAndUser(Integer twid, User user);
