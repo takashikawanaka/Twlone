@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -32,7 +31,7 @@ public class User {
     private Integer id;
 
     @Column(unique = true, nullable = false, length = 25) // Edit length
-    @Pattern(regexp = "^[a-zA-Z0-9]+$")
+    @Pattern(regexp = "^[a-zA-Z0-9]+")
     @NotBlank
     private String userId;
 
@@ -44,7 +43,7 @@ public class User {
     private String description;
 
     @Column()
-    private String icon;// Edit
+    private String icon = "default/1.png";
 
     @Column()
     private String back;// Edit

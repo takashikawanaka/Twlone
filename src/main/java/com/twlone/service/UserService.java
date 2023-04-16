@@ -25,12 +25,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Integer id) {
-        return userRepository.findById(id);
+    public Boolean getExistsByUserId(String userId) {
+        return userRepository.existsByUserId(userId);
     }
 
-    public Optional<User> getUserByUserId(String id) {
-        return userRepository.findByUserId(id);
+    public Optional<User> getUserById(Integer id) {
+        return userRepository.findById(id);
     }
 
     public Optional<UserDTO> getUserDTOByUserId(String id) {

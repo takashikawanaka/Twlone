@@ -80,7 +80,7 @@ public class TwService {
             case '#':
                 yield List.of("hashtag", matcher.group(2));
             case '@':
-                if ((userService.getUserByUserId(str.substring(1))).isPresent())
+                if ((userService.getExistsByUserId(str.substring(1))))
                     yield List.of("reply", matcher.group(2));
                 else
                     yield List.of("none", matcher.group());

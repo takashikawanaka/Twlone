@@ -9,8 +9,8 @@ import com.twlone.dto.UserDTO;
 import com.twlone.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    @Query("SELECT u FROM User u JOIN FETCH u.twList WHERE u.userId = ?1")
-    Optional<User> findByUserId(String userId);
+    @Query("SELECT COUNT(u) = 1 FROM User u WHERE u.userId = ?1")
+    Boolean existsByUserId(String userId);
 
     @Query("SELECT new com.twlone.dto.UserDTO(u.id, u.userId, u.name, u.description, u.icon, u.back, SIZE(u.followingList), SIZE(u.followerList))"
             + "FROM User u WHERE u.userId = ?1")
