@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head th:replace="fragment/head::head_fragment('Insert title here', ~{}, ~{::script}, ~{})">
 <script>
-window.onload = function(){
+document.addEventListener('DOMContentLoaded', function() {
     Array.from(document.querySelectorAll("#form div")).some((div) => {
         if(div.querySelector(".err") != null) {
             location.hash = 'register';
             return true;
         }
-    });
-}
+    })
+})
 </script>
 </head>
 <body class="h-screen flex justify-center items-center bg-neutral-200">
@@ -20,18 +20,21 @@ window.onload = function(){
     </div>
     <div id="register" class="peer w-64 h-52 mx-auto hidden flex-col opacity-0 target:opacity-100 target:flex">
       <form method="post" th:action="@{/register}" th:object="${authorization}" id="form">
-        <div class="flex border-b-2 mb-3 pb-1">
+        <div class="register flex border-b-2 pb-1">
           <label for="register_name" class="flex items-center mx-1"><span class="material-icons-round"> person </span></label> <input type="text" id="register_name" th:field="*{user.userId}"
-            th:errorclass="err" name="username" class="w-56 text-2xl focus:outline-none" placeholder="UserName"><span th:errors="*{user.userId}" class="err"></span>
+            th:errorclass="err" name="username" class="w-56 text-2xl focus:outline-none" placeholder="UserName" required>
         </div>
-        <div class="flex border-b-2 mb-3 pb-1">
+        <span th:errors="*{user.userId}" class="err text-sm text-rose-500"></span>
+        <div class="register flex border-b-2 pb-1">
           <label for="register_screenname" class="flex items-center mx-1"><span class="material-icons-round"> badge </span></label> <input type="text" id="register_screenname" th:field="*{user.name}"
-            th:errorclass="err" name="name" class="w-56 text-2xl focus:outline-none" placeholder="ScreenName"><span th:errors="*{user.name}" class="err"></span>
+            th:errorclass="err" name="name" class="w-56 text-2xl focus:outline-none" placeholder="ScreenName" required>
         </div>
-        <div class="flex border-b-2 mb-3 pb-1">
+        <span th:errors="*{user.name}" class="err text-sm text-rose-500"></span>
+        <div class="register flex border-b-2 pb-1">
           <label for="register_password" class="flex items-center mx-1"><span class="material-icons-round"> lock </span></label> <input type="password" id="register_password" th:field="*{password}"
-            th:errorclass="err" name="passowrd" class="w-56 text-2xl focus:outline-none" placeholder="Password"><span th:errors="*{password}" class="err"></span>
+            th:errorclass="err" name="passowrd" class="w-56 text-2xl focus:outline-none" placeholder="Password" required>
         </div>
+        <span th:errors="*{password}" class="err text-sm text-rose-500"></span>
         <div class="flex mt-4">
           <div class="flex items-center">
             <span class="material-icons-outlined"> arrow_right_alt </span> <a href="#" class="text-lg" onclick="this.href = this.href.toString().replace(/[?]error/, '')">Login</a>
@@ -41,7 +44,7 @@ window.onload = function(){
       </form>
     </div>
     <div id="login" class="w-64 h-52 mx-auto flex flex-col opacity-100 peer-target:opacity-0 peer-target:hidden">
-      <p class="err" th:if="${param.error}">ERROR</p>
+      <p class="err text-sm text-rose-500" th:if="${param.error}" th:text="#{login.error.message}"></p>
       <form method="post" th:action="@{/login}">
         <div class="flex border-b-2 mb-3 pb-1">
           <label for="login_name" class="flex items-center mx-1"><span class="material-icons-round"> person </span></label> <input type="text" id="login_name" name="username"

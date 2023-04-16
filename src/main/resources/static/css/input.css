@@ -10,6 +10,10 @@ body {
   font-family: "Noto Sans Japanese", sans-serif;
 }
 
+.register+.register {
+  margin-top: 12px;
+}
+
 [id^="medias_"] img:nth-child(1):nth-last-child(3) {
   grid-row: span 2;
 }

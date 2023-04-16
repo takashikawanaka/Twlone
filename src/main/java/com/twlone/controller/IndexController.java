@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.twlone.entity.Authorization;
 import com.twlone.entity.Media;
@@ -45,7 +48,10 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(HttpSession session, Model model) {
+        String url = (String) session.getAttribute("referer");
+        if (!url.isBlank() && !url.equals("login"))
+            return "redirect:" + "/" + url;
         // Will Remove
         List<User> userlist = userService.getUserList();
         model.addAttribute("userlist", userlist);
@@ -53,20 +59,35 @@ public class IndexController {
     }
 
     @PostMapping("/register")
-    public String postRegister(@Validated Authorization authorization, BindingResult res, Model model) {
+    public String postRegister(@Validated Authorization authorization, BindingResult res,
+            RedirectAttributes redirectAttributes) {
         if (res.hasErrors()) {
-            return getLogin(authorization);// forward??
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.authorization", res);
+            redirectAttributes.addFlashAttribute("authorization", authorization);
+        } else if (userService.getExistsByUserId((authorization.getUser()).getUserId())) {
+            res.rejectValue("user.userId", "form.user.userId.message");
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.authorization", res);
+            redirectAttributes.addFlashAttribute("authorization", authorization);
+        } else {
+            userService.saveUser(authorization.getUser());
+            String passwordString = passwordEncoder.encode(authorization.getPassword());
+            authorization.setPassword(passwordString);
+            authorizationService.saveAuthorization(authorization);
         }
-        User user = authorization.getUser();
-        userService.saveUser(user);
-        String passwordString = passwordEncoder.encode(authorization.getPassword());
-        authorization.setPassword(passwordString);
-        authorizationService.saveAuthorization(authorization);
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String getLogin(@ModelAttribute Authorization authorizationx) {
+    public String getLogin(HttpServletRequest request, Model model) {
+        if (!model.containsAttribute("org.springframework.validation.BindingResult.authorization"))
+            model.addAttribute("authorization", new Authorization());
+        String referer = request.getHeader("referer");
+        if (referer != null) {
+            String[] urls = (referer).split("/");
+            if (3 < urls.length)
+                request.getSession()
+                        .setAttribute("referer", String.join("/", Arrays.copyOfRange(urls, 3, urls.length)));
+        }
         return "login";
     }
 
