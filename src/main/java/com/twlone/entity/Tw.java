@@ -1,6 +1,5 @@
 package com.twlone.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,11 +51,6 @@ public class Tw {
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    public Boolean dayHasPassed(LocalDate date) {
-        return this.createdAt.toLocalDate()
-                .isEqual(date);
-    }
 
     protected Tw() {
     }

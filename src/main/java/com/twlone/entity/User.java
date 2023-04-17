@@ -2,6 +2,7 @@ package com.twlone.entity;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,7 +44,11 @@ public class User {
     private String description;
 
     @Column()
-    private String icon = "default/1.png";
+    private String icon = ((Supplier<String>) () -> {
+        String[] icon = { "default/1.png", "default/2.png", "default/3.png", "default/4.png", "default/5.png",
+                "default/6.png" };
+        return icon[(int) (Math.random() * 6)];
+    }).get();
 
     @Column()
     private String back;// Edit

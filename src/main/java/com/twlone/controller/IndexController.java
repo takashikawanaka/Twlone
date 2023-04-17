@@ -1,56 +1,45 @@
 package com.twlone.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.switchuser.AuthenticationSwitchUserEvent;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.twlone.entity.Authorization;
-import com.twlone.entity.Media;
 import com.twlone.entity.User;
 import com.twlone.service.AuthorizationService;
-import com.twlone.service.MediaService;
+import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 
 @Controller
 public class IndexController {
     private final AuthorizationService authorizationService;
     private final UserService userService;
-    private final MediaService mediaService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public IndexController(AuthorizationService service, UserService service2, MediaService service3) {
+    public IndexController(AuthorizationService service, UserService service2) {
         this.authorizationService = service;
         this.userService = service2;
-        this.mediaService = service3;
     }
 
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
         String url = (String) session.getAttribute("referer");
-        if (!url.isBlank() && !url.equals("login"))
+        if (url != null && !url.equals("login"))
             return "redirect:" + "/" + url;
         // Will Remove
         List<User> userlist = userService.getUserList();
@@ -69,16 +58,16 @@ public class IndexController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.authorization", res);
             redirectAttributes.addFlashAttribute("authorization", authorization);
         } else {
-            userService.saveUser(authorization.getUser());
-            String passwordString = passwordEncoder.encode(authorization.getPassword());
-            authorization.setPassword(passwordString);
+            authorization.setPassword(passwordEncoder.encode(authorization.getPassword()));
             authorizationService.saveAuthorization(authorization);
         }
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String getLogin(HttpServletRequest request, Model model) {
+    public String getLogin(@AuthenticationPrincipal UserDetail userDetail, HttpServletRequest request, Model model) {
+        if (userDetail != null)
+            return "redirect:/";
         if (!model.containsAttribute("org.springframework.validation.BindingResult.authorization"))
             model.addAttribute("authorization", new Authorization());
         String referer = request.getHeader("referer");
@@ -94,22 +83,5 @@ public class IndexController {
     @PostMapping("/logout")
     public String postLogout() {
         return "redirect:/login";
-    }
-
-    @GetMapping("/media/{filename}")
-    public void takeFile(@PathVariable String filename, HttpServletResponse response) {
-        Optional<Media> media = mediaService.getMediaByPath(filename);
-        if (!media.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        try (InputStream inputStream = Files.newInputStream(Paths.get("./medias", filename))) {
-            response.setContentType(media.get()
-                    .getType()
-                    .getContentType());
-            inputStream.transferTo(response.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

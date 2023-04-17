@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() { location.hash = ''; });
 
-window.onload = function() {
+window.addEventListener('load', () => {
     utils.domUtils = new DomUtils();
     if (checkAuthenticated()) {
         utils.twFormUtils = new TwFormUtils();
     }
-};
+})
 
 function baseURL() { return location.protocol + '//' + location.host; }
 

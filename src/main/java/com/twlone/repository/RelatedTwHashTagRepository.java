@@ -11,7 +11,4 @@ import com.twlone.entity.Tw;
 
 public interface RelatedTwHashTagRepository extends JpaRepository<RelatedTwHashTag, Integer> {
     List<RelatedTwHashTag> findByHashtag(HashTag hashtag);
-
-    @Query("SELECT r.tw FROM RelatedTwHashTag r WHERE r.hashtag = ?1")
-    List<Tw> findTwListByHashTag(HashTag hashtag);
 }
