@@ -34,7 +34,7 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [x] 画像添付の実装
 - [x] つぶやき単体画面
 - [x] ハッシュタグの実装
-- [ ] 検索の実装 
+- [x] 検索の実装 
 - [ ] プロフィールの編集機能
 - [ ] ホームタイムラインの実装
 
