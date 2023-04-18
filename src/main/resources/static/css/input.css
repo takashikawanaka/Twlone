@@ -25,3 +25,8 @@ body {
 [id^="reTw_medias_"] img:nth-child(1):nth-last-child(3) {
   grid-row: span 2;
 }
+
+input[type="search"]::-webkit-search-cancel-button {
+  cursor: pointer; /*  キャンセルボタンにポインターを付ける  */
+  -webkit-appearance: none;
+}

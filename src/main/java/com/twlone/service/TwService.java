@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.twlone.dto.TwDTO;
 import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
+import com.twlone.entity.HashTag;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.repository.TwRepository;
@@ -57,6 +58,35 @@ public class TwService {
         return twRepository.findTwDTODTOListByUserDTO(user.getId())
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO, sourceUser))
+                .collect(Collectors.toList());
+    }
+
+    public List<TwDTO> getTwDTOListByHashTag(HashTag hashtag) {
+        return twRepository.findTwDTODTOLIstByHashTag(hashtag)
+                .stream()
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
+                .collect(Collectors.toList());
+    }
+
+    public List<TwDTO> getTwDTOListByHashTag(HashTag hashtag, User user) {
+        return twRepository.findTwDTODTOLIstByHashTag(hashtag)
+                .stream()
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
+                .collect(Collectors.toList());
+    }
+
+    public List<TwDTO> getTwDTOListByContent(String text) {
+        System.out.println("%" + text + "%");
+        return twRepository.findTwDTODTOLIstByText("%" + text + "%")
+                .stream()
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
+                .collect(Collectors.toList());
+    }
+
+    public List<TwDTO> getTwDTOListByContent(String text, User user) {
+        return twRepository.findTwDTODTOLIstByText("%" + text + "%")
+                .stream()
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
                 .collect(Collectors.toList());
     }
 
