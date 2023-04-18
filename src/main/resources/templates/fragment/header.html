@@ -3,19 +3,19 @@
 <body>
   <header th:fragment="header">
     <div class="w-20 flex flex-col items-center sticky top-24">
-      <div class="w-16">
-        <img th:src="@{/images/logo.svg}">
-      </div>
-      <div class="w-20 flex flex-col items-center mt-1">
-        <button type="button" class="w-12 h-12" onclick="checkOpenTw();">
-          <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> send </span>
+      <a th:href="@{/?redirect=false}" class="w-16"> <img th:src="@{/images/logo.svg}">
+      </a>
+      <div class="w-20 flex flex-col items-center mt-1 space-y-2">
+        <button type="button" class="w-12 h-12" onclick="checkOpenTw();" th:if="${#authorization.expression('isAuthenticated()')}">
+          <span class="material-icons-round mx-auto" style="font-size: 48px;"> send </span>
         </button>
-        <a href="https://github.com/takashikawanaka/Twlone" class="w-12 h-12 my-2"><span class="material-icons-outlined" style="font-size: 48px;"> code </span></a>
-        <form method="post" th:action="@{/logout}" th:if="${#authorization.expression('isAuthenticated()')}">
+        <a th:href="@{/search}" class="w-12 h-12"> <span class="material-icons-round" style="font-size: 48px;"> search </span></a>
+        <form method="post" th:action="@{/logout}" class="w-12 h-12" th:if="${#authorization.expression('isAuthenticated()')}">
           <button type="submit" class="w-12 h-12">
-            <span class="material-icons-outlined mx-auto" style="font-size: 48px;"> logout </span>
+            <span class="material-icons-round mx-auto" style="font-size: 48px;"> logout </span>
           </button>
         </form>
+        <a href="https://github.com/takashikawanaka/Twlone" class="w-12 h-12"><span class="material-icons-round" style="font-size: 48px;"> code </span></a>
       </div>
     </div>
     <div id="tw" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow();"

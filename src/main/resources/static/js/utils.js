@@ -270,4 +270,6 @@ class ReplyTwUtil {
 class utils {
     static domUtils;
     static twFormUtils;
+    static profile;
+    static search;
 }

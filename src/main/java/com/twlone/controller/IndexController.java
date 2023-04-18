@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.twlone.entity.Authorization;
@@ -37,10 +38,13 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(HttpSession session, Model model) {
-        String url = (String) session.getAttribute("referer");
-        if (url != null && !url.equals("login"))
+    public String index(@RequestParam(name = "redirect", required = false, defaultValue = "true") Boolean redirect,
+            HttpSession session, Model model) {
+        String url = (String) session.getAttribute("loginReferer");
+        if (redirect && url != null && !url.equals("login")) {
+            session.removeAttribute("loginReferer");
             return "redirect:" + "/" + url;
+        }
         // Will Remove
         List<User> userlist = userService.getUserList();
         model.addAttribute("userlist", userlist);
@@ -75,7 +79,7 @@ public class IndexController {
             String[] urls = (referer).split("/");
             if (3 < urls.length)
                 request.getSession()
-                        .setAttribute("referer", String.join("/", Arrays.copyOfRange(urls, 3, urls.length)));
+                        .setAttribute("loginReferer", String.join("/", Arrays.copyOfRange(urls, 3, urls.length)));
         }
         return "login";
     }

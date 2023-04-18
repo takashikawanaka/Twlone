@@ -907,6 +907,8 @@ INSERT
         )
         VALUES (
         "test"
+        ),(
+        "HelloWorld"
         );
 INSERT
     INTO
@@ -932,3 +934,46 @@ INSERT
         48
         , 1
         );
+-- Dammy
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('はじめまして #HelloWorld',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Related_Tw_Hashtag(tw_id,hashtag_id) VALUES (49,2);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日の仕事は忙しかった。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今週末はゴルフに行く予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日の会議に備えないと。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日のランチは美味しかった。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日は早起きしてジムに行こう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日の通勤電車は混んでいた。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今晩は家でゆっくりしよう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日の天気はどうだろう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今週末は家族でお出かけする予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、仕事が忙しくて疲れている。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日のプレゼンに備えないと。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日の夕飯は何にしようかな。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今週末は友達と飲みに行く予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、仕事が上手くいかない。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日は早起きしてランニングに行こう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日の通勤電車は空いていた。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今晩は外食しようかな。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日の天気予報を確認しないと。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今週末は家族でBBQする予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、ストレスが溜まっている。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日の仕事は楽しかった。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今週末は釣りに行く予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日のミーティングに備えないと。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日のディナーは美味しかった。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日は早起きしてヨガに行こう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日のバス通勤は混んでいた。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今晩は映画を見ようかな。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明後日の天気はどうだろう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('来週末は家族でキャンプする予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、仕事が充実している。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日のデッドラインに間に合わせないと。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今晩は何を食べようかな。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('来週末は友達と旅行する予定。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、仕事がスムーズに進んでいる。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('明日は早起きしてサイクリングに行こう。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今日の車通勤は渋滞していた。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今晩は読書でもしようかな。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('来週の天気予報を確認しないと。',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('来月末に家族旅行する予定だけど、準備しないと',7,0,CURRENT_TIMESTAMP);
+INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、仕事が楽しい。',7,0,CURRENT_TIMESTAMP);
