@@ -27,7 +27,12 @@ class WordCounter {
     }
 
     setCounter(height, per, lenght) {
-        this.area.style.height = `${height}px`;
+        if (height == 160) {
+            this.area.style.height = '160px';
+        } else {
+            this.area.style.height = 'auto';
+            this.area.style.height = `${this.area.scrollHeight}px`;
+        }
         this.progress.style.background = `conic-gradient(${this.color(per)} ${360 * per}deg, transparent 0deg)`;
         this.value.textContent = 280 - lenght;
     }

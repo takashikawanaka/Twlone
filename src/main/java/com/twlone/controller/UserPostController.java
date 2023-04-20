@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
+import com.twlone.dto.PostUserDTO;
 import com.twlone.entity.HashTag;
 import com.twlone.entity.Media;
 import com.twlone.entity.Media.MediaType;
@@ -33,7 +33,6 @@ import com.twlone.entity.User;
 import com.twlone.service.FavoriteService;
 import com.twlone.service.FollowService;
 import com.twlone.service.HashTagService;
-import com.twlone.service.MediaService;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
@@ -56,6 +55,19 @@ public class UserPostController {
         this.followService = service3;
         this.favoriteService = service4;
         this.hashtagService = service5;
+    }
+
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.OK)
+    public void postUser(@AuthenticationPrincipal UserDetail userDetail, PostUserDTO postUser) {
+        User user = userDetail.getUser();
+        if (!postUser.isBlankName())
+            user.setName(postUser.getName());
+        if (!postUser.isBlankUserId())
+            user.setUserId((postUser.getUserId()));
+        if (!postUser.isBlankDescription())
+            user.setDescription(postUser.getDescription());
+        userService.saveUser(user);
     }
 
     @PostMapping("/tw")

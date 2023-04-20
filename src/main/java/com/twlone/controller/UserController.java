@@ -9,9 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
+import com.twlone.dto.PostUserDTO;
 import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.User;
@@ -30,6 +33,12 @@ public class UserController {
         this.twService = service2;
     }
 
+    @GetMapping("/")
+    @ResponseBody
+    public Boolean checkDuplication(@RequestParam String userId) {
+        return userService.getExistsByUserId(userId);
+    }
+
     @GetMapping("/{userId}")
     public String getUser(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("userId") String id,
             Model model) {
@@ -42,8 +51,11 @@ public class UserController {
             User loggedUser = userDetail.getUser();
             model.addAttribute("logged", loggedUser);
             model.addAttribute("postTw", new PostTwDTO());
-            if (loggedUser.getUserId() != userDTO.getUserId())
+            if (!(loggedUser.getUserId()).equals(userDTO.getUserId())) {
                 userDTO.setIsFollow(userService.getBooleanFollowBySourceUserAndTargetUserID(loggedUser, userDTO));
+            } else {
+                model.addAttribute("postUser", new PostUserDTO(loggedUser.getId()));
+            }
             userDTO.setTwList(twService.getTwDTOListByUserDTO(userDTO, loggedUser));
             model.addAttribute("user", userDTO);
         } else {
