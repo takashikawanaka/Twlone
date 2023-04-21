@@ -8,8 +8,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.twlone.dto.TwDTO;
@@ -19,10 +25,14 @@ import com.twlone.entity.HashTag;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.repository.TwRepository;
+import com.twlone.repository.TwSpecification;
 
 @Service
 public class TwService {
     private final TwRepository twRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private final UserService userService;
 
@@ -34,9 +44,9 @@ public class TwService {
 
         this.userService = service;
 
-        this.symbol = "!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~";
+        this.symbol = "!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^`{|}~";
         this.pattern = Pattern
-                .compile("((?<!#)#|(?<!@)@)(([^\\s" + symbol + "]*[^\\s\\d" + symbol + "][^\\s" + symbol + "]*)+)");
+                .compile("((?<!#)#|(?<!@)@)(([^\\s_" + symbol + "]*[^\\s\\d" + symbol + "][^\\s_" + symbol + "]*)+)");
     }
 
     public Optional<Tw> getTwById(Integer id) {
@@ -75,16 +85,36 @@ public class TwService {
                 .collect(Collectors.toList());
     }
 
-    public List<TwDTO> getTwDTOListByContent(String text) {
-        System.out.println("%" + text + "%");
-        return twRepository.findTwDTODTOLIstByText("%" + text + "%")
+    private List<TwDTODTO> getTwDTODTOListByContent(String word) {
+        Specification<Tw> specification = null;
+        for (String str : word.split("( |　)")) {
+            Specification<Tw> twSpecification = TwSpecification.wordConatins(str);
+            specification = (specification == null) ? twSpecification : specification.and(twSpecification);
+        }
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
+        Root<Tw> root = query.from(Tw.class);
+        query.select(builder.construct(TwDTODTO.class, root.get("id"), root.get("content"), root.get("user"),
+                (root.get("reTw")).get("id"), (root.get("replyTw")).get("id"), root.get("createdAt"),
+                builder.size(root.get("reTwList")), builder.size(root.get("replyTwList")),
+                builder.size(root.get("favoriteList")), builder.size(root.get("mediaList")),
+                builder.size(root.get("hashtagList"))));
+        query.where(specification.toPredicate(root, query, builder));
+        query.orderBy(builder.desc(root.get("id")));
+
+        return (em.createQuery(query)).getResultList();
+    }
+
+    public List<TwDTO> getTwDTOListByContent(String word) {
+        return this.getTwDTODTOListByContent(word)
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
                 .collect(Collectors.toList());
     }
 
-    public List<TwDTO> getTwDTOListByContent(String text, User user) {
-        return twRepository.findTwDTODTOLIstByText("%" + text + "%")
+    public List<TwDTO> getTwDTOListByContent(String word, User user) {
+        return this.getTwDTODTOListByContent(word)
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
                 .collect(Collectors.toList());
@@ -109,6 +139,9 @@ public class TwService {
             case '#':
                 yield List.of("hashtag", matcher.group(2));
             case '@':
+                // Can't catch taro_yamada
+                System.out.println(str.substring(1));
+                System.out.println((userService.getExistsByUserId(str.substring(1))));
                 if ((userService.getExistsByUserId(str.substring(1))))
                     yield List.of("reply", matcher.group(2));
                 else
