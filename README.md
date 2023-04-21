@@ -5,6 +5,8 @@
 
 
 ## 実行方法
+### テストに使用しているユーザー
+ID:`test`, Pass:`ktaro`
 ### CSSの解決(どちらか一方)
 `/src/main/resources/templates/fragment/header.html`の修正
 ``` HTML
