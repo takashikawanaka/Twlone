@@ -3,6 +3,9 @@ package com.twlone.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.criteria.Expression;
+
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -34,10 +37,4 @@ public interface TwRepository extends JpaRepository<Tw, Integer>, JpaSpecificati
 
     @Query("SELECT COUNT(f) = 1 FROM Favorite f WHERE f.tw.id = ?1 AND f.user = ?2")
     Boolean existsFavoriteByTwIDAndUser(Integer twid, User user);
-
-    @Query("SELECT new com.twlone.dto.TwDTODTO(r.tw.id, r.tw.content, r.tw.user, r.tw.reTw.id, r.tw.replyTw.id, r.tw.createdAt,"
-            + "SIZE(r.tw.reTwList), SIZE(r.tw.replyTwList), SIZE(r.tw.favoriteList), SIZE(r.tw.mediaList), SIZE(r.tw.hashtagList))"
-            + "FROM RelatedTwHashTag r WHERE r.hashtag = ?1 ORDER BY r.tw.id desc")
-    List<TwDTODTO> findTwDTODTOLIstByHashTag(HashTag hashtag);
-
 }

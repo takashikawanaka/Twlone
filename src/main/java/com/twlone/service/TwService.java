@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -22,8 +23,10 @@ import com.twlone.dto.TwDTO;
 import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.HashTag;
+import com.twlone.entity.RelatedTwHashTag;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
+import com.twlone.repository.RelatedTwHashTagSpecification;
 import com.twlone.repository.TwRepository;
 import com.twlone.repository.TwSpecification;
 
@@ -71,30 +74,53 @@ public class TwService {
                 .collect(Collectors.toList());
     }
 
+    private List<TwDTODTO> getTwDTODTOByHashTag(List<HashTag> hashtagList) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
+        Root<RelatedTwHashTag> root = query.from(RelatedTwHashTag.class);
+        Join<RelatedTwHashTag, Tw> join = root.join("tw");
+        Specification<RelatedTwHashTag> specification = null;
+        for (HashTag hashtag : hashtagList) {
+            Specification<RelatedTwHashTag> relatedTwHashTagSpecification = RelatedTwHashTagSpecification
+                    .hashtagEquals(hashtag);
+            specification = (specification == null) ? relatedTwHashTagSpecification
+                    : specification.or(relatedTwHashTagSpecification);
+        }
+        specification = specification.and(RelatedTwHashTagSpecification.deleteFlagEquals(0));
+        query.select(builder.construct(TwDTODTO.class, join.get("id"), join.get("content"), join.get("user"),
+                (join.get("reTw")).get("id"), (join.get("replyTw")).get("id"), join.get("createdAt"),
+                builder.size(join.get("reTwList")), builder.size(join.get("replyTwList")),
+                builder.size(join.get("favoriteList")), builder.size(join.get("mediaList")),
+                builder.size(join.get("hashtagList"))));
+        query.where(specification.toPredicate(root, query, builder));
+        query.orderBy(builder.desc(root.get("id")));
+        return (em.createQuery(query)).getResultList();
+    }
+
     public List<TwDTO> getTwDTOListByHashTag(HashTag hashtag) {
-        return twRepository.findTwDTODTOLIstByHashTag(hashtag)
+        return this.getTwDTODTOByHashTag(List.of(hashtag))
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
                 .collect(Collectors.toList());
     }
 
     public List<TwDTO> getTwDTOListByHashTag(HashTag hashtag, User user) {
-        return twRepository.findTwDTODTOLIstByHashTag(hashtag)
+        return this.getTwDTODTOByHashTag(List.of(hashtag))
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
                 .collect(Collectors.toList());
     }
 
-    private List<TwDTODTO> getTwDTODTOListByContent(String word) {
+    private List<TwDTODTO> getTwDTODTOByWord(String word) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
+        Root<Tw> root = query.from(Tw.class);
         Specification<Tw> specification = null;
         for (String str : word.split("( |　)")) {
             Specification<Tw> twSpecification = TwSpecification.wordConatins(str);
             specification = (specification == null) ? twSpecification : specification.and(twSpecification);
         }
-
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
-        Root<Tw> root = query.from(Tw.class);
+        specification = specification.and(TwSpecification.deleteFlagEquals(0));
         query.select(builder.construct(TwDTODTO.class, root.get("id"), root.get("content"), root.get("user"),
                 (root.get("reTw")).get("id"), (root.get("replyTw")).get("id"), root.get("createdAt"),
                 builder.size(root.get("reTwList")), builder.size(root.get("replyTwList")),
@@ -107,14 +133,14 @@ public class TwService {
     }
 
     public List<TwDTO> getTwDTOListByContent(String word) {
-        return this.getTwDTODTOListByContent(word)
+        return this.getTwDTODTOByWord(word)
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
                 .collect(Collectors.toList());
     }
 
     public List<TwDTO> getTwDTOListByContent(String word, User user) {
-        return this.getTwDTODTOListByContent(word)
+        return this.getTwDTODTOByWord(word)
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
                 .collect(Collectors.toList());
@@ -139,9 +165,6 @@ public class TwService {
             case '#':
                 yield List.of("hashtag", matcher.group(2));
             case '@':
-                // Can't catch taro_yamada
-                System.out.println(str.substring(1));
-                System.out.println((userService.getExistsByUserId(str.substring(1))));
                 if ((userService.getExistsByUserId(str.substring(1))))
                     yield List.of("reply", matcher.group(2));
                 else

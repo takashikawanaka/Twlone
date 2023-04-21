@@ -13,4 +13,10 @@ public class TwSpecification {
             return builder.like(lowerContent, '%' + word.toLowerCase() + '%');
         };
     }
+
+    public static Specification<Tw> deleteFlagEquals(Integer flag) {
+        return (root, query, builder) -> {
+            return builder.equal(root.get("deleteFlag"), flag);
+        };
+    }
 }
