@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -23,10 +22,8 @@ import com.twlone.dto.TwDTO;
 import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.HashTag;
-import com.twlone.entity.RelatedTwHashTag;
 import com.twlone.entity.Tw;
 import com.twlone.entity.User;
-import com.twlone.repository.RelatedTwHashTagSpecification;
 import com.twlone.repository.TwRepository;
 import com.twlone.repository.TwSpecification;
 
@@ -38,14 +35,15 @@ public class TwService {
     private EntityManager em;
 
     private final UserService userService;
-
+    private final HashTagService hashtagService;
     private String symbol;
     private Pattern pattern;
 
-    public TwService(TwRepository repository, UserService service) {
+    public TwService(TwRepository repository, UserService service, HashTagService service2) {
         this.twRepository = repository;
 
         this.userService = service;
+        this.hashtagService = service2;
 
         this.symbol = "!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^`{|}~";
         this.pattern = Pattern
@@ -74,49 +72,12 @@ public class TwService {
                 .collect(Collectors.toList());
     }
 
-    private List<TwDTODTO> getTwDTODTOByHashTag(List<HashTag> hashtagList) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
-        Root<RelatedTwHashTag> root = query.from(RelatedTwHashTag.class);
-        Join<RelatedTwHashTag, Tw> join = root.join("tw");
-        Specification<RelatedTwHashTag> specification = null;
-        for (HashTag hashtag : hashtagList) {
-            Specification<RelatedTwHashTag> relatedTwHashTagSpecification = RelatedTwHashTagSpecification
-                    .hashtagEquals(hashtag);
-            specification = (specification == null) ? relatedTwHashTagSpecification
-                    : specification.or(relatedTwHashTagSpecification);
-        }
-        specification = specification.and(RelatedTwHashTagSpecification.deleteFlagEquals(0));
-        query.select(builder.construct(TwDTODTO.class, join.get("id"), join.get("content"), join.get("user"),
-                (join.get("reTw")).get("id"), (join.get("replyTw")).get("id"), join.get("createdAt"),
-                builder.size(join.get("reTwList")), builder.size(join.get("replyTwList")),
-                builder.size(join.get("favoriteList")), builder.size(join.get("mediaList")),
-                builder.size(join.get("hashtagList"))));
-        query.where(specification.toPredicate(root, query, builder));
-        query.orderBy(builder.desc(root.get("id")));
-        return (em.createQuery(query)).getResultList();
-    }
-
-    public List<TwDTO> getTwDTOListByHashTag(HashTag hashtag) {
-        return this.getTwDTODTOByHashTag(List.of(hashtag))
-                .stream()
-                .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
-                .collect(Collectors.toList());
-    }
-
-    public List<TwDTO> getTwDTOListByHashTag(HashTag hashtag, User user) {
-        return this.getTwDTODTOByHashTag(List.of(hashtag))
-                .stream()
-                .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
-                .collect(Collectors.toList());
-    }
-
     private List<TwDTODTO> getTwDTODTOByWord(String word) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
         Root<Tw> root = query.from(Tw.class);
         Specification<Tw> specification = null;
-        for (String str : word.split("( |　)")) {
+        for (String str : word.split("( |　|,)")) {
             Specification<Tw> twSpecification = TwSpecification.wordConatins(str);
             specification = (specification == null) ? twSpecification : specification.and(twSpecification);
         }
@@ -132,15 +93,46 @@ public class TwService {
         return (em.createQuery(query)).getResultList();
     }
 
-    public List<TwDTO> getTwDTOListByContent(String word) {
-        return this.getTwDTODTOByWord(word)
+    public List<TwDTODTO> getTwDTODTOListByWord(String word) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
+        Root<Tw> root = query.from(Tw.class);
+        Specification<Tw> specification = TwSpecification.deleteFlagEquals(0);
+        for (String str : word.split("( |　|,|、)")) {
+            switch (str) {
+            case "#": {
+                System.out.println(str);
+                Optional<HashTag> hashtag = hashtagService.getHashTagByName(str.substring(1));
+                if (hashtag.isPresent())
+                    specification = specification.and(TwSpecification.hashtagEquals(hashtag.get()));
+                break;
+            }
+            case "@": {
+                break;
+            }
+            default:
+                specification = specification.and(TwSpecification.wordConatins(str));
+            }
+        }
+        query.select(builder.construct(TwDTODTO.class, root.get("id"), root.get("content"), root.get("user"),
+                (root.get("reTw")).get("id"), (root.get("replyTw")).get("id"), root.get("createdAt"),
+                builder.size(root.get("reTwList")), builder.size(root.get("replyTwList")),
+                builder.size(root.get("favoriteList")), builder.size(root.get("mediaList")),
+                builder.size(root.get("hashtagList"))));
+        query.where(specification.toPredicate(root, query, builder));
+        query.orderBy(builder.desc(root.get("id")));
+        return (em.createQuery(query)).getResultList();
+    }
+
+    public List<TwDTO> getTwDTOListByWord(String word) {
+        return this.getTwDTODTOListByWord(word)
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
                 .collect(Collectors.toList());
     }
 
-    public List<TwDTO> getTwDTOListByContent(String word, User user) {
-        return this.getTwDTODTOByWord(word)
+    public List<TwDTO> getTwDTOListByWord(String word, User user) {
+        return this.getTwDTODTOListByWord(word)
                 .stream()
                 .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
                 .collect(Collectors.toList());

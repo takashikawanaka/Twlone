@@ -3,7 +3,6 @@ package com.twlone.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 
 import lombok.Data;
