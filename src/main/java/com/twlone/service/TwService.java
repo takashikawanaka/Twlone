@@ -81,7 +81,6 @@ public class TwService {
         Specification<Tw> specification = TwSpecification.deleteFlagEquals(0);
         Boolean isQuery = false;
         for (String str : word.split("( |　|,|、)")) {
-            System.out.println(str);
             switch (str.charAt(0)) {
             case '#':
                 Optional<HashTag> hashtag = hashtagService.getHashTagByName(str.substring(1));
