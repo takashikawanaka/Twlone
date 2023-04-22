@@ -25,7 +25,7 @@ public class TwSpecification {
 
     public static Specification<Tw> hashtagEquals(HashTag hashtag) {
         return (root, query, builder) -> {
-            Join<Tw, RelatedTwHashTag> join = root.join("related_tw_hashtag");
+            Join<Tw, RelatedTwHashTag> join = root.join("hashtagList");
             return builder.equal(join.get("hashtag"), hashtag);
         };
     }

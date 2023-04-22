@@ -24,7 +24,7 @@ function postTw(form) {
         console.error('Error: The content exceeds the 280 character limit.');
         return;
     }
-    const regexp = /(?<!#)#(([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*[^\s\d!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~][^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*)+)/g
+    const regexp = /(?<!#)#(([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^`{|}~]*[^\s\d!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^`{|}~][^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^`{|}~]*)+)/g
     formData.append('hashTag', [...formData.get('content').matchAll(regexp)].map((item) => item[1]));
     formData.delete('mediaInput');
     fetch(baseURL() + '/user/tw', {

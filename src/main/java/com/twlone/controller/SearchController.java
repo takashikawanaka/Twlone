@@ -37,10 +37,11 @@ public class SearchController {
             @RequestParam(name = "word", required = false) String word, Model model) {
         if (word == null)
             return "search";
-        model.addAttribute("twList", (userDetail == null) ? twService.getTwDTOListByWord(word)
-                : twService.getTwDTOListByWord(word, userDetail.getUser()));
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
+            model.addAttribute("twList", twService.getTwDTOListByWord(word, userDetail.getUser()));
+        } else {
+            model.addAttribute("twList", twService.getTwDTOListByWord(word));
         }
         return "search";
     }

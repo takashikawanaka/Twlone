@@ -72,48 +72,33 @@ public class TwService {
                 .collect(Collectors.toList());
     }
 
-    private List<TwDTODTO> getTwDTODTOByWord(String word) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
-        Root<Tw> root = query.from(Tw.class);
-        Specification<Tw> specification = null;
-        for (String str : word.split("( |　|,)")) {
-            Specification<Tw> twSpecification = TwSpecification.wordConatins(str);
-            specification = (specification == null) ? twSpecification : specification.and(twSpecification);
-        }
-        specification = specification.and(TwSpecification.deleteFlagEquals(0));
-        query.select(builder.construct(TwDTODTO.class, root.get("id"), root.get("content"), root.get("user"),
-                (root.get("reTw")).get("id"), (root.get("replyTw")).get("id"), root.get("createdAt"),
-                builder.size(root.get("reTwList")), builder.size(root.get("replyTwList")),
-                builder.size(root.get("favoriteList")), builder.size(root.get("mediaList")),
-                builder.size(root.get("hashtagList"))));
-        query.where(specification.toPredicate(root, query, builder));
-        query.orderBy(builder.desc(root.get("id")));
-
-        return (em.createQuery(query)).getResultList();
-    }
-
     public List<TwDTODTO> getTwDTODTOListByWord(String word) {
+        if (word.isBlank())
+            return new ArrayList<TwDTODTO>();
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<TwDTODTO> query = builder.createQuery(TwDTODTO.class);
         Root<Tw> root = query.from(Tw.class);
         Specification<Tw> specification = TwSpecification.deleteFlagEquals(0);
+        Boolean isQuery = false;
         for (String str : word.split("( |　|,|、)")) {
-            switch (str) {
-            case "#": {
-                System.out.println(str);
+            System.out.println(str);
+            switch (str.charAt(0)) {
+            case '#':
                 Optional<HashTag> hashtag = hashtagService.getHashTagByName(str.substring(1));
-                if (hashtag.isPresent())
+                if (hashtag.isPresent()) {
                     specification = specification.and(TwSpecification.hashtagEquals(hashtag.get()));
+                    isQuery = true;
+                }
                 break;
-            }
-            case "@": {
+            case '@':
                 break;
-            }
             default:
                 specification = specification.and(TwSpecification.wordConatins(str));
+                isQuery = true;
             }
         }
+        if (!isQuery)
+            return new ArrayList<TwDTODTO>();
         query.select(builder.construct(TwDTODTO.class, root.get("id"), root.get("content"), root.get("user"),
                 (root.get("reTw")).get("id"), (root.get("replyTw")).get("id"), root.get("createdAt"),
                 builder.size(root.get("reTwList")), builder.size(root.get("replyTwList")),
