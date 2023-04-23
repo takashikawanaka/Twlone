@@ -33,4 +33,10 @@ public interface TwRepository extends JpaRepository<Tw, Integer>, JpaSpecificati
 
     @Query("SELECT COUNT(f) = 1 FROM Favorite f WHERE f.tw.id = ?1 AND f.user = ?2")
     Boolean existsFavoriteByTwIDAndUser(Integer twid, User user);
+
+    @Query("SELECT new com.twlone.dto.TwDTODTO(t.id, t.content, t.user, t.reTw.id, t.replyTw.id, t.createdAt,"
+            + "SIZE(t.reTwList), SIZE(t.replyTwList), SIZE(t.favoriteList), SIZE(t.mediaList), SIZE(t.hashtagList))"
+            + "FROM Tw t WHERE t.replyTw IS NULL AND t.deleteFlag = 0"
+            + "AND t.user = ?1 OR t.user IN (SELECT f.targetUser FROM Follow f WHERE f.sourceUser = ?1) ORDER BY t.id desc")
+    List<TwDTODTO> findFollowingTw(User user);
 }

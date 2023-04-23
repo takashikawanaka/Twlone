@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.twlone.dto.TwDTO;
 import com.twlone.entity.Authorization;
 import com.twlone.entity.User;
 import com.twlone.service.AuthorizationService;
+import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 
@@ -28,23 +30,27 @@ import com.twlone.service.UserService;
 public class IndexController {
     private final AuthorizationService authorizationService;
     private final UserService userService;
+    private final TwService twService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public IndexController(AuthorizationService service, UserService service2) {
+    public IndexController(AuthorizationService service, UserService service2, TwService service3) {
         this.authorizationService = service;
         this.userService = service2;
+        this.twService = service3;
     }
 
     @GetMapping("/")
-    public String index(@RequestParam(name = "redirect", required = false, defaultValue = "true") Boolean redirect,
-            HttpSession session, Model model) {
+    public String index(@AuthenticationPrincipal UserDetail userDetail, HttpSession session, Model model,
+            @RequestParam(name = "redirect", required = false, defaultValue = "true") Boolean redirect) {
         String url = (String) session.getAttribute("loginReferer");
         if (redirect && url != null && !url.equals("login")) {
             session.removeAttribute("loginReferer");
             return "redirect:" + "/" + url;
         }
+        List<TwDTO> twList = twService.getFollowingTw(userDetail.getUser());
+        model.addAttribute("twList", twList);
         // Will Remove
         List<User> userlist = userService.getUserList();
         model.addAttribute("userlist", userlist);

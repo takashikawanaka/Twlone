@@ -58,6 +58,13 @@ public class TwService {
         return twRepository.findTwDTODTOById(id);
     }
 
+    public List<TwDTO> getFollowingTw(User user) {
+        return twRepository.findFollowingTw(user)
+                .stream()
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
+                .collect(Collectors.toList());
+    }
+
     public List<TwDTO> getTwDTOListByUserDTO(UserDTO user) {
         return twRepository.findTwDTODTOListByUserDTO(user.getId())
                 .stream()
@@ -127,6 +134,7 @@ public class TwService {
         twRepository.save(tw);
     }
 
+    // Split HashTag And Reply
     private List<List<String>> splitContent(Integer count, String content) {
         if (content.isEmpty())
             return List.of(List.of());
