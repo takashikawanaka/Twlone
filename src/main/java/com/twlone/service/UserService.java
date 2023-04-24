@@ -1,7 +1,9 @@
 package com.twlone.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -23,6 +25,16 @@ public class UserService {
     // Will Remove
     public List<User> getUserList() {
         return userRepository.findAll();
+    }
+
+    public List<MiniUserDTO> getUserListByRandomId() {
+        Integer count = userRepository.countUser();
+        Random random = new Random();
+        List<Integer> randomList = new ArrayList<>();
+        for (Integer i = 0; i < 4; i++) {
+            randomList.add(random.nextInt(count) + 1);
+        }
+        return userRepository.findUserListByRandomId(randomList);
     }
 
     public Boolean getExistsByUserId(String userId) {
@@ -47,10 +59,6 @@ public class UserService {
     }
 
     public MiniUserDTO convertMiniUserDTO(User user) {
-        return MiniUserDTO.builder()
-                .userId(user.getUserId())
-                .name(user.getName())
-                .icon(user.getIcon())
-                .build();
+        return new MiniUserDTO(user.getUserId(), user.getName(), user.getIcon());
     }
 }
