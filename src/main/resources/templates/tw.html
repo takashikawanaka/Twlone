@@ -10,9 +10,9 @@
 <script th:src="@{/js/utils.js}"></script>
 </head>
 <body class="w-full h-full grid justify-items-center bg-neutral-200">
-  <div id="main" class="min-h-screen grid grid-cols-2 auto-rows-auto" style="grid-template-columns: 80px minmax(295px, 664px) 0px;">
+  <article id="main" class="min-h-screen grid grid-cols-2 auto-rows-auto" style="grid-template-columns: 80px minmax(295px, 664px) 0px;">
     <header th:replace="fragment/header::header"></header>
-    <section id="main_content" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+    <article id="main_content" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section class="px-5 pt-5 border-b-2 border-neutral-300 shadow">
         <div id="tw_replytw" th:if="${twDTO.replyTw} != null">
           <div th:replace="fragment/part::tw(${twDTO.replyTw}, true)"></div>
@@ -67,7 +67,7 @@
           <div class="py-3" th:insert="fragment/part::tw(${replyTw}, false)"></div>
         </div>
       </section>
-    </section>
-  </div>
+    </article>
+  </article>
 </body>
 </html>

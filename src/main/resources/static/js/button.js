@@ -25,9 +25,6 @@ function openReTw(node) {
     utils.twFormUtils.showReTw(node.dataset.id);
 }
 
-// Remove Form Preview Media
-function deleteMedia(preview) { utils.twFormUtils.deletePreview(preview); }
-
 function closeWindow() {
     const scroll = window.scrollY;
     location.hash = '';

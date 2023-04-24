@@ -13,7 +13,7 @@
 <body class="w-full h-full grid justify-items-center bg-neutral-200">
   <div id="main" class="min-h-screen grid grid-cols-2 auto-rows-auto" style="grid-template-columns: 80px minmax(295px, 664px) 0px;">
     <header th:replace="fragment/header::header"></header>
-    <section id="main_content" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
+    <article id="main_content" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section id="search_bar" class="px-5 pt-5 pb-3 border-b-2 shadow rounded-t-3xl">
         <form method="get" th:action="@{/search}" class="flex items-center">
           <span class="material-icons-outlined" style="font-size: 24px;"> search </span> <input type="search" id="search_input" name="word"
@@ -33,7 +33,7 @@
           <div class="pt-1 pb-3" th:insert="fragment/part::tw(${tw.reTw != null && #lists.isEmpty(tw.content[0]) && #lists.isEmpty(tw.mediaList)} ? ${tw.reTw} : ${tw}, false)"></div>
         </section>
       </section>
-    </section>
+    </article>
   </div>
 </body>
 </html>

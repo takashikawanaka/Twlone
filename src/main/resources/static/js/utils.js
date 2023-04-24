@@ -1,3 +1,18 @@
+window.addEventListener('load', () => {
+    utils.domUtils = new DomUtils();
+    if (checkAuthenticated()) {
+        utils.twFormUtils = new TwFormUtils();
+    }
+})
+
+class utils {
+    static domUtils;
+    static twFormUtils;
+    static profile;
+    static search;
+    static homeTwFormUtils;
+}
+
 class DomUtils {
     constructor() { this.parser = new DOMParser(); }
 
@@ -15,8 +30,9 @@ class DomUtils {
 }
 
 class WordCounter {
-    constructor() {
-        [this.area, this.progress, this.value] = utils.domUtils.getElementListByIdList('content', 'progress', 'value');
+    constructor(content, progress, value, height) {
+        [this.area, this.progress, this.value] = utils.domUtils.getElementListByIdList(content, progress, value);
+        this.height = height;
         this.color = (percent) => {
             if (percent < 0.5) return 'rgb(14, 165, 233)' //bg-sky-500
             else if (percent < 1) return 'rgb(245, 158, 11)' //bg-amber-500
@@ -26,9 +42,9 @@ class WordCounter {
         this.area.addEventListener('input', () => this.refreshCounter());
     }
 
-    setCounter(height, per, lenght) {
-        if (height == 160) {
-            this.area.style.height = '160px';
+    setCounter(per, lenght) {
+        if (this.area.scrollHeight < this.height) {
+            this.area.style.height = this.height;
         } else {
             this.area.style.height = 'auto';
             this.area.style.height = `${this.area.scrollHeight}px`;
@@ -37,14 +53,14 @@ class WordCounter {
         this.value.textContent = 280 - lenght;
     }
 
-    refreshCounter() { this.setCounter((this.area.scrollHeight < 160 ? 160 : this.area.scrollHeight), this.area.value.length / 280, this.area.value.length); }
+    refreshCounter() { this.setCounter(this.area.value.length / 280, this.area.value.length); }
 
-    clearCounter() { this.setCounter(160, 0, 0); }
+    clearCounter() { this.setCounter(0, 0); }
 }
 
 class MediaPreview {
-    constructor() {
-        [this.mediaInput, this.preview] = utils.domUtils.getElementListByIdList('mediaInput', 'preview');
+    constructor(mediaInput, preview) {
+        [this.mediaInput, this.preview] = utils.domUtils.getElementListByIdList(mediaInput, preview);
         this.parser = new DomUtils();
         this.mediaInput.addEventListener('change', e => {
             const { files } = e.target;
@@ -60,7 +76,7 @@ class MediaPreview {
                 //Fix Size Responsive
                 const div = this.parser.parseFromString(`<div class="h-24 relative overflow-hidden">`);
                 const img = this.parser.parseFromString(`<img class="object-contain h-24">`);
-                const button = this.parser.parseFromString(`<button type="button" onclick="deleteMedia(this.parentElement)" class="absolute top-0 right-0"> <span class="material-icons-round" style="font-size: 36px;">cancel</span></button>`);
+                const button = this.parser.parseFromString(`<button type="button" onclick="deletePreview(this.parentElement)" class="absolute top-0 right-0"> <span class="material-icons-round" style="font-size: 36px;">cancel</span></button>`);
                 const dom = this.parser.parseFromString(`<input type="file" id="file${i}" name="media" style="display: none;">`);
                 dom.files = dt.files;
                 div.appendChild(img);
@@ -75,24 +91,22 @@ class MediaPreview {
         }, false)
     }
 
-    clearPreview() { while (this.preview.firstChild) this.preview.removeChild(this.preview.firstChild); }
+    clearPreview() { while (this.preview.firstChild) this.deletePreview(this.preview.firstChild); }
 
-    deleteMedia(preview) { preview.remove(); }
+    deletePreview(preview) { preview.remove(); }
 }
 
 class TwFormUtils {
     constructor() {
         [this.content, this.form] = utils.domUtils.getElementListByIdList('content', 'tw_form');
-        this.wordCounter = new WordCounter();
-        this.mediaPreview = new MediaPreview();
+        this.wordCounter = new WordCounter('content', 'progress', 'value', 162);
+        this.mediaPreview = new MediaPreview('mediaInput', 'preview');
         this.reTwUtil = new ReTwUtil();
         this.replyTwUtil = new ReplyTwUtil();
         [this.isReTw, this.isReplyTw] = [false, false];
     }
 
     openTw() { location.hash = 'tw'; }
-
-    removePreview() { this.mediaPreview.clearPreview(); }
 
     deletePreview(preview) { this.mediaPreview.deletePreview(preview); }
 
@@ -127,6 +141,29 @@ class TwFormUtils {
             this.replyTwUtil.removeReplyTw();
             this.isReplyTw = false;
         }
+    }
+
+    postTw(form) {
+        const formData = new FormData(form);
+        if (280 < formData.get('content').length) {
+            console.error('Error: The content exceeds the 280 character limit.');
+            return;
+        }
+        const regexp = /(?<!#)#(([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*[^\s\d!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^`{|}~][^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*)+)/g
+        const hashtagList = [...formData.get('content').matchAll(regexp)].map((item) => item[1])
+        if (0 < hashtagList.length) formData.append('hashtag', hashtagList);
+        formData.delete('mediaInput');
+        fetch(baseURL() + '/user/tw', {
+            method: "POST",
+            body: formData
+        }).then((res) => {
+            if (!res.ok) {
+                console.error('Error: The post has failed.');
+                return;
+            }
+            closeWindow(); //ReWrite
+            this.cleanUp();
+        });
     }
 }
 
@@ -272,9 +309,8 @@ class ReplyTwUtil {
     }
 }
 
-class utils {
-    static domUtils;
-    static twFormUtils;
-    static profile;
-    static search;
-}
+function clearTwForm() { utils.twFormUtils.cleanUp(); }
+
+function deletePreview(preview) { utils.twFormUtils.deletePreview(preview); }
+
+function postTw(form) { utils.twFormUtils.postTw(form); }

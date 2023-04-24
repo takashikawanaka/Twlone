@@ -77,10 +77,9 @@ public class UserPostController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         Tw tw = new Tw(userDetail.getUser());
         if (!postTw.isBlankContent()) {
-            Optional<List<String>> hashtagList = postTw.getHashTag();
-            if (hashtagList.isPresent()) {
+            if (postTw.existsHashTag()) {
                 List<RelatedTwHashTag> relatedTwHashTagList = new ArrayList<>();
-                for (String name : hashtagList.get()) {
+                for (String name : postTw.getHashtag()) {
                     HashTag hashtag = hashtagService.getHashTagByName(name)
                             .orElseGet(() -> hashtagService.saveHashTag(new HashTag(name)));
                     relatedTwHashTagList.add(new RelatedTwHashTag(tw, hashtag));
@@ -89,28 +88,21 @@ public class UserPostController {
             }
             tw.setContent(postTw.getContent());
         }
-        Optional<Integer> reTwID = postTw.getReTwID();
-        if (reTwID.isPresent()) {
-            Optional<Tw> retw = twService.getTwById(reTwID.get());
-            if (!retw.isPresent()) {
+        if (postTw.existsReTwId()) {
+            Optional<Tw> retw = twService.getTwById(postTw.getReTwID());
+            if (!retw.isPresent())
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
             tw.setReTw(retw.get());
         }
-        Optional<Integer> replyTwID = postTw.getReplyTwID();
-        if (replyTwID.isPresent()) {
-            Optional<Tw> replytw = twService.getTwById(replyTwID.get());
-            if (!replytw.isPresent()) {
+        if (postTw.existsReplyTwId()) {
+            Optional<Tw> replytw = twService.getTwById(postTw.getReplyTwID());
+            if (!replytw.isPresent())
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
             tw.setReplyTw(replytw.get());
         }
-        Optional<List<MultipartFile>> medias = postTw.getMedia();
-        if (medias.isPresent()) {
+        if (postTw.existsMedia()) {
             try {
-                if (4 < (medias.get()).size())
-                    throw new IllegalArgumentException();
-                tw.setMediaList(saveMedias(medias.get(), tw));
+                tw.setMediaList(saveMedias(postTw.getMedia(), tw));
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -143,9 +135,8 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (!tw.isPresent()) {
+        if (!tw.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         (tw.get()).setDeleteFlag(1);
         twService.saveTw(tw.get());
     }
@@ -154,9 +145,8 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void postFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         Optional<User> targetUser = userService.getUserById(Integer.parseInt(id));
-        if (!targetUser.isPresent()) {
+        if (!targetUser.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         followService.saveFollow(userDetail.getUser(), targetUser.get());
     }
 
@@ -164,9 +154,8 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteFollow(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         Optional<User> targetUser = userService.getUserById(Integer.parseInt(id));
-        if (!targetUser.isPresent()) {
+        if (!targetUser.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         followService.deleteByUserAndTargetUser(userDetail.getUser(), targetUser.get());
     }
 
@@ -174,9 +163,8 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void postFavorite(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
         Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (!tw.isPresent()) {
+        if (!tw.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         favoriteService.saveFavorite(tw.get(), userDetail.getUser());
     }
 
@@ -184,9 +172,8 @@ public class UserPostController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteFavorite(@AuthenticationPrincipal UserDetail user, @RequestParam String id) {
         Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (!tw.isPresent()) {
+        if (!tw.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         favoriteService.deleteByTwAndUser(tw.get(), user.getUser());
     }
 }

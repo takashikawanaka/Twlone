@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.twlone.dto.PostTwDTO;
 import com.twlone.entity.Media;
 import com.twlone.service.MediaService;
 import com.twlone.service.TwService;
@@ -39,6 +40,7 @@ public class SearchController {
             return "search";
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
+            model.addAttribute("postTw", new PostTwDTO());
             model.addAttribute("twList", twService.getTwDTOListByWord(word, userDetail.getUser()));
         } else {
             model.addAttribute("twList", twService.getTwDTOListByWord(word));
