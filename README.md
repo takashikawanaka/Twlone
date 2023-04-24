@@ -38,7 +38,7 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 - [x] ハッシュタグの実装
 - [x] 検索の実装 
 - [x] プロフィールの編集機能
-- [ ] ホームタイムラインの実装
+- [x] ホームタイムラインの実装
 
 ### 追加実装予定
 - [ ] URLテーブルの実装・表示の実装
