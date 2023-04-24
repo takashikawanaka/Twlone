@@ -43,9 +43,8 @@ public class UserController {
     public String getUser(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("userId") String id,
             Model model) {
         Optional<UserDTO> user = userService.getUserDTOByUserId(id);
-        if (!user.isPresent()) {
+        if (!user.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         UserDTO userDTO = user.get();
         if (userDetail != null) {
             User loggedUser = userDetail.getUser();
@@ -84,9 +83,8 @@ public class UserController {
     public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("tweetId") Integer id,
             Model model) {
         Optional<TwDTODTO> twDTODTO = twService.getTwDTODTOByID(id);
-        if (!twDTODTO.isPresent()) {
+        if (!twDTODTO.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());

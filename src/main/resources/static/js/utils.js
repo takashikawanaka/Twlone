@@ -98,7 +98,7 @@ class MediaPreview {
 
 class TwFormUtils {
     constructor() {
-        [this.content, this.form] = utils.domUtils.getElementListByIdList('content', 'tw_form');
+        this.form = utils.domUtils.getElementById('tw_form');
         this.wordCounter = new WordCounter('content', 'progress', 'value', 162);
         this.mediaPreview = new MediaPreview('mediaInput', 'preview');
         this.reTwUtil = new ReTwUtil();

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.twlone.dto.TwDTO;
+import com.twlone.dto.PostTwDTO;
 import com.twlone.entity.Authorization;
 import com.twlone.entity.User;
 import com.twlone.service.AuthorizationService;
@@ -49,8 +49,10 @@ public class IndexController {
             session.removeAttribute("loginReferer");
             return "redirect:" + "/" + url;
         }
-        List<TwDTO> twList = twService.getFollowingTw(userDetail.getUser());
-        model.addAttribute("twList", twList);
+        User logged = userDetail.getUser();
+        model.addAttribute("logged", logged);
+        model.addAttribute("postTw", new PostTwDTO());
+        model.addAttribute("twList", twService.getFollowingTw(logged));
         // Will Remove
         List<User> userlist = userService.getUserList();
         model.addAttribute("userlist", userlist);
