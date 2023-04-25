@@ -14,6 +14,24 @@ body {
   margin-top: 12px;
 }
 
+.register::after, .login::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0%;
+  width: 100%;
+  height: 2px;
+  background:#666666;
+
+  transition: all .2s;
+  transform: scale(0, 1);/*X方向0、Y方向1*/
+  transform-origin: left top;
+}
+
+.register:focus-within::after, .login:focus-within::after {
+  transform: scale(1, 1);
+}
+
 [id^="medias_"] img:nth-child(1):nth-last-child(3) {
   grid-row: span 2;
 }
