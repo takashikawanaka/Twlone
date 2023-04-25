@@ -9,13 +9,14 @@
         <button type="button" class="w-12 h-12" onclick="checkOpenTw();" th:if="${#authorization.expression('isAuthenticated()')}">
           <span class="material-icons-round mx-auto" style="font-size: 48px;"> send </span>
         </button>
-        <a th:href="@{/search}" class="w-12 h-12"> <span class="material-icons-round" style="font-size: 48px;"> search </span></a>
+        <a th:href="@{/search}" class="w-12 h-12"> <span class="material-icons-round" style="font-size: 48px;"> search </span></a> <a th:href="@{/user/{id} (id=${#authentication.principal.username})}"
+          class="w-12 h-12" th:if="${#authorization.expression('isAuthenticated()')}"> <span class="material-icons-round" style="font-size: 48px;"> person </span></a>
         <form method="post" th:action="@{/logout}" class="w-12 h-12" th:if="${#authorization.expression('isAuthenticated()')}">
           <button type="submit" class="w-12 h-12">
             <span class="material-icons-round mx-auto" style="font-size: 48px;"> logout </span>
           </button>
         </form>
-        <a href="https://github.com/takashikawanaka/Twlone" class="w-12 h-12"><span class="material-icons-round" style="font-size: 48px;"> code </span></a>
+        <a href="https://github.com/takashikawanaka/Twlone" target="_blank" rel="noopener noreferrer" class="w-12 h-12"><span class="material-icons-round" style="font-size: 48px;"> code </span></a>
       </div>
     </div>
     <div id="tw" class="h-screen w-full min-w-[375px] z-10 fixed hidden justify-center items-center top-0 left-0 opacity-0 bg-neutral-900/25 target:opacity-100 target:flex" onclick="closeWindow();"

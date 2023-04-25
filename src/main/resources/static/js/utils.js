@@ -149,7 +149,7 @@ class TwFormUtils {
             console.error('Error: The content exceeds the 280 character limit.');
             return;
         }
-        const regexp = /(?<!#)#(([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*[^\s\d!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^`{|}~][^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*)+)/g
+        const regexp = /(?<!#)#([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]+[^\s\d"#$%&'()\*\+\-\.,\/:;<=>@\[\\\]^`{|}~]+[^\s"#$%&'()\*\+\-\.,\/:;<=>@\[\\\]^_`{|}~]*)/g
         const hashtagList = [...formData.get('content').matchAll(regexp)].map((item) => item[1])
         if (0 < hashtagList.length) formData.append('hashtag', hashtagList);
         formData.delete('mediaInput');

@@ -24,7 +24,7 @@ body {
   background:#666666;
 
   transition: all .2s;
-  transform: scale(0, 1);/*X方向0、Y方向1*/
+  transform: scale(0, 1);
   transform-origin: left top;
 }
 
@@ -80,7 +80,6 @@ input[type="search"]::-webkit-search-cancel-button {
   0% { transform: translateY(0px); }
   100% { transform: translateY(-50px); }
 }
-
 
 @keyframes transY-down-in {
   0% { transform: translateY(-50px); }
