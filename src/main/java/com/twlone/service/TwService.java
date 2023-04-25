@@ -48,7 +48,7 @@ public class TwService {
         // Remove _!?
         this.symbol = "\"#$%&'()\\*\\+\\-\\.,\\/:;<=>@\\[\\\\\\]^`{|}~";
         this.pattern = Pattern
-                .compile("(?<!#)#([^\\s_!?" + symbol + "]+[^\\s\\d" + symbol + "]+[^\\s_" + symbol + "]*)");
+                .compile("((?<!#)#|(?<!@)@)([^\\s_!?" + symbol + "]+[^\\s\\d" + symbol + "]+[^\\s_" + symbol + "]*)");
     }
 
     public Optional<Tw> getTwById(Integer id) {
@@ -148,10 +148,10 @@ public class TwService {
             String str = matcher.group();
             splitList.add(switch (str.charAt(0)) {
             case '#':
-                yield List.of("hashtag", matcher.group(1));
+                yield List.of("hashtag", matcher.group(2));
             case '@':
                 if ((userService.getExistsByUserId(str.substring(1))))
-                    yield List.of("reply", matcher.group(1));
+                    yield List.of("reply", matcher.group(2));
                 else
                     yield List.of("none", matcher.group());
             default: // Rewrite
