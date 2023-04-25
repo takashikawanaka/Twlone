@@ -109,8 +109,10 @@ function postFavorite(node, hasCounter) {
     if (node.firstElementChild.textContent == 'favorite') {
         postCSRF(baseURL() + '/user/unfavorite', id, (_) => {
             const span = node.firstElementChild;
+            span.style.animationName = '';
             span.textContent = 'favorite_border';
-            span.className = 'material-icons-outlined';
+            span.classList.remove('text-rose-600');
+
             if (hasCounter) {
                 const p = node.nextElementSibling;
                 p.textContent = parseInt(p.textContent) - 1;
@@ -119,8 +121,9 @@ function postFavorite(node, hasCounter) {
     } else {
         postCSRF(baseURL() + '/user/favorite', id, (_) => {
             const span = node.firstElementChild;
+            span.style.animationName = 'fav-scale';
             span.textContent = 'favorite';
-            span.className = 'material-icons-outlined text-rose-600';
+            span.classList.add('text-rose-600');
             if (hasCounter) {
                 const p = node.nextElementSibling;
                 p.textContent = parseInt(p.textContent) + 1;

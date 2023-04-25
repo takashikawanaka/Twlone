@@ -17,7 +17,7 @@
     </div>
     <div class="flex space-x-1 items-center">
       <button type="button" th:attr="data-id=*{id}" onclick="postFavorite(this, true);" class="flex items-center">
-        <span class="material-icons-outlined" th:classappend="*{isFavorite} ? text-rose-600 : ''" style="font-size: 18px;" th:text="*{isFavorite} ? favorite : favorite_border"></span>
+        <span class="material-icons-outlined" th:classappend="*{isFavorite} ? text-rose-600 : ''" style="font-size: 18px; animation-duration: 250ms;" th:text="*{isFavorite} ? favorite : favorite_border"></span>
       </button>
       <p class="pt-1" th:text="*{favoriteListSize}"></p>
     </div>

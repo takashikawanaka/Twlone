@@ -36,14 +36,14 @@ public class SearchController {
     @GetMapping("/search")
     public String index(@AuthenticationPrincipal UserDetail userDetail,
             @RequestParam(name = "word", required = false) String word, Model model) {
-        if (word == null)
-            return "search";
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("twList", twService.getTwDTOListByWord(word, userDetail.getUser()));
+            if (word != null)
+                model.addAttribute("twList", twService.getTwDTOListByWord(word, userDetail.getUser()));
         } else {
-            model.addAttribute("twList", twService.getTwDTOListByWord(word));
+            if (word != null)
+                model.addAttribute("twList", twService.getTwDTOListByWord(word));
         }
         return "search";
     }

@@ -61,7 +61,7 @@ public class TwService {
     public List<TwDTO> getFollowingTw(User user) {
         return twRepository.findFollowingTw(user)
                 .stream()
-                .map((twDTODTO) -> this.convertTwDTO(twDTODTO))
+                .map((twDTODTO) -> this.convertTwDTO(twDTODTO, user))
                 .collect(Collectors.toList());
     }
 
