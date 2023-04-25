@@ -15,11 +15,11 @@
       </button>
       <p class="pt-1" th:text="*{reTwListSize}"></p>
     </div>
-    <div class="flex space-x-1 items-center">
+    <div class="flex space-x-1 items-center overflow-hidden">
       <button type="button" th:attr="data-id=*{id}" onclick="postFavorite(this, true);" class="flex items-center">
-        <span class="material-icons-outlined" th:classappend="*{isFavorite} ? text-rose-600 : ''" style="font-size: 18px; animation-duration: 250ms;" th:text="*{isFavorite} ? favorite : favorite_border"></span>
+        <span class="material-icons-round" th:classappend="*{isFavorite} ? text-rose-600 : ''" style="font-size: 18px; animation-duration: 250ms;" th:text="*{isFavorite} ? favorite : favorite_border"></span>
       </button>
-      <p class="pt-1" th:text="*{favoriteListSize}"></p>
+      <p class="inline-block pt-1" style="animation-fill-mode: forwards; animation-timing-function: ease-in; animation-duration: 50ms;" th:text="*{favoriteListSize}"></p>
     </div>
     <button type="button" class="flex items-center">
       <span class="material-icons-round" style="font-size: 18px;"> ios_share </span>

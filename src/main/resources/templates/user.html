@@ -23,8 +23,10 @@
           <div id="user" class="w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-2/4 aspect-square rounded-3xl">
             <img th:src="@{/images/{image} (image=*{icon})}" class="rounded-3xl">
           </div>
-          <button type="button" th:attr="data-id=*{id}" onclick="postFollow(this);" class="w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
-            th:unless="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }" th:text="*{isFollow} ? Following : Follow"></button>
+          <button type="button" th:attr="data-id=*{id}" onclick="postFollow(this);" class="overflow-hidden w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
+            th:unless="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
+            <span th:text="*{isFollow} ? Following : Follow" class="inline-block" style="animation-fill-mode: forwards; animation-timing-function: ease-in; animation-duration: 150ms;"></span>
+          </button>
           <button type="button" th:attr="data-id=*{id}" onclick="editProfile(this);" class="w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
             th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">Edit</button>
         </div>
@@ -34,7 +36,8 @@
           <p id="profile_description" class="flex flex-col h-fit mt-2"><span th:text="*{description}"></span></p>
           <div class="flex space-x-2 mt-2">
             <p id="following"><span th:text="*{followingListSize}"></span><span class="ml-0.5 text-sm font-thin text-neutral-500">Following</span></p>
-            <p id="follower"><span th:text="*{followerListSize}"></span><span class="ml-0.5 text-sm font-thin text-neutral-500">Follower</span></p>
+            <p id="follower" class="overflow-hidden"><span class="inline-block" style="animation-fill-mode: forwards; animation-timing-function: ease-in; animation-duration: 50ms;"
+              th:text="*{followerListSize}"></span><span class="ml-0.5 text-sm font-thin text-neutral-500">Follower</span></p>
           </div>
         </div>
         <div id="userForm" th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">

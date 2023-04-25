@@ -51,7 +51,7 @@
             <span class="material-icons-round"> repeat </span>
           </button>
           <button type="button" th:attr="data-id=${twDTO.id}" onclick="postFavorite(this, false);" class="flex items-center">
-            <span class="material-icons-outlined" th:classappend="${twDTO.isFavorite} ? text-rose-600 : ''" th:text="${twDTO.isFavorite} ? favorite : favorite_border"></span>
+            <span class="material-icons-round" style="animation-duration: 250ms;" th:classappend="${twDTO.isFavorite} ? text-rose-600 : ''" th:text="${twDTO.isFavorite} ? favorite : favorite_border"></span>
           </button>
           <button type="button" class="flex items-center">
             <span class="material-icons-round"> ios_share </span>

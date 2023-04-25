@@ -1,5 +1,6 @@
 let hash = '';
 let isClick = false;
+let isAnimate = false;
 
 function checkOpenTw() {
     if (!checkAuthenticated()) {
@@ -83,18 +84,36 @@ function postFollow(node) {
         window.location.href = '/login';
         return;
     }
+    if (isAnimate) return;
     const id = node.dataset.id;
-    if (node.textContent == 'Follow') {
+    const span = node.firstElementChild;
+    if (span.textContent == 'Follow') {
         postCSRF(baseURL() + '/user/follow', id, (_) => {
-            node.textContent = 'Following';
+            isAnimate = true;
+            span.style.animationName = 'transX-out';
+            setTimeout(() => {
+                span.classList.add('material-icons-round');
+                span.textContent = 'thumb_up';
+                span.style.animationName = 'transX-in';
+            }, 150);
+            setTimeout(() => {
+                span.style.animationName = 'transX-out';
+            }, 700);
+            setTimeout(() => {
+                span.classList.remove('material-icons-round');
+                span.textContent = 'Following';
+                span.style.animationName = 'transX-in';
+                isAnimate = false;
+            }, 850);
             const counter = document.getElementById('follower').firstElementChild;
-            counter.textContent = parseInt(counter.textContent) + 1;
+            countUp(counter, parseInt(counter.textContent));
         });
     } else {
         postCSRF(baseURL() + '/user/unfollow', id, (_) => {
-            node.textContent = 'Follow';
+            span.textContent = 'Follow';
+            span.style.animationName = '';
             const counter = document.getElementById('follower').firstElementChild;
-            counter.textContent = parseInt(counter.textContent) - 1;
+            countDown(counter, parseInt(counter.textContent));
         });
     }
 }
@@ -109,13 +128,12 @@ function postFavorite(node, hasCounter) {
     if (node.firstElementChild.textContent == 'favorite') {
         postCSRF(baseURL() + '/user/unfavorite', id, (_) => {
             const span = node.firstElementChild;
-            span.style.animationName = '';
+            span.style.animationName = 'unfav-scale';
             span.textContent = 'favorite_border';
             span.classList.remove('text-rose-600');
-
             if (hasCounter) {
                 const p = node.nextElementSibling;
-                p.textContent = parseInt(p.textContent) - 1;
+                countDown(p, parseInt(p.textContent));
             }
         });
     } else {
@@ -126,10 +144,26 @@ function postFavorite(node, hasCounter) {
             span.classList.add('text-rose-600');
             if (hasCounter) {
                 const p = node.nextElementSibling;
-                p.textContent = parseInt(p.textContent) + 1;
+                countUp(p, parseInt(p.textContent));
             }
-        })
+        });
     }
+}
+
+function countUp(node, count) {
+    node.style.animationName = 'transY-up-out';
+    setTimeout(() => {
+        node.style.animationName = 'transY-up-in';
+        node.textContent = count + 1;
+    }, 50);
+}
+
+function countDown(node, count) {
+    node.style.animationName = 'transY-down-out';
+    setTimeout(() => {
+        node.style.animationName = 'transY-down-in';
+        node.textContent = count - 1;
+    }, 50);
 }
 
 // Delete Button
@@ -138,6 +172,6 @@ function deleteTw(node) {
     if (window.confirm('Delete Tw??\n' + document.getElementById('content_' + id).textContent)) {
         postCSRF(baseURL() + '/user/deletetw', id, (_) => {
             document.getElementById('tw_' + id).remove();
-        })
+        });
     };
 }
