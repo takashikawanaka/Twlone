@@ -92,7 +92,7 @@ class Profile {
     }
 
     checkDuplication(userId) {
-        fetch(baseURL() + `/user/?userId=${userId}`, {
+        fetch(location.protocol + '//' + location.host + `/user/?userId=${userId}`, {
             method: "GET",
         }).then((res) => {
             if (!res.ok) {
@@ -146,7 +146,7 @@ class Profile {
         if (changeFlag) {
             const userForm = utils.domUtils.getElementById('userForm');
             const formData = new FormData(userForm.firstElementChild);
-            return fetch(baseURL() + '/user/', {
+            return fetch(location.protocol + '//' + location.host + '/user/', {
                 method: "POST",
                 body: formData
             }).then((res) => {

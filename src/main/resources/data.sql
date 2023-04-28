@@ -8,12 +8,12 @@ INSERT
             ,"many test"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -24,12 +24,12 @@ INSERT
             ,"developing log"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -65,12 +65,12 @@ INSERT
             ,"I'm dammy user,I'm dammy user,I'm dammy user,I'm dammy user,I'm dammy user,I'm dammy user,I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -81,12 +81,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -97,12 +97,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -113,12 +113,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -129,12 +129,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -145,12 +145,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -161,12 +161,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -177,12 +177,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -193,12 +193,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -209,12 +209,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -225,12 +225,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -241,12 +241,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -257,12 +257,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -273,12 +273,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -289,12 +289,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -305,12 +305,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -321,12 +321,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -337,12 +337,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -353,12 +353,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -369,12 +369,12 @@ INSERT
             ,"I'm dammy user"
             ,ELT(
                 CEIL(RAND() * 6)
-                ,"default/1.png"
-                ,"default/2.png"
-                ,"default/3.png"
-                ,"default/4.png"
-                ,"default/5.png"
-                ,"default/6.png"
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
             )
             ,0
             ,CURRENT_TIMESTAMP

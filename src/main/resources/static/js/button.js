@@ -2,6 +2,8 @@ let hash = '';
 let isClick = false;
 let isAnimate = false;
 
+function baseURL() { return location.protocol + '//' + location.host; }
+
 function checkOpenTw() {
     if (!checkAuthenticated()) {
         window.location.href = '/login';

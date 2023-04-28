@@ -1,3 +1,5 @@
+document.addEventListener('DOMContentLoaded', function() { location.hash = ''; });
+
 window.addEventListener('load', () => {
     utils.domUtils = new DomUtils();
     if (checkAuthenticated()) {
@@ -153,7 +155,7 @@ class TwFormUtils {
         const hashtagList = [...formData.get('content').matchAll(regexp)].map((item) => item[1])
         if (0 < hashtagList.length) formData.append('hashtag', hashtagList);
         formData.delete('mediaInput');
-        fetch(baseURL() + '/user/tw', {
+        fetch(location.protocol + '//' + location.host + '/user/tw', {
             method: "POST",
             body: formData
         }).then((res) => {
