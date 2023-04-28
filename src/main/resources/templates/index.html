@@ -17,7 +17,7 @@
       <section id="search_bar" class="px-5 pt-5 pb-3 border-b-2 shadow rounded-t-3xl">
         <form id="home_tw_form" method="post" th:object="${postTw}" th:action="@{/user/tw}" class="">
           <div class="w-full flex space-x-4 mb-2">
-            <label for="home_content" class="block w-12 h-12 aspect-square"><img th:src="@{/images/{image} (image=${logged.icon})}" class="rounded-xl"></label>
+            <label for="home_content" class="block w-12 h-12 aspect-square"><img th:src="@{/icon/{image} (image=${logged.icon})}" class="rounded-xl"></label>
             <textarea id="home_content" name="content" rows="1" class="w-full text-2xl resize-none bg-transparent focus:outline-none" placeholder="What's happening"></textarea>
           </div>
           <div id="home_preview" class="w-full max-h-24 mb-2 flex"></div>

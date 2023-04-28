@@ -3,6 +3,7 @@ package com.twlone.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -49,15 +50,32 @@ public class SearchController {
     }
 
     @GetMapping("/media/{filename}")
-    public void takeFile(@PathVariable String filename, HttpServletResponse response) {
+    public void takeMedia(@PathVariable String filename, HttpServletResponse response) {
         Optional<Media> media = mediaService.getMediaByPath(filename);
-        if (!media.isPresent()) {
+        Path path = Paths.get("./medias", filename);
+        if (!media.isPresent() || !Files.exists(path))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        try (InputStream inputStream = Files.newInputStream(Paths.get("./medias", filename))) {
-            response.setContentType(media.get()
-                    .getType()
-                    .getContentType());
+        response.setContentType(media.get()
+                .getType()
+                .getContentType());
+        this.loadFile(path, response);
+    }
+
+    @GetMapping("/icon/{filename}")
+    public void takeIcon(@PathVariable String filename, HttpServletResponse response) {
+        Path path = Paths.get("./icons", filename);
+        if (!Files.exists(path))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        response.setContentType("image/png");
+        this.loadFile(path, response);
+    }
+
+    @GetMapping("/background/{filename}")
+    public void takeBackGround(@PathVariable String filename, HttpServletResponse response) {
+    }
+
+    public void loadFile(Path path, HttpServletResponse response) {
+        try (InputStream inputStream = Files.newInputStream(path)) {
             inputStream.transferTo(response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();

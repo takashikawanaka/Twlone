@@ -53,7 +53,7 @@
             </div>
             <!--/* Tw Main Space */-->
             <div class="flex space-x-4 mb-2">
-              <label for="content" class="block w-20 h-20 aspect-square"><img th:src="@{/images/{image} (image=${logged.icon})}" class="rounded-xl"></label>
+              <label for="content" class="block w-20 h-20 aspect-square"><img th:src="@{/icon/{image} (image=${logged.icon})}" class="rounded-xl"></label>
               <textarea id="content" name="content" rows="5" class="w-full text-2xl resize-none bg-transparent focus:outline-none" placeholder="What's happening"></textarea>
             </div>
             <div id="preview" class="w-full max-h-24 mb-2 flex"></div>

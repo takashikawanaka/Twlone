@@ -21,7 +21,7 @@
         </div>
         <div class="w-auto relative flex content-end justify-end flex-wrap mx-5" style="aspect-ratio: 8">
           <div id="user" class="w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-2/4 aspect-square rounded-3xl">
-            <img th:src="@{/images/{image} (image=*{icon})}" class="rounded-3xl">
+            <img th:src="@{/icon/{image} (image=*{icon})}" class="rounded-3xl">
           </div>
           <button type="button" th:attr="data-id=*{id}" onclick="postFollow(this);" class="overflow-hidden w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
             th:unless="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">

@@ -20,7 +20,7 @@
         <div th:id="'tw_' + ${twDTO.id}">
           <div class="flex space-x-3">
             <a th:href="@{/user/{id}/(id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s avater '" class="flex-none w-12 h-12"><img th:id="'icon_' + ${twDTO.id}"
-              th:src="@{/images/{image} (image=${twDTO.user.icon})}" class="rounded-lg"></a>
+              th:src="@{/icon/{image} (image=${twDTO.user.icon})}" class="rounded-lg"></a>
             <div class="w-fit">
               <a th:href="@{/user/{id}/ (id=${twDTO.user.userId})}" th:title="${twDTO.user.userId} + '\'s screen name'"><span th:id="'name_' + ${twDTO.id}" th:text="${twDTO.user.name}"
                 class="font-black whitespace-nowrap"></span><br> <span th:id="'userid_' + ${twDTO.id}" th:text="'@' + ${twDTO.user.userId}" class="text-neutral-500 font-thin"></span></a>

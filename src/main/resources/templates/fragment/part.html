@@ -47,7 +47,7 @@
     onclick="moveToTwPage(this);">
     <div class="flex-none w-12">
       <a th:href="@{/user/{id}/(id=*{user.userId})}" th:title="*{user.userId} + '\'s avater '" class="w-12 h-12" onclick="event.stopPropagation();"> <img th:id="'icon_' + *{id}"
-        th:src="@{/images/{image} (image=*{user.icon})}" class="rounded-lg"></a>
+        th:src="@{/icon/{image} (image=*{user.icon})}" class="rounded-lg"></a>
       <div class="w-0.5 h-full bg-neutral-300 mx-auto" th:if="${isReply}"></div>
     </div>
     <div class="min-w-[205px] grow">
@@ -71,7 +71,7 @@
   <div th:fragment="reTw(twid, reTw)" th:object="${reTw}" class="w-auto border p-3 rounded-lg border-neutral-300" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()"
     onmousemove="mousemove()" onclick="event.stopPropagation();moveToTwPage(this);">
     <a th:href="@{/user/{id}/(id=*{user.userId})}" class="flex w-fit max-w-full space-x-1 mb-1 overflow-hidden" onclick="event.stopPropagation();"> <span class="flex-none w-6"> <img
-        th:id="'reTw_icon_' + ${twid}" th:src="@{/images/{image} (image=*{user.icon})}" class="rounded">
+        th:id="'reTw_icon_' + ${twid}" th:src="@{/icon/{image} (image=*{user.icon})}" class="rounded">
     </span> <span th:id="'reTw_name_' + ${twid}" class="font-black whitespace-nowrap" th:text="*{user.name}"></span> <span th:id="'reTw_userid_' + ${twid}" class="text-neutral-500 font-thin"
       th:text="'@' + *{user.userId}"></span>
     </a>
