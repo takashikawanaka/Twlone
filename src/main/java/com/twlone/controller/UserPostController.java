@@ -67,6 +67,28 @@ public class UserPostController {
             user.setUserId((postUser.getUserId()));
         if (!postUser.isBlankDescription())
             user.setDescription(postUser.getDescription());
+        if (!postUser.isEmptyIcon()) {
+            String fileName = user.getId() + formatter.format(LocalDateTime.now()) + "." + postUser.getIconExtention();
+            try (InputStream inputStream = (postUser.getIcon()).getInputStream();
+                    OutputStream outputStream = Files.newOutputStream(Paths.get("./icons", fileName))) {
+                inputStream.transferTo(outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            user.setIcon(fileName);
+        }
+        if (!postUser.isEmptyBack()) {
+            String fileName = user.getId() + formatter.format(LocalDateTime.now()) + "." + postUser.getBackExtention();
+            try (InputStream inputStream = (postUser.getBack()).getInputStream();
+                    OutputStream outputStream = Files.newOutputStream(Paths.get("./backs", fileName))) {
+                inputStream.transferTo(outputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            user.setBack(fileName);
+        }
         userService.saveUser(user);
     }
 

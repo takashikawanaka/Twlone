@@ -45,13 +45,17 @@ public class User {
 
     @Column()
     private String icon = ((Supplier<String>) () -> {
-        String[] icon = { "default/1.png", "default/2.png", "default/3.png", "default/4.png", "default/5.png",
-                "default/6.png" };
+        String[] icon = { "default_1.png", "default_2.png", "default_3.png", "default_4.png", "default_5.png",
+                "default_6.png" };
         return icon[(int) (Math.random() * 6)];
     }).get();
 
     @Column()
-    private String back;// Edit
+    private String back = ((Supplier<String>) () -> {
+        String[] back = { "default_1.jpg", "default_2.jpg", "default_3.jpg", "default_4.jpg", "default_5.jpg",
+                "default_6.jpg" };
+        return back[(int) (Math.random() * 6)];
+    }).get();
 
     @Column(nullable = false)
     private Integer deleteFlag = 0;

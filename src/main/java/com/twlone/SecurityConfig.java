@@ -23,7 +23,7 @@ public class SecurityConfig {
                         .atCommonLocations())
                         .permitAll()
                         .mvcMatchers("/register", "/search", "/user/*", "/user/*/status/*", "/media/*", "/icon/*",
-                                "/icon/default/*")
+                                "/back/*")
                         .permitAll()
                         .anyRequest()
                         .authenticated());

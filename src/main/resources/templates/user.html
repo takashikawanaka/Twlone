@@ -16,13 +16,21 @@
     <header th:replace="fragment/header::header"></header>
     <article id="main_content" th:object="${user}" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section id="profile" class="w-full border-b-2 border-neutral-300 shadow rounded-t-3xl">
-        <div class="w-full overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
-          <img th:src="@{/images/sample/2.jpg}" class="object-cover">
+        <div id="profile_back" class="w-full relative overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
+          <img th:src="@{/back/{image} (image=*{back})}" class="object-cover"> <label for="userBack"
+            class="hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-25 hover:opacity-75 flex items-center justify-center"
+            th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }"> <span class=" material-icons-round" style="font-size: 48px;"> add
+          </span>
+          </label>
         </div>
         <div class="w-auto relative flex content-end justify-end flex-wrap mx-5" style="aspect-ratio: 8">
-          <div id="user" class="w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-2/4 aspect-square rounded-3xl">
+          <div id="profile_icon" class="w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-2/4 aspect-square rounded-3xl">
             <img th:src="@{/icon/{image} (image=*{icon})}" class="rounded-3xl">
           </div>
+          <label for="userIcon" class="hidden w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-1/2 aspect-square opacity-25 hover:opacity-75 flex items-center justify-center"
+            th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }"> <span class=" material-icons-round" style="font-size: 48px;"> add
+          </span>
+          </label>
           <button type="button" th:attr="data-id=*{id}" onclick="postFollow(this);" class="overflow-hidden w-28 h-10 mt-2 font-bold text-neutral-900 border border-neutral-900 rounded-3xl"
             th:unless="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }">
             <span th:text="*{isFollow} ? Following : Follow" class="inline-block" style="animation-fill-mode: forwards; animation-timing-function: ease-in; animation-duration: 150ms;"></span>
@@ -44,6 +52,7 @@
           <form th:object="${postUser}" method="post" th:action="@{/user}" class="hidden">
             <input name="userId" title="userId" th:field="*{userId}"> <input name="name" title="name" th:field="*{name}">
             <textarea name="description" title="description" th:field="*{description}"></textarea>
+            <input type="file" id="userIcon" name="icon" class="hidden" accept="video/*, image/*"> <input type="file" id="userBack" name="back" class="hidden" accept="video/*, image/*">
           </form>
         </div>
       </section>

@@ -37,4 +37,5 @@ node_modules/*
 src/main/resources/static/css/output.css
 
 ### Media ###
+icons/*
 medias/*

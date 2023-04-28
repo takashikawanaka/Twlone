@@ -1,6 +1,6 @@
 INSERT
     INTO
-        USER(user_id, name, description, icon, delete_flag, created_at)
+        USER(user_id, name, description, icon, back, delete_flag, created_at)
     VALUES
         (
             "test"
@@ -14,6 +14,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -30,6 +39,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -57,7 +75,7 @@ INSERT
         );
 INSERT
     INTO
-        USER(user_id, name, description, icon, delete_flag, created_at)
+        USER(user_id, name, description, icon, back, delete_flag, created_at)
     VALUES
         (
             'taro_yamada'
@@ -71,6 +89,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -88,6 +115,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -103,6 +139,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -120,6 +165,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -135,6 +189,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -152,6 +215,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -167,6 +239,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -184,6 +265,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -199,6 +289,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -216,6 +315,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -231,6 +339,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -248,6 +365,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -263,6 +389,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -280,6 +415,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -295,6 +439,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -312,6 +465,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -327,6 +489,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP
@@ -344,6 +515,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -360,6 +540,15 @@ INSERT
                 ,"default_5.png"
                 ,"default_6.png"
             )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
             ,0
             ,CURRENT_TIMESTAMP
         )
@@ -375,6 +564,15 @@ INSERT
                 ,"default_4.png"
                 ,"default_5.png"
                 ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
             )
             ,0
             ,CURRENT_TIMESTAMP

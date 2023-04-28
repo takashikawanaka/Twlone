@@ -66,12 +66,19 @@ public class SearchController {
         Path path = Paths.get("./icons", filename);
         if (!Files.exists(path))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        // Fix
         response.setContentType("image/png");
         this.loadFile(path, response);
     }
 
-    @GetMapping("/background/{filename}")
+    @GetMapping("/back/{filename}")
     public void takeBackGround(@PathVariable String filename, HttpServletResponse response) {
+        Path path = Paths.get("./backs", filename);
+        if (!Files.exists(path))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        // Fix
+        response.setContentType("image/jpg");
+        this.loadFile(path, response);
     }
 
     public void loadFile(Path path, HttpServletResponse response) {

@@ -6,26 +6,31 @@ window.addEventListener('load', () => {
 
 class Profile {
     constructor() {
-        [this.name, this.userId, this.description] = utils.domUtils.getElementListByIdList('profile_name', 'profile_userId', 'profile_description');
+        [this.name, this.userId, this.description, this.icon, this.back]
+            = utils.domUtils.getElementListByIdList('profile_name', 'profile_userId', 'profile_description', 'profile_icon', 'profile_back');
         [this.name_text, this.userId_text, this.description_text] = ['', '', ''];
         [this.isEdit, this.isCheckDuplication] = [false, true];
         this.checkIcon;
         this.timer;
+
+        utils.domUtils.getElementById('userIcon').addEventListener('change', e => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => { this.icon.firstElementChild.setAttribute('src', reader.result); });
+            reader.readAsDataURL(e.target.files[0]);
+        })
     }
 
     switchEdit(node) {
         if (!this.isEdit) {
+            this.convertField();
             this.isEdit = true;
             node.textContent = 'Save';
-            this.convertField();
-        } else {
-            if (this.isCheckDuplication) {
-                this.convertP().then((_) => {
-                    this.isEdit = false;
-                    this.checkIcon = null;
-                    node.textContent = 'Edit';
-                });
-            }
+        } else if (this.isCheckDuplication) {
+            this.convertP().then((_) => {
+                this.isEdit = false;
+                this.checkIcon = null;
+                node.textContent = 'Edit';
+            });
         }
     }
 
@@ -50,7 +55,6 @@ class Profile {
             if (userId == '') {
                 this.switchIcon(3);
                 this.timer = null;
-                return;
             } else if (this.userId_text == userId) {
                 this.switchIcon(2);
                 this.isCheckDuplication = true;
@@ -63,7 +67,8 @@ class Profile {
         this.userId.appendChild(this.switchIcon(2));
         userIdChild.remove();
 
-        const descriptionInput = utils.domUtils.parseFromString(`<textarea type="text" rows=1 class="block w-full resize-none bg-transparent focus:outline-none" style="height: ${this.description.clientHeight}" form="postUser">`);
+        const descriptionInput
+            = utils.domUtils.parseFromString(`<textarea type="text" rows=1 class="block w-full resize-none bg-transparent focus:outline-none" style="height: ${this.description.clientHeight}" form="postUser">`);
         this.description_text = Array.from(descriptionChild).map(element => element.textContent).join('\n');
         descriptionInput.value = this.description_text;
         descriptionInput.addEventListener('input', () => {
@@ -72,12 +77,16 @@ class Profile {
         });
         Array.from(descriptionChild).forEach(element => element.remove());
         this.description.appendChild(descriptionInput);
+
+        this.icon.nextElementSibling.classList.remove('hidden');
+        this.back.firstElementChild.nextElementSibling.classList.remove('hidden');
     }
 
-    convertP() {
-        const [nameChild, userIdChild, descriptionChild] = [this.name.lastElementChild, this.userId.firstElementChild.nextElementSibling, this.description.lastElementChild];
+    async convertP() {
+        const [nameChild, userIdChild, descriptionChild]
+            = [this.name.lastElementChild, this.userId.firstElementChild.nextElementSibling, this.description.lastElementChild];
         const [name_text, userId_text, description_text] = [nameChild.value, userIdChild.value, descriptionChild.value];
-        return this.postUser(name_text, userId_text, description_text).then(() => {
+        await this.postUser(name_text, userId_text, description_text).then(() => {
             this.name.appendChild(utils.domUtils.parseFromString(`<span>${this.convertTag(name_text)}</span>`));
             nameChild.remove();
 
@@ -88,6 +97,9 @@ class Profile {
 
             description_text.split('\n').forEach(str => this.description.appendChild(utils.domUtils.parseFromString(`<span>${this.convertTag(str)}</span>`)));
             descriptionChild.remove();
+
+            this.icon.nextElementSibling.classList.add('hidden');
+            this.back.firstElementChild.nextElementSibling.classList.add('hidden');
         });
     }
 
@@ -123,8 +135,8 @@ class Profile {
         return this.checkIcon
     }
 
-    postUser(name_text, userId_text, description_text) {
-        const [name, userId, description] = utils.domUtils.getElementListByIdList('name', 'userId', 'description');
+    async postUser(name_text, userId_text, description_text) {
+        const [name, userId, description, icon, back] = utils.domUtils.getElementListByIdList('name', 'userId', 'description', 'userIcon', 'userBack');
         let changeFlag = false;
         name.value = '';
         if (this.name_text != name_text) {
@@ -143,14 +155,19 @@ class Profile {
             description.value = description_text;
             changeFlag = true;
         }
+        //Add Image Size Check
+        if (icon.value != '' || back.value != '') { changeFlag = true; }
         if (changeFlag) {
             const userForm = utils.domUtils.getElementById('userForm');
             const formData = new FormData(userForm.firstElementChild);
-            return fetch(location.protocol + '//' + location.host + '/user/', {
+            await fetch(location.protocol + '//' + location.host + '/user/', {
                 method: "POST",
                 body: formData
             }).then((res) => {
-                if (res.ok) { console.log('update profile'); }
+                if (res.ok) {
+                    console.log('update profile');
+                    userForm.firstElementChild.reset();
+                }
                 else { throw new Error('The post has failed.'); }
             });
         }

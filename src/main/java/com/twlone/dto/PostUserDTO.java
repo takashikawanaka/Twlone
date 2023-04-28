@@ -24,4 +24,20 @@ public class PostUserDTO {
     public Boolean isBlankDescription() {
         return description.isBlank();
     }
+
+    public Boolean isEmptyIcon() {
+        return icon.isEmpty();
+    }
+
+    public String getIconExtention() {
+        return (icon.getContentType()).split("/")[1];
+    }
+
+    public String getBackExtention() {
+        return (back.getContentType()).split("/")[1];
+    }
+
+    public Boolean isEmptyBack() {
+        return back.isEmpty();
+    }
 }
