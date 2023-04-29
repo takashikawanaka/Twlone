@@ -11,7 +11,6 @@ public class MyClientConfig extends ElasticsearchConfiguration {
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder()
                 .connectedTo("localhost:9200")
-                .usingSsl()
                 .withBasicAuth("elastic", "kwnktks")
                 .build();
     }
