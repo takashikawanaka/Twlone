@@ -19,6 +19,118 @@ ID:`test`, Pass:`ktaro`
 ```
 npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resources\static\css\output.css
 ```
+### ElasticSearch
+#### 環境構築 [Reference](https://www.elastic.co/guide/en/elasticsearch/reference/8.7/docker.html)
+<details>
+<summary>.env</summary>
+
+``` env
+ELASTIC_PASSWORD=password
+KIBANA_PASSWORD=password
+STACK_VERSION=8.7.0
+CLUSTER_NAME=docker-cluster
+LICENSE=basic
+ES_PORT=9200
+KIBANA_PORT=5601
+MEM_LIMIT=1073741824
+```
+
+</details>
+
+<details>
+<summary>docker-compose.yml</summary>
+
+``` yml
+version: "2.2"
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+    environment:
+      - node.name=es01
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es02,es03
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  es02:
+    depends_on:
+      - es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+    environment:
+      - node.name=es02
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es01,es03
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  es03:
+    depends_on:
+      - es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata03:/usr/share/elasticsearch/data
+    environment:
+      - node.name=es03
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es01,es02
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    depends_on:
+      - es01
+      - es02
+      - es03
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    volumes:
+      - kibanadata:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+    mem_limit: ${MEM_LIMIT}
+
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+  esdata03:
+    driver: local
+  kibanadata:
+    driver: local
+```
+
+</details>
 
 ## HashTag規則
 
