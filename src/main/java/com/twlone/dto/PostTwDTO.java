@@ -9,23 +9,27 @@ import lombok.Data;
 @Data
 public class PostTwDTO {
     private String content;
-    private Integer reTwID;
-    private Integer replyTwID;
+    private String reTwID;
+    private String replyTwID;
     private List<MultipartFile> media;
     private List<String> hashtag;
 
     public Boolean isIllegale() {
-        if (!this.isBlankContent() || this.existsReTwId() || (this.existsMedia() && media.size() <= 4))
+        if (!this.isBlankContent() || !this.isBlankReTwId() || (this.existsMedia() && media.size() <= 4))
             return false;
         return true;
     }
 
-    public Boolean existsReTwId() {
-        return reTwID != null;
+    public Boolean isBlankContent() {
+        return content.isBlank();
     }
 
-    public Boolean existsReplyTwId() {
-        return replyTwID != null;
+    public Boolean isBlankReTwId() {
+        return reTwID.isBlank();
+    }
+
+    public Boolean isBlankReplyTwId() {
+        return replyTwID.isBlank();
     }
 
     public Boolean existsMedia() {
@@ -34,9 +38,5 @@ public class PostTwDTO {
 
     public Boolean existsHashTag() {
         return hashtag != null;
-    }
-
-    public Boolean isBlankContent() {
-        return content.isBlank();
     }
 }
