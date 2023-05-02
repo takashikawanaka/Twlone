@@ -47,7 +47,7 @@ public class ETw {
     @Field(type = FieldType.Integer)
     private List<Integer> favorite_user_list = new ArrayList<>();
 
-    @Field(type = FieldType.Nested)
+    @Field(type = FieldType.Keyword)
     private List<String> media_list;
 
     @Field(type = FieldType.Keyword)
