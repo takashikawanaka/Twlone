@@ -20,16 +20,20 @@ public class PostTwDTO {
         return true;
     }
 
+    public Boolean isOnlyReETw() {
+        return (this.isBlankContent() && !this.isBlankReTwId() && !this.existsMedia());
+    }
+
     public Boolean isBlankContent() {
         return content.isBlank();
     }
 
     public Boolean isBlankReTwId() {
-        return reTwID.isBlank();
+        return reTwID != null ? reTwID.isBlank() : true;
     }
 
     public Boolean isBlankReplyTwId() {
-        return replyTwID.isBlank();
+        return replyTwID != null ? replyTwID.isBlank() : true;
     }
 
     public Boolean existsMedia() {

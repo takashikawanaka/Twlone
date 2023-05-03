@@ -36,19 +36,16 @@ public class UserPostController {
     private final UserService userService;
     private final TwService twService;
     private final FollowService followService;
-    private final FavoriteService favoriteService;
 
     private final ETwService eTwService;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-    public UserPostController(UserService service, TwService service2, FollowService service3, FavoriteService service4,
-            ETwService service5) {
+    public UserPostController(UserService service, TwService service2, FollowService service3, ETwService service4) {
         this.userService = service;
         this.twService = service2;
         this.followService = service3;
-        this.favoriteService = service4;
-        this.eTwService = service5;
+        this.eTwService = service4;
     }
 
     @PostMapping("/")
@@ -89,8 +86,6 @@ public class UserPostController {
     @PostMapping("/tw")
     @ResponseStatus(HttpStatus.OK)
     public void postTw(@AuthenticationPrincipal UserDetail userDetail, PostTwDTO postTw) {
-        if (postTw.isIllegale())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         try {
             eTwService.savePostTwDTO(userDetail, postTw);
         } catch (IllegalArgumentException e) {
@@ -100,7 +95,6 @@ public class UserPostController {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @PostMapping("/deletetw")

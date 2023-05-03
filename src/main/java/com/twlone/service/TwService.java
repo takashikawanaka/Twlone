@@ -166,14 +166,14 @@ public class TwService {
 
     public TwDTO.TwDTOBuilder getBuilder(TwDTODTO twDTODTO) {
         return TwDTO.builder()
-                .id(twDTODTO.getId())
+                .id(twDTODTO.getId().toString())
                 .content(this.splitContent(twDTODTO.getHashtagListSize(), twDTODTO.getContent()))
                 .user(userService.convertMiniUserDTO(twDTODTO.getUser()))
-                .createdAt(twDTODTO.getCreatedAt())
+                //.createdAt(twDTODTO.getCreatedAt())
                 .reTwListSize(twDTODTO.getReTwListSize())
                 .replyTwListSize(twDTODTO.getReplyTwListSize())
                 .favoriteListSize(twDTODTO.getFavoriteListSize())
-                .mediaList((twDTODTO.getMediaListSize() == 0) ? null : twRepository.findMediaByTw(twDTODTO.getId()))
+                //.mediaList((twDTODTO.getMediaListSize() == 0) ? null : twRepository.findMediaByTw(twDTODTO.getId()))
                 .dayHasPassed(!twDTODTO.dayHasPassed(LocalDate.now()));
     }
 

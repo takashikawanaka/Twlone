@@ -18,6 +18,7 @@ import com.twlone.dto.PostUserDTO;
 import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.User;
+import com.twlone.service.ETwService;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
@@ -27,10 +28,12 @@ import com.twlone.service.UserService;
 public class UserController {
     private final UserService userService;
     private final TwService twService;
+    private final ETwService eTwService;
 
-    public UserController(UserService service, TwService service2) {
+    public UserController(UserService service, TwService service2, ETwService service3) {
         this.userService = service;
         this.twService = service2;
+        this.eTwService = service3;
     }
 
     @GetMapping("/")
@@ -55,10 +58,10 @@ public class UserController {
             } else {
                 model.addAttribute("postUser", new PostUserDTO(loggedUser.getId()));
             }
-            userDTO.setTwList(twService.getTwDTOListByUserDTO(userDTO, loggedUser));
+            userDTO.setTwList(eTwService.getTwDTOListByUserIdLoggedIn(userDTO.getId(), loggedUser.getId()));
             model.addAttribute("user", userDTO);
         } else {
-            userDTO.setTwList(twService.getTwDTOListByUserDTO(userDTO));
+            userDTO.setTwList(eTwService.getTwDTOListByUserId(userDTO.getId()));
             model.addAttribute("user", userDTO);
         }
         return "user";

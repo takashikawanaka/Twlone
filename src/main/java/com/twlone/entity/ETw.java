@@ -18,38 +18,60 @@ public class ETw {
     @Id
     private String id;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, index = true)
     private String content;
 
-    @Field(type = FieldType.Integer)
-    private Integer user_id;
+    @Field(name = "user_id", type = FieldType.Integer, index = true)
+    private Integer userId;
 
-    @Field(type = FieldType.Keyword)
-    private String reTw_id;
+    @Field(name = "reETw_id", type = FieldType.Keyword, index = true)
+    private String reETwId;
 
-    @Field(type = FieldType.Keyword)
-    private String replyTw_id;
+    @Field(name = "replyETw_id", type = FieldType.Keyword, index = true)
+    private String replyETwId;
 
-    @Field(type = FieldType.Date)
-    private ZonedDateTime created_at = ZonedDateTime.now();
+    @Field(name = "created_at", type = FieldType.Date, index = true)
+    private ZonedDateTime createdAt = ZonedDateTime.now();
+
+    @Field(name = "delete_flag", type = FieldType.Integer, index = false)
+    private Integer deleteFlag = 0;
+
+    @Field(name = "isfavorite", type = FieldType.Boolean, index = false)
+    private Boolean isFavorite;
 
     protected ETw() {
     }
 
-    public ETw(String id) {
-        this.id = id;
+    public ETw(Integer userId) {
+        this.userId = userId;
     }
 
-    public ETw(Integer user_id) {
-        this.user_id = user_id;
+    @Field(name = "favorite_user_list", type = FieldType.Integer, index = true)
+    private List<Integer> favoriteUserList;
+
+    @Field(name = "media_list", type = FieldType.Keyword, index = true)
+    private List<String> mediaList;
+
+    @Field(name = "hashtag_list", type = FieldType.Keyword, index = true)
+    private List<String> hashtagList;
+
+    @Field(name = "reETw_list_size", type = FieldType.Integer, index = false)
+    private Integer reETwListSize;
+
+    @Field(name = "replyETw_list_size", type = FieldType.Integer, index = false)
+    private Integer replyETwListSize;
+
+    @Field(name = "favorite_user_list_size", type = FieldType.Integer, index = false)
+    private Integer favoriteUserListSize;
+
+    @Field(name = "hashtag_list_size", type = FieldType.Integer, index = false)
+    private Integer hashtagListSize;
+
+    public void InitETw() {
+        this.favoriteUserList = new ArrayList<>();
+        this.reETwListSize = 0;
+        this.replyETwListSize = 0;
+        this.favoriteUserListSize = 0;
+        this.hashtagListSize = 0;
     }
-
-    @Field(type = FieldType.Integer)
-    private List<Integer> favorite_user_list = new ArrayList<>();
-
-    @Field(type = FieldType.Keyword)
-    private List<String> media_list;
-
-    @Field(type = FieldType.Keyword)
-    private List<String> hashtag_list;
 }

@@ -61,4 +61,8 @@ public class UserService {
     public MiniUserDTO convertMiniUserDTO(User user) {
         return new MiniUserDTO(user.getUserId(), user.getName(), user.getIcon());
     }
+
+    public MiniUserDTO convertMiniUserDTO(Integer id) {
+        return this.convertMiniUserDTO((this.getUserById(id)).get());
+    }
 }
