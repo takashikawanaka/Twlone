@@ -20,12 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
 import com.twlone.dto.PostUserDTO;
-import com.twlone.entity.Tw;
 import com.twlone.entity.User;
 import com.twlone.service.ETwService;
-import com.twlone.service.FavoriteService;
 import com.twlone.service.FollowService;
-import com.twlone.service.HashTagService;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
@@ -34,18 +31,15 @@ import com.twlone.service.UserService;
 @RequestMapping("user")
 public class UserPostController {
     private final UserService userService;
-    private final TwService twService;
     private final FollowService followService;
-
     private final ETwService eTwService;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
-    public UserPostController(UserService service, TwService service2, FollowService service3, ETwService service4) {
+    public UserPostController(UserService service, FollowService service2, ETwService service3) {
         this.userService = service;
-        this.twService = service2;
-        this.followService = service3;
-        this.eTwService = service4;
+        this.followService = service2;
+        this.eTwService = service3;
     }
 
     @PostMapping("/")
@@ -100,11 +94,12 @@ public class UserPostController {
     @PostMapping("/deletetw")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTw(@AuthenticationPrincipal UserDetail userDetail, @RequestParam String id) {
-        Optional<Tw> tw = twService.getTwById(Integer.parseInt(id));
-        if (!tw.isPresent())
+        try {
+            eTwService.deleteETw(id);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        (tw.get()).setDeleteFlag(1);
-        twService.saveTw(tw.get());
+        }
     }
 
     @PostMapping("/follow")
