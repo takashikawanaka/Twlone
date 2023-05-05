@@ -40,7 +40,7 @@
     th:style="|grid-template-columns: repeat(${listSize == 1 ? 1 : 2}, ${listSize == 1 ? '100%' : '50%'});
                   grid-template-rows: repeat(${listSize < 3 ? 1 : 2}, ${listSize < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
     onclick="event.stopPropagation();">
-    <img th:each="media : ${mediaList}" th:src="@{/media/{image} (image=${media.path})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+    <img th:each="media : ${mediaList}" th:src="@{/media/{image} (image=${media})}" class="w-full h-full object-cover" onclick="openMedia(this);">
   </div>
   <!--/* Tw */-->
   <div th:fragment="tw(tw, isReply)" th:object="${tw}" class="flex space-x-3" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()" onmousemove="mousemove()"

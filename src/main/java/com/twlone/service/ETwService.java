@@ -14,16 +14,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.RuntimeField;
 import org.springframework.data.elasticsearch.core.ScriptType;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,87 +34,23 @@ public class ETwService {
 
     private final UserService userService;
 
+    private final ElasticsearchOperationsWapper operations;
+
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private String symbol;
     private Pattern pattern;
 
-    public ETwService(ElasticsearchOperations operations, UserService service) {
+    public ETwService(ElasticsearchOperations operations, UserService service,
+            ElasticsearchOperationsWapper operations2) {
         this.elasticsearchOperations = operations;
+        this.operations = operations2;
+
         this.userService = service;
 
         // Remove _!?
         this.symbol = "\"#$%&'()\\*\\+\\-\\.,\\/:;<=>@\\[\\\\\\]^`{|}~";
         this.pattern = Pattern
                 .compile("((?<!#)#|(?<!@)@)([^\\s_!?" + symbol + "]+[^\\s\\d" + symbol + "]+[^\\s_" + symbol + "]*)");
-
-    }
-
-    public ETw getETwById(String eTwId) {
-        System.out.println("ETwService: Get ETw " + eTwId);
-        return elasticsearchOperations.searchOne(this.getQuery(eTwId), ETw.class, IndexCoordinates.of("etw"))
-                .getContent();
-    }
-
-    public ETw getETwById(String eTwId, Integer loggedId) {
-        System.out.println("ETwService: Get ETw " + eTwId);
-        Query query = this.getQuery(eTwId);
-        query.addFields("isfavorite");
-        query.addRuntimeField(new RuntimeField("isfavorite", "boolean",
-                "emit(doc['favorite_user_list'].contains(" + loggedId + "L))"));
-        return (elasticsearchOperations.searchOne(query, ETw.class, IndexCoordinates.of("etw"))).getContent();
-    }
-
-    public List<TwDTO> getTwDTOListByUserId(Integer userId) {
-        System.out.println("ETwService: Get User ETw List " + userId);
-        Query query = this.getQuery(userId);
-        List<TwDTO> twDTOList = new ArrayList<>();
-        for (SearchHit<ETw> searchHit : elasticsearchOperations.search(query, ETw.class, IndexCoordinates.of("etw"))) {
-            ETw eTw = searchHit.getContent();
-            String reETwId = eTw.getReETwId();
-            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-            if (reETwId != null) {
-                builder.reTw((this.getBuilder(this.getETwById(eTw.getReETwId()))).build());
-            }
-            twDTOList.add(builder.build());
-        }
-        return twDTOList;
-    }
-
-    public List<TwDTO> getTwDTOListByUserIdLoggedIn(Integer userId, Integer loggedId) {
-        System.out.println("ETwService: Get User ETw List " + userId);
-        Query query = this.getQuery(userId);
-        query.addFields("isfavorite");
-        query.addRuntimeField(new RuntimeField("isfavorite", "boolean",
-                "emit(doc['favorite_user_list'].contains(" + loggedId + "L))"));
-        List<TwDTO> twDTOList = new ArrayList<>();
-        for (SearchHit<ETw> searchHit : elasticsearchOperations.search(query, ETw.class, IndexCoordinates.of("etw"))) {
-            ETw eTw = searchHit.getContent();
-            String reETwId = eTw.getReETwId();
-            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-            if (reETwId != null) {
-                ETw reETw = this.getETwById(eTw.getReETwId(), loggedId);
-                builder.reTw(this.getBuilder(reETw)
-                        .isFavorite(reETw.getIsFavorite())
-                        .build());
-            }
-            twDTOList.add((builder.isFavorite(eTw.getIsFavorite())).build());
-        }
-        return twDTOList;
-    }
-
-    private Query getQuery(String eTwId) {
-        Query query = new CriteriaQuery(new Criteria("_id").is(eTwId));
-        query.addSourceFilter(new FetchSourceFilter(null, new String[] { "favoriteUserList", "hashtag_list" }));
-        return query;
-    }
-
-    private Query getQuery(Integer userId) {
-        Criteria criteria = new Criteria("user_id").is(userId);
-        Criteria criteria2 = (new Criteria("replyETw_id").exists()).not();
-        Query query = new CriteriaQuery(criteria.and(criteria2));
-        query.addSort((Sort.by("createdAt")).descending());
-        query.addSourceFilter(new FetchSourceFilter(null, new String[] { "favoriteUserList", "hashtag_list" }));
-        return query;
     }
 
     // TwDTO % Re TwDTO Builder
@@ -141,6 +72,99 @@ public class ETwService {
                 .reTwListSize(eTw.getReETwListSize())
                 .replyTwListSize(eTw.getReplyETwListSize())
                 .favoriteListSize(eTw.getFavoriteUserListSize());
+    }
+
+    // Get ETw One
+    public ETw getETwById(String eTwId) throws EmptyResultDataAccessException {
+        System.out.println("ETwService: Get ETw " + eTwId);
+        return operations.searchOneById(eTwId);
+    }
+
+    public ETw getETwById(String eTwId, Integer loggedId) throws EmptyResultDataAccessException {
+        System.out.println("ETwService: Get ETw " + eTwId);
+        return operations.searchOneById(eTwId, loggedId);
+    }
+
+    // Get TwDTO One
+    public TwDTO getMiniTwDTOById(String eTwId) throws EmptyResultDataAccessException {
+        System.out.println("ETwService: Get ETw " + eTwId);
+        return (this.getBuilder(operations.searchOneById(eTwId))).build();
+    }
+
+    public TwDTO getMiniTwDTOById(String eTwId, Integer loggedId) throws EmptyResultDataAccessException {
+        System.out.println("ETwService: Get ETw " + eTwId);
+        return (this.getBuilder(operations.searchOneById(eTwId, loggedId))).build();
+    }
+
+    // Get TwDTO
+    public TwDTO getTwDTOWithReplyTwDTOById(String eTwId) {
+        System.out.println("ETwService: Get ETw " + eTwId);
+        ETw eTw = operations.searchOneById(eTwId);
+        TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+        if (eTw.existsReETwId()) {
+            builder.reTw((this.getMiniTwDTOById(eTw.getReETwId())));
+        }
+        if (0 < eTw.getReplyETwListSize()) {
+            List<TwDTO> twDTOList = new ArrayList<>();
+            for (SearchHit<ETw> searchHit : operations.searchByReplyTwId(eTwId)) {
+            }
+        }
+        return builder.build();
+    }
+
+    public TwDTO getTwDTOWithReplyTwDTOById(String eTwId, Integer loggedId) {
+        System.out.println("ETwService: Get ETw " + eTwId);
+        ETw eTw = operations.searchOneById(eTwId, loggedId);
+        TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+        if (eTw.existsReETwId()) {
+            builder.reTw((this.getMiniTwDTOById(eTw.getReETwId())));
+        }
+        return builder.build();
+    }
+
+    // Get TwDTO List
+    public List<TwDTO> getTwDTOListByUserId(Integer userId) {
+        System.out.println("ETwService: Get User ETw List " + userId);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByUserId(userId)) {
+            ETw eTw = searchHit.getContent();
+            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+            // Add ReTw
+            if (eTw.existsReETwId()) {
+                ETw reETw = this.getETwById(eTw.getReETwId());
+                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
+                // Is ReTw Only
+                if (eTw.isOnlyReETw() && reETw.existsReETwId())
+                    reBuilder.reTw(this.getMiniTwDTOById(reETw.getReETwId()));
+                builder.reTw(reBuilder.build());
+            }
+            twDTOList.add(builder.build());
+        }
+        return twDTOList;
+    }
+
+    public List<TwDTO> getTwDTOListByUserIdLoggedIn(Integer userId, Integer loggedId) {
+        System.out.println("ETwService: Get User ETw List " + userId);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByUserId(userId, loggedId)) {
+            ETw eTw = searchHit.getContent();
+            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+            // Add ReTw
+            if (eTw.existsReETwId()) {
+                ETw reETw = this.getETwById(eTw.getReETwId(), loggedId);
+                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
+                // Is ReTw Only
+                if (eTw.isOnlyReETw()) {
+                    reBuilder.isFavorite(reETw.getIsFavorite());
+                    // Add ReTw ReTw
+                    if (reETw.existsReETwId())
+                        reBuilder.reTw(this.getMiniTwDTOById(reETw.getReETwId()));
+                }
+                builder.reTw(reBuilder.build());
+            }
+            twDTOList.add((builder.isFavorite(eTw.getIsFavorite())).build());
+        }
+        return twDTOList;
     }
 
     // Split HashTag And Reply
@@ -192,7 +216,7 @@ public class ETwService {
             }
             eTw.setContent(postTw.getContent());
         }
-
+        // Add relational ETw
         if (!postTw.isBlankReTwId()) {
             if (!elasticsearchOperations.exists(postTw.getReTwID(), IndexCoordinates.of("etw")))
                 throw new IllegalArgumentException("NotFount ReTwID");
@@ -203,12 +227,29 @@ public class ETwService {
                 throw new IllegalArgumentException("NotFount ReplyTwID");
             eTw.setReplyETwId(postTw.getReplyTwID());
         }
-
+        // Add Medias
         if (postTw.existsMedia())
             eTw.setMediaList(this.saveMedias(postTw.getMedia(), eTw));
 
         ETw saved = elasticsearchOperations.save(eTw, IndexCoordinates.of("etw"));
         System.out.println("ETwService: Save ETw " + saved.getId());
+        if (eTw.existsReETwId()) {
+            UpdateQuery updateQuery = UpdateQuery.builder(eTw.getReETwId())
+                    .withScriptType(ScriptType.INLINE)
+                    .withLang("painless")
+                    .withScript("ctx._source.reETw_list_size++")
+                    .build();
+            elasticsearchOperations.update(updateQuery, IndexCoordinates.of("etw"));
+            System.out.println("ETwService: CountUp ReTw " + eTw.getReETwId());
+        } else if (eTw.existsReplyETwId()) {
+            UpdateQuery updateQuery = UpdateQuery.builder(eTw.getReplyETwId())
+                    .withScriptType(ScriptType.INLINE)
+                    .withLang("painless")
+                    .withScript("ctx._source.replyETw_list_size++")
+                    .build();
+            elasticsearchOperations.update(updateQuery, IndexCoordinates.of("etw"));
+            System.out.println("ETwService: CountUp ReplyTw " + eTw.getReplyETwId());
+        }
     }
 
     private List<String> saveMedias(List<MultipartFile> medias, ETw eTw) throws IllegalArgumentException, IOException {

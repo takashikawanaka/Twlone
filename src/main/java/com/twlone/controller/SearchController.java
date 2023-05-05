@@ -1,11 +1,11 @@
 package com.twlone.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,19 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
-import com.twlone.entity.Media;
-import com.twlone.service.MediaService;
+import com.twlone.entity.Media.MediaType;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 
 @Controller
 public class SearchController {
     private final TwService twService;
-    private final MediaService mediaService;
 
-    public SearchController(TwService service, MediaService service2) {
+    public SearchController(TwService service) {
         this.twService = service;
-        this.mediaService = service2;
     }
 
     @GetMapping("/search")
@@ -51,42 +48,53 @@ public class SearchController {
 
     @GetMapping("/media/{filename}")
     public void takeMedia(@PathVariable String filename, HttpServletResponse response) {
-        Optional<Media> media = mediaService.getMediaByPath(filename);
-        Path path = Paths.get("./medias", filename);
-        if (!media.isPresent() || !Files.exists(path))
+        try {
+            this.loadFile("./medias", filename, response);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        response.setContentType(media.get()
-                .getType()
-                .getContentType());
-        this.loadFile(path, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/icon/{filename}")
     public void takeIcon(@PathVariable String filename, HttpServletResponse response) {
-        Path path = Paths.get("./icons", filename);
-        if (!Files.exists(path))
+        try {
+            this.loadFile("./icons", filename, response);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        // Fix
-        response.setContentType("image/png");
-        this.loadFile(path, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/back/{filename}")
     public void takeBackGround(@PathVariable String filename, HttpServletResponse response) {
-        Path path = Paths.get("./backs", filename);
-        if (!Files.exists(path))
+        try {
+            this.loadFile("./backs", filename, response);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        // Fix
-        response.setContentType("image/jpg");
-        this.loadFile(path, response);
-    }
-
-    public void loadFile(Path path, HttpServletResponse response) {
-        try (InputStream inputStream = Files.newInputStream(path)) {
-            inputStream.transferTo(response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void loadFile(String filename1, String filename2, HttpServletResponse response)
+            throws FileNotFoundException, IOException {
+        String extention = filename2.substring(filename2.lastIndexOf('.') + 1);
+        String mediaType = (MediaType.valueOf(extention)).getContentType();
+        response.setContentType(mediaType);
+        Path path = Paths.get(filename1, filename2);
+        if (!Files.exists(path))
+            throw new FileNotFoundException();
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            inputStream.transferTo(response.getOutputStream());
         }
     }
 }

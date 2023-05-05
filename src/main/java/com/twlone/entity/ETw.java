@@ -27,8 +27,16 @@ public class ETw {
     @Field(name = "reETw_id", type = FieldType.Keyword, index = true)
     private String reETwId;
 
+    public Boolean existsReETwId() {
+        return this.reETwId != null;
+    }
+
     @Field(name = "replyETw_id", type = FieldType.Keyword, index = true)
     private String replyETwId;
+
+    public Boolean existsReplyETwId() {
+        return this.replyETwId != null;
+    }
 
     @Field(name = "created_at", type = FieldType.Date, index = true)
     private ZonedDateTime createdAt = ZonedDateTime.now();
@@ -73,5 +81,9 @@ public class ETw {
         this.replyETwListSize = 0;
         this.favoriteUserListSize = 0;
         this.hashtagListSize = 0;
+    }
+
+    public Boolean isOnlyReETw() {
+        return this.content == null && this.reETwId != null && mediaList == null;
     }
 }

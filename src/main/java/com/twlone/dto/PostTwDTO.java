@@ -21,7 +21,7 @@ public class PostTwDTO {
     }
 
     public Boolean isOnlyReETw() {
-        return (this.isBlankContent() && !this.isBlankReTwId() && !this.existsMedia());
+        return this.isBlankContent() && !this.isBlankReTwId() && !this.existsMedia();
     }
 
     public Boolean isBlankContent() {

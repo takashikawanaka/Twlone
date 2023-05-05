@@ -2,6 +2,7 @@ package com.twlone.controller;
 
 import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,11 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
 import com.twlone.dto.PostUserDTO;
-import com.twlone.dto.TwDTODTO;
 import com.twlone.dto.UserDTO;
 import com.twlone.entity.User;
 import com.twlone.service.ETwService;
-import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 
@@ -27,13 +26,11 @@ import com.twlone.service.UserService;
 @RequestMapping("user")
 public class UserController {
     private final UserService userService;
-    private final TwService twService;
     private final ETwService eTwService;
 
-    public UserController(UserService service, TwService service2, ETwService service3) {
+    public UserController(UserService service, ETwService service2) {
         this.userService = service;
-        this.twService = service2;
-        this.eTwService = service3;
+        this.eTwService = service2;
     }
 
     @GetMapping("/")
@@ -82,18 +79,25 @@ public class UserController {
         return "";
     }
 
-    @GetMapping("/{userId}/status/{tweetId}")
-    public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("tweetId") Integer id,
+    @GetMapping("/{userId}/status/{twId}")
+    public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("twId") String id,
             Model model) {
-        Optional<TwDTODTO> twDTODTO = twService.getTwDTODTOByID(id);
-        if (!twDTODTO.isPresent())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
-            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(twDTODTO.get(), userDetail.getUser()));
+            try {
+                model.addAttribute("twDTO", eTwService.getTwDTOWithReplyTwDTOById(id, (userDetail.getUser()).getId()));
+            } catch (EmptyResultDataAccessException e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
         } else {
-            model.addAttribute("twDTO", twService.convertTwDTOReplyTw(twDTODTO.get()));
+            try {
+                model.addAttribute("twDTO", eTwService.getTwDTOWithReplyTwDTOById(id));
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
         }
         return "tw";
     }
