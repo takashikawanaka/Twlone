@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.twlone.dto.MiniUserDTO;
 import com.twlone.dto.PostTwDTO;
 import com.twlone.entity.Authorization;
 import com.twlone.entity.User;
 import com.twlone.service.AuthorizationService;
+import com.twlone.service.ETwService;
 import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
@@ -31,14 +33,16 @@ public class IndexController {
     private final AuthorizationService authorizationService;
     private final UserService userService;
     private final TwService twService;
-
+    private final ETwService eTwService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public IndexController(AuthorizationService service, UserService service2, TwService service3) {
+    public IndexController(AuthorizationService service, UserService service2, TwService service3,
+            ETwService service4) {
         this.authorizationService = service;
         this.userService = service2;
         this.twService = service3;
+        this.eTwService = service4;
     }
 
     @GetMapping("/")
@@ -52,10 +56,18 @@ public class IndexController {
         User logged = userDetail.getUser();
         model.addAttribute("logged", logged);
         model.addAttribute("postTw", new PostTwDTO());
-        model.addAttribute("twList", twService.getFollowingTw(logged));
+
+        List<Integer> userList = userService.getFollowingIdListByUser(logged);
+        model.addAttribute("twList", eTwService.getTimeLineByUserIdList(userList, logged.getId()));
+        // Random Recommend User
+        List<MiniUserDTO> userDTOList = userService.getUserListByRandomId();
+        for (MiniUserDTO userDTO : userDTOList) {
+            System.out.println(userDTO.getUserId());
+        }
         // Will Remove
         List<User> userlist = userService.getUserList();
         model.addAttribute("userlist", userlist);
+
         return "index";
     }
 
