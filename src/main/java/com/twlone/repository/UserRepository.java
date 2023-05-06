@@ -18,6 +18,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             + "FROM User u WHERE u.userId = ?1")
     Optional<UserDTO> findUserDTOByUser(String userId);
 
+    @Query("SELECT f.targetUser.id FROM Follow f WHERE f.sourceUser = ?1")
+    List<Integer> findFollowingIdListByUser(User user);
+
     @Query("SELECT COUNT(f) = 1 FROM Follow f WHERE f.sourceUser = ?1 AND f.targetUser.id = ?2")
     Boolean existsFollowBySourceUserAndTargetUserDTO(User sourceUser, Integer targetUser);
 

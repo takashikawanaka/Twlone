@@ -23,7 +23,6 @@ import com.twlone.dto.PostUserDTO;
 import com.twlone.entity.User;
 import com.twlone.service.ETwService;
 import com.twlone.service.FollowService;
-import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 

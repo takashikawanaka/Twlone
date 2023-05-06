@@ -55,7 +55,7 @@ public class UserController {
             } else {
                 model.addAttribute("postUser", new PostUserDTO(loggedUser.getId()));
             }
-            userDTO.setTwList(eTwService.getTwDTOListByUserIdLoggedIn(userDTO.getId(), loggedUser.getId()));
+            userDTO.setTwList(eTwService.getTwDTOListByUserId(userDTO.getId(), loggedUser.getId()));
             model.addAttribute("user", userDTO);
         } else {
             userDTO.setTwList(eTwService.getTwDTOListByUserId(userDTO.getId()));

@@ -27,6 +27,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<Integer> getFollowingIdListByUser(User user) {
+        return userRepository.findFollowingIdListByUser(user);
+    }
+
     public List<MiniUserDTO> getUserListByRandomId() {
         Integer count = userRepository.countUser();
         Random random = new Random();

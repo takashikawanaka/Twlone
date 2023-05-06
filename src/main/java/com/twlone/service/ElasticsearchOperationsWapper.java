@@ -1,5 +1,7 @@
 package com.twlone.service;
 
+import java.util.List;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -33,7 +35,7 @@ public class ElasticsearchOperationsWapper {
     }
 
     // Add Error to elasticsearchOperations.search
-    private SearchHits<ETw> search(Query query) {
+    private SearchHits<ETw> search(Query query) throws EmptyResultDataAccessException {
         SearchHits<ETw> hits = elasticsearchOperations.search(query, ETw.class, IndexCoordinates.of("etw"));
         if (hits == null)
             throw new EmptyResultDataAccessException(1);
@@ -84,8 +86,7 @@ public class ElasticsearchOperationsWapper {
     }
 
     // Get Query to Get TwList of users
-    private Query getQuery(Integer userId) {
-        Criteria criteria = new Criteria("user_id").is(userId);
+    private Query getQueryForList(Criteria criteria) {
         Criteria criteria2 = (new Criteria("replyETw_id").exists()).not();
         Criteria criteria3 = new Criteria("delete_flag").is(0);
         Query query = new CriteriaQuery(criteria.and(criteria2, criteria3));
@@ -94,18 +95,26 @@ public class ElasticsearchOperationsWapper {
         return query;
     }
 
-    // Search By UserId
-    public SearchHits<ETw> searchByUserId(Integer userId) {
-        Query query = this.getQuery(userId);
-        return this.search(query);
-    }
-
-    public SearchHits<ETw> searchByUserId(Integer userId, Integer loggedId) {
-        Query query = this.getQuery(userId);
+    private Query getQueryForList(Criteria criteria, Integer loggedId) {
+        Query query = this.getQueryForList(criteria);
         query.addFields("isfavorite");
         query.addRuntimeField(new RuntimeField("isfavorite", "boolean",
                 "emit(doc['favorite_user_list'].contains(" + loggedId + "L))"));
-        return this.search(query);
+        return query;
+    }
+
+    // Search By UserId
+    public SearchHits<ETw> searchByUserId(Integer userId) {
+        return this.search(this.getQueryForList(new Criteria("user_id").is(userId)));
+    }
+
+    public SearchHits<ETw> searchByUserId(Integer userId, Integer loggedId) {
+        return this.search(this.getQueryForList(new Criteria("user_id").is(userId), loggedId));
+    }
+
+    // Search By UserIdList
+    public SearchHits<ETw> searchByUserIdList(List<Integer> userIdList, Integer loggedId) {
+        return this.search(this.getQueryForList(new Criteria("user_id").in(userIdList), loggedId));
     }
 
     // Search By ReplyTwId

@@ -34,7 +34,6 @@ public class ETwService {
     private final ElasticsearchOperationsWapper operations;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-    private String symbol;
     private Pattern pattern;
 
     public ETwService(UserService service, ElasticsearchOperationsWapper operations) {
@@ -43,7 +42,7 @@ public class ETwService {
         this.operations = operations;
 
         // Remove _!?
-        this.symbol = "\"#$%&'()\\*\\+\\-\\.,\\/:;<=>@\\[\\\\\\]^`{|}~";
+        String symbol = "\"#$%&'()\\*\\+\\-\\.,\\/:;<=>@\\[\\\\\\]^`{|}~";
         this.pattern = Pattern
                 .compile("((?<!#)#|(?<!@)@)([^\\s_!?" + symbol + "]+[^\\s\\d" + symbol + "]+[^\\s_" + symbol + "]*)");
     }
@@ -68,22 +67,83 @@ public class ETwService {
         return (this.getBuilder(this.getETwById(eTwId, loggedId))).build();
     }
 
-    // Get TwDTO
+    // Get TwDTO List
+    public List<TwDTO> getTwDTOListByUserId(Integer userId) {
+        System.out.println("ETwService: Get User ETw List " + userId);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByUserId(userId)) {
+            ETw eTw = searchHit.getContent();
+            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+            if (eTw.existsReETwId()) { // Add ReTw
+                ETw reETw = this.getETwById(eTw.getReETwId());
+                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
+                if (eTw.isOnlyReETw() && reETw.existsReETwId()) // Is ReTw Only
+                    reBuilder.reTw(this.getTwDTOById(reETw.getReETwId()));
+                builder.reTw(reBuilder.build());
+            }
+            twDTOList.add(builder.build());
+        }
+        return twDTOList;
+    }
+
+    public List<TwDTO> getTwDTOListByUserId(Integer userId, Integer loggedId) {
+        System.out.println("ETwService: Get User ETw List " + userId);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByUserId(userId, loggedId)) {
+            ETw eTw = searchHit.getContent();
+            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+            if (eTw.existsReETwId()) { // Add ReTw
+                ETw reETw = this.getETwById(eTw.getReETwId(), loggedId);
+                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
+                if (eTw.isOnlyReETw()) { // Is ReTw Only
+                    reBuilder.isFavorite(reETw.getIsFavorite());
+                    if (reETw.existsReETwId()) // Add ReTw ReTw
+                        reBuilder.reTw(this.getTwDTOById(reETw.getReETwId()));
+                }
+                builder.reTw(reBuilder.build());
+            }
+            twDTOList.add((builder.isFavorite(eTw.getIsFavorite())).build());
+        }
+        return twDTOList;
+    }
+
+    public List<TwDTO> getTimeLineByUserIdList(List<Integer> userIdList, Integer loggedId) {
+        userIdList.add(loggedId);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByUserIdList(userIdList, loggedId)) {
+            ETw eTw = searchHit.getContent();
+            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
+            if (eTw.existsReETwId()) { // Add ReTw
+                ETw reETw = this.getETwById(eTw.getReETwId(), loggedId);
+                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
+                if (eTw.isOnlyReETw()) { // Is ReTw Only
+                    reBuilder.isFavorite(reETw.getIsFavorite());
+                    if (reETw.existsReETwId()) // Add ReTw ReTw
+                        reBuilder.reTw(this.getTwDTOById(reETw.getReETwId()));
+                }
+                builder.reTw(reBuilder.build());
+            }
+            twDTOList.add((builder.isFavorite(eTw.getIsFavorite())).build());
+        }
+        return twDTOList;
+    }
+
+    // Get TwDTO With ReplyTwDTO
     public TwDTO getTwDTOWithReplyTwDTOById(String eTwId) {
         System.out.println("ETwService: Get ETw " + eTwId);
         ETw eTw = operations.searchOneById(eTwId);
         TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-        if (eTw.existsReETwId()) {
+
+        if (eTw.existsReETwId()) { // Add ReTw
             builder.reTw(this.getTwDTOById(eTw.getReETwId()));
-        } else if (eTw.existsReplyETwId()) {
+        } else if (eTw.existsReplyETwId()) { // Add ReplyTw
             ETw replyETw = operations.searchOneById(eTw.getReplyETwId());
             TwDTO.TwDTOBuilder replyBuilder = this.getBuilder(replyETw);
-            if (replyETw.existsReETwId()) {
+            if (replyETw.existsReETwId()) // Add ReTw in ReplyTw
                 replyBuilder.reTw(this.getTwDTOById(replyETw.getReETwId()));
-            }
             builder.replyTw(replyBuilder.build());
         }
-        if (0 < eTw.getReplyETwListSize()) {
+        if (0 < eTw.getReplyETwListSize()) { // Add Hanging Tw
             List<TwDTO> twDTOList = new ArrayList<>();
             for (SearchHit<ETw> searchHit : operations.searchByReplyTwId(eTwId)) {
                 ETw replyETw = searchHit.getContent();
@@ -99,18 +159,18 @@ public class ETwService {
         System.out.println("ETwService: Get ETw " + eTwId);
         ETw eTw = operations.searchOneById(eTwId, loggedId);
         TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-        if (eTw.existsReETwId()) {
-            builder.reTw((this.getTwDTOById(eTw.getReETwId())));
-        } else if (eTw.existsReplyETwId()) {
+        if (eTw.existsReETwId()) { // Add ReTw
+            builder.reTw(this.getTwDTOById(eTw.getReETwId()));
+        } else if (eTw.existsReplyETwId()) { // Add ReplyTw
             ETw replyETw = operations.searchOneById(eTw.getReplyETwId(), loggedId);
             TwDTO.TwDTOBuilder replyBuilder = this.getBuilder(replyETw);
-            if (replyETw.existsReETwId()) {
+            if (replyETw.existsReETwId()) { // Add ReTw in ReplyTw
                 replyBuilder.reTw(this.getTwDTOById(replyETw.getReETwId()));
             }
             builder.replyTw(replyBuilder.isFavorite(replyETw.getIsFavorite())
                     .build());
         }
-        if (0 < eTw.getReplyETwListSize()) {
+        if (0 < eTw.getReplyETwListSize()) { // Add Hanging Tw
             List<TwDTO> twDTOList = new ArrayList<>();
             for (SearchHit<ETw> searchHit : operations.searchByReplyTwId(eTwId)) {
                 ETw replyETw = searchHit.getContent();
@@ -122,51 +182,6 @@ public class ETwService {
         }
         return builder.isFavorite(eTw.getIsFavorite())
                 .build();
-    }
-
-    // Get TwDTO List
-    public List<TwDTO> getTwDTOListByUserId(Integer userId) {
-        System.out.println("ETwService: Get User ETw List " + userId);
-        List<TwDTO> twDTOList = new ArrayList<>();
-        for (SearchHit<ETw> searchHit : operations.searchByUserId(userId)) {
-            ETw eTw = searchHit.getContent();
-            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-            // Add ReTw
-            if (eTw.existsReETwId()) {
-                ETw reETw = this.getETwById(eTw.getReETwId());
-                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
-                // Is ReTw Only
-                if (eTw.isOnlyReETw() && reETw.existsReETwId())
-                    reBuilder.reTw(this.getTwDTOById(reETw.getReETwId()));
-                builder.reTw(reBuilder.build());
-            }
-            twDTOList.add(builder.build());
-        }
-        return twDTOList;
-    }
-
-    public List<TwDTO> getTwDTOListByUserIdLoggedIn(Integer userId, Integer loggedId) {
-        System.out.println("ETwService: Get User ETw List " + userId);
-        List<TwDTO> twDTOList = new ArrayList<>();
-        for (SearchHit<ETw> searchHit : operations.searchByUserId(userId, loggedId)) {
-            ETw eTw = searchHit.getContent();
-            TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-            // Add ReTw
-            if (eTw.existsReETwId()) {
-                ETw reETw = this.getETwById(eTw.getReETwId(), loggedId);
-                TwDTO.TwDTOBuilder reBuilder = this.getBuilder(reETw);
-                // Is ReTw Only
-                if (eTw.isOnlyReETw()) {
-                    reBuilder.isFavorite(reETw.getIsFavorite());
-                    // Add ReTw ReTw
-                    if (reETw.existsReETwId())
-                        reBuilder.reTw(this.getTwDTOById(reETw.getReETwId()));
-                }
-                builder.reTw(reBuilder.build());
-            }
-            twDTOList.add((builder.isFavorite(eTw.getIsFavorite())).build());
-        }
-        return twDTOList;
     }
 
     // Split HashTag And Reply
