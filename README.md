@@ -2,8 +2,6 @@
 ![](https://img.shields.io/github/commit-activity/w/takashikawanaka/Twlone)  
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
-
-
 ## 実行方法
 ### テストに使用しているユーザー
 ID:`test`, Pass:`ktaro`
@@ -133,6 +131,17 @@ volumes:
 
 </details>
 
+#### ランダムなつぶやき
+``` java
+//@EnableScheduling  アンコメント
+@SpringBootApplication
+public class TwloneApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(TwloneApplication.class, args);
+    }
+}
+```
+
 ## HashTag規則
 
 ハッシュタグ : `#abc`, `#ABC`, `#2023年`, `#アイウ`, `#日本語`, `#LOL😂`, `#Hello_World`, `#New_Hello_World`, `#test!?`, `#test?test!`,  
@@ -172,7 +181,7 @@ volumes:
 </details>
 
 <details>
-<summary>elasticsearch + sql</summary>
+<summary>sql + elasticsearch</summary>
 
 ![ダウンロード (1)](https://user-images.githubusercontent.com/123621760/236760811-1a32814a-fbe3-4235-a94e-9fe8e8348423.png)
 
