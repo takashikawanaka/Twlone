@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.document.Document;
+import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -226,7 +227,8 @@ public class ETwService {
             if (postTw.existsHashTag()) {
                 List<String> hashtagList = new ArrayList<>();
                 for (String name : postTw.getHashtag()) {
-                    hashtagList.add(name);
+                    if (!hashtagList.contains(name))
+                        hashtagList.add(name);
                 }
                 eTw.setHashtagList(hashtagList);
                 eTw.setHashtagListSize(hashtagList.size());
@@ -301,6 +303,48 @@ public class ETwService {
             mediaList.add(filePath);
         }
         return mediaList;
+    }
+
+    // Search Word
+    public List<TwDTO> searchTwDTOListByWord(String word) {
+        Criteria criteria = this.splitSearchWord(word);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByCriteria(criteria)) {
+            ETw replyETw = searchHit.getContent();
+            TwDTO.TwDTOBuilder replyBuilder = this.getBuilder(replyETw);
+            twDTOList.add(replyBuilder.isFavorite(replyETw.getIsFavorite())
+                    .build());
+        }
+        return twDTOList;
+    }
+
+    public List<TwDTO> searchTwDTOListByWord(String word, Integer loggedId) {
+        Criteria criteria = this.splitSearchWord(word);
+        List<TwDTO> twDTOList = new ArrayList<>();
+        for (SearchHit<ETw> searchHit : operations.searchByCriteria(criteria, loggedId)) {
+            ETw replyETw = searchHit.getContent();
+            TwDTO.TwDTOBuilder replyBuilder = this.getBuilder(replyETw);
+            twDTOList.add(replyBuilder.isFavorite(replyETw.getIsFavorite())
+                    .build());
+        }
+        return twDTOList;
+    }
+
+    // Split Search Word
+    private Criteria splitSearchWord(String word) {
+        Criteria criteria = new Criteria();
+        for (String str : word.split("( |　|,|、)")) {
+            switch (str.charAt(0)) {
+            case '#':
+                criteria.and(new Criteria("hashtag_list").is(str.substring(1)));
+                break;
+            case '@':
+                break;
+            default:
+                criteria.and(new Criteria("content").matchesAll(word));
+            }
+        }
+        return criteria;
     }
 
     public void deleteETw(String eTwId) {

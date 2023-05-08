@@ -20,15 +20,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
 import com.twlone.entity.Media.MediaType;
-import com.twlone.service.TwService;
+import com.twlone.service.ETwService;
 import com.twlone.service.UserDetail;
 
 @Controller
 public class SearchController {
-    private final TwService twService;
+    private final ETwService eTwService;
 
-    public SearchController(TwService service) {
-        this.twService = service;
+    public SearchController(ETwService service) {
+        this.eTwService = service;
     }
 
     @GetMapping("/search")
@@ -38,10 +38,10 @@ public class SearchController {
             model.addAttribute("logged", userDetail.getUser());
             model.addAttribute("postTw", new PostTwDTO());
             if (word != null)
-                model.addAttribute("twList", twService.getTwDTOListByWord(word, userDetail.getUser()));
+                model.addAttribute("twList", eTwService.searchTwDTOListByWord(word, (userDetail.getUser()).getId()));
         } else {
             if (word != null)
-                model.addAttribute("twList", twService.getTwDTOListByWord(word));
+                model.addAttribute("twList", eTwService.searchTwDTOListByWord(word));
         }
         return "search";
     }

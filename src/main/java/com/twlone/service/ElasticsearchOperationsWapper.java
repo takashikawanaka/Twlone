@@ -67,7 +67,6 @@ public class ElasticsearchOperationsWapper {
         return query;
     }
 
-    // Get Query to Get TwOne Containing Favorites
     private Query getQuery(Criteria criteria, Integer loggedId) {
         Query query = this.getQuery(criteria);
         query.addFields("isfavorite");
@@ -76,13 +75,13 @@ public class ElasticsearchOperationsWapper {
         return query;
     }
 
-    // Search By TwId
-    public ETw searchOneById(String eTwId) {
-        return this.searchOne(this.getQuery(new Criteria("_id").is(eTwId)));
+    // Get Query contain delete_flag = 0
+    private Query getQueryWithDeleteFlag(Criteria criteria) {
+        return this.getQuery(criteria.and(new Criteria("delete_flag").is(0)));
     }
 
-    public ETw searchOneById(String eTwId, Integer loggedId) {
-        return this.searchOne(this.getQuery(new Criteria("_id").is(eTwId), loggedId));
+    private Query getQueryWithDeleteFlag(Criteria criteria, Integer loggedId) {
+        return this.getQuery(criteria.and(new Criteria("delete_flag").is(0)), loggedId);
     }
 
     // Get Query to Get TwList of users
@@ -103,6 +102,15 @@ public class ElasticsearchOperationsWapper {
         return query;
     }
 
+    // Search By TwId
+    public ETw searchOneById(String eTwId) {
+        return this.searchOne(this.getQuery(new Criteria("_id").is(eTwId)));
+    }
+
+    public ETw searchOneById(String eTwId, Integer loggedId) {
+        return this.searchOne(this.getQuery(new Criteria("_id").is(eTwId), loggedId));
+    }
+
     // Search By UserId
     public SearchHits<ETw> searchByUserId(Integer userId) {
         return this.search(this.getQueryForList(new Criteria("user_id").is(userId)));
@@ -119,10 +127,19 @@ public class ElasticsearchOperationsWapper {
 
     // Search By ReplyTwId
     public SearchHits<ETw> searchByReplyTwId(String eTwId) {
-        return this.search(this.getQuery(new Criteria("replyETw_id").is(eTwId)));
+        return this.search(this.getQueryWithDeleteFlag(new Criteria("replyETw_id").is(eTwId)));
     }
 
     public SearchHits<ETw> searchByReplyTwId(String eTwId, Integer loggedId) {
-        return this.search(this.getQuery(new Criteria("replyETw_id").is(eTwId), loggedId));
+        return this.search(this.getQueryWithDeleteFlag(new Criteria("replyETw_id").is(eTwId), loggedId));
+    }
+
+    // Search By Criteria
+    public SearchHits<ETw> searchByCriteria(Criteria criteria) {
+        return this.search(this.getQueryWithDeleteFlag(criteria));
+    }
+
+    public SearchHits<ETw> searchByCriteria(Criteria criteria, Integer loggedId) {
+        return this.search(this.getQueryWithDeleteFlag(criteria, loggedId));
     }
 }
