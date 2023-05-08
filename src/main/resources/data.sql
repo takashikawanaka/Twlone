@@ -1175,3 +1175,34 @@ INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('今晩は読書�
 INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('来週の天気予報を確認しないと。',7,0,CURRENT_TIMESTAMP);
 INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('来月末に家族旅行する予定だけど、準備しないと',7,0,CURRENT_TIMESTAMP);
 INSERT INTO Tw(content,user_id,delete_flag,created_at) VALUES ('最近、仕事が楽しい。',7,0,CURRENT_TIMESTAMP);
+
+
+INSERT
+    INTO
+        USER(user_id, name, description, icon, back, delete_flag, created_at)
+    VALUES
+        (
+            'timer_bot'
+            ,'時報BOT'
+            ,""
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.png"
+                ,"default_2.png"
+                ,"default_3.png"
+                ,"default_4.png"
+                ,"default_5.png"
+                ,"default_6.png"
+            )
+            ,ELT(
+                CEIL(RAND() * 6)
+                ,"default_1.jpg"
+                ,"default_2.jpg"
+                ,"default_3.jpg"
+                ,"default_4.jpg"
+                ,"default_5.jpg"
+                ,"default_6.jpg"
+            )
+            ,0
+            ,CURRENT_TIMESTAMP
+        )
