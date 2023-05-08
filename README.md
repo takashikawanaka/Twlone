@@ -7,6 +7,7 @@
 ## 実行方法
 ### テストに使用しているユーザー
 ID:`test`, Pass:`ktaro`
+
 ### CSSの解決(どちらか一方)
 `/src/main/resources/templates/fragment/head.html`の修正
 ``` HTML
@@ -163,7 +164,19 @@ volumes:
 - [ ] メール送信によるユーザ登録の実装
 
 ## DB設計
-![ダウンロード](https://user-images.githubusercontent.com/123621760/231131617-c931c77e-5769-463c-9d2e-e730ea904046.png)
+<details>
+<summary>sql</summary>
+
+![twitter drawio](https://user-images.githubusercontent.com/123621760/236760782-1b1ff385-4d1a-40e8-b239-963651e4d22d.png)
+
+</details>
+
+<details>
+<summary>elasticsearch + sql</summary>
+
+![ダウンロード (1)](https://user-images.githubusercontent.com/123621760/236760811-1a32814a-fbe3-4235-a94e-9fe8e8348423.png)
+
+</details>
 
 ## 使用技術
 ### 開発環境・サービス
