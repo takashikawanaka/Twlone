@@ -2,9 +2,38 @@
 ![](https://img.shields.io/github/commit-activity/w/takashikawanaka/Twlone)  
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
-## 実行方法
+## 実行周り
 ### テストに使用しているユーザー
 ID:`test`, Pass:`ktaro`
+
+### クローン後の初回起動時のエラー
+```
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+
+Reason: Failed to determine a suitable driver class
+
+
+Action:
+
+Consider the following:
+	If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
+	If you have database settings to be loaded from a particular profile you may need to activate it (no profiles are currently active).
+```
+一度pom.xmlの下記の項目を取り除いてから実行してから、元に戻す
+``` xml
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
 
 ### CSSの解決(どちらか一方)
 `/src/main/resources/templates/fragment/head.html`の修正
