@@ -232,6 +232,7 @@ Java: 17.0.5
 Spring Boot: 2.7.9  
 Spring Securiy: 5.7.7  
 Apache Tomcat: 9.0.71
+Awaitility: 4.2.0 (自動的に投稿するため)
 
 ### データベース
 MySQL: 8.0.30  
