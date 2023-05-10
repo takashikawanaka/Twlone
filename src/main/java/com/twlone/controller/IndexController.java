@@ -44,17 +44,19 @@ public class IndexController {
     @GetMapping("/")
     public String index(@AuthenticationPrincipal UserDetail userDetail, HttpSession session, Model model,
             @RequestParam(name = "redirect", required = false, defaultValue = "true") Boolean redirect) {
+        // Redirect
         String url = (String) session.getAttribute("loginReferer");
         if (redirect && url != null && !url.equals("login")) {
             session.removeAttribute("loginReferer");
             return "redirect:" + "/" + url;
         }
+        // Show HomeTimeLine
         User logged = userDetail.getUser();
         model.addAttribute("logged", logged);
         model.addAttribute("postTw", new PostTwDTO());
-
         List<Integer> userList = userService.getFollowingIdListByUser(logged);
         model.addAttribute("twList", eTwService.getTimeLineByUserIdList(userList, logged.getId()));
+
         // Random Recommend User
         List<MiniUserDTO> userDTOList = userService.getUserListByRandomId();
         for (MiniUserDTO userDTO : userDTOList) {
@@ -70,14 +72,14 @@ public class IndexController {
     @PostMapping("/register")
     public String postRegister(@Validated Authorization authorization, BindingResult res,
             RedirectAttributes redirectAttributes) {
-        if (res.hasErrors()) {
+        if (res.hasErrors()) { // ValidatedError
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.authorization", res);
             redirectAttributes.addFlashAttribute("authorization", authorization);
-        } else if (userService.getExistsByUserId((authorization.getUser()).getUserId())) {
+        } else if (userService.getExistsByUserId((authorization.getUser()).getUserId())) { // Already exist Error
             res.rejectValue("user.userId", "form.user.userId.message");
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.authorization", res);
             redirectAttributes.addFlashAttribute("authorization", authorization);
-        } else {
+        } else { // Success Register
             authorization.setPassword(passwordEncoder.encode(authorization.getPassword()));
             authorizationService.saveAuthorization(authorization);
         }
@@ -86,12 +88,12 @@ public class IndexController {
 
     @GetMapping("/login")
     public String getLogin(@AuthenticationPrincipal UserDetail userDetail, HttpServletRequest request, Model model) {
-        if (userDetail != null)
+        if (userDetail != null) // Check already logged in
             return "redirect:/";
-        if (!model.containsAttribute("org.springframework.validation.BindingResult.authorization"))
+        if (!model.containsAttribute("org.springframework.validation.BindingResult.authorization")) // Add Error
             model.addAttribute("authorization", new Authorization());
         String referer = request.getHeader("referer");
-        if (referer != null) {
+        if (referer != null) { // Redirect to previously visited site after successful login
             String[] urls = (referer).split("/");
             if (3 < urls.length)
                 request.getSession()

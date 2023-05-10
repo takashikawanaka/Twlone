@@ -2,7 +2,6 @@ package com.twlone.controller;
 
 import java.util.Optional;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -48,7 +47,7 @@ public class UserController {
         UserDTO userDTO = user.get();
         if (userDetail != null) {
             User loggedUser = userDetail.getUser();
-            model.addAttribute("logged", loggedUser);
+            model.addAttribute("logged", loggedUser); // Check Logged in
             model.addAttribute("postTw", new PostTwDTO());
             if (!(loggedUser.getUserId()).equals(userDTO.getUserId())) {
                 userDTO.setIsFollow(userService.getBooleanFollowBySourceUserAndTargetUserID(loggedUser, userDTO));
@@ -82,22 +81,17 @@ public class UserController {
     @GetMapping("/{userId}/status/{twId}")
     public String getTweet(@AuthenticationPrincipal UserDetail userDetail, @PathVariable("twId") String id,
             Model model) {
-        if (userDetail != null) {
-            model.addAttribute("logged", userDetail.getUser());
-            model.addAttribute("postTw", new PostTwDTO());
-            try {
+        try {
+            if (userDetail != null) {
+                model.addAttribute("logged", userDetail.getUser());
+                model.addAttribute("postTw", new PostTwDTO());
                 model.addAttribute("twDTO", eTwService.getTwDTOWithReplyTwDTOById(id, (userDetail.getUser()).getId()));
-            } catch (EmptyResultDataAccessException e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-        } else {
-            try {
+            } else {
                 model.addAttribute("twDTO", eTwService.getTwDTOWithReplyTwDTOById(id));
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return "tw";
     }

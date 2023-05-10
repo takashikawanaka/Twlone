@@ -35,8 +35,9 @@ public class SearchController {
         this.urlService = service2;
     }
 
+    // Search Tw
     @GetMapping("/search")
-    public String index(@AuthenticationPrincipal UserDetail userDetail,
+    public String search(@AuthenticationPrincipal UserDetail userDetail,
             @RequestParam(name = "word", required = false) String word, Model model) {
         if (userDetail != null) {
             model.addAttribute("logged", userDetail.getUser());
@@ -50,6 +51,7 @@ public class SearchController {
         return "search";
     }
 
+    // Show Media in Content
     @GetMapping("/media/{filename}")
     public void takeMedia(@PathVariable String filename, HttpServletResponse response) {
         try {
@@ -63,6 +65,7 @@ public class SearchController {
         }
     }
 
+    // Show User Icon
     @GetMapping("/icon/{filename}")
     public void takeIcon(@PathVariable String filename, HttpServletResponse response) {
         try {
@@ -76,6 +79,7 @@ public class SearchController {
         }
     }
 
+    // Show User Back Image
     @GetMapping("/back/{filename}")
     public void takeBackGround(@PathVariable String filename, HttpServletResponse response) {
         try {
@@ -89,11 +93,11 @@ public class SearchController {
         }
     }
 
+    // Load Image File
     private void loadFile(String filename1, String filename2, HttpServletResponse response)
             throws FileNotFoundException, IOException {
         String extention = filename2.substring(filename2.lastIndexOf('.') + 1);
-        String mediaType = (MediaType.valueOf(extention)).getContentType();
-        response.setContentType(mediaType);
+        response.setContentType((MediaType.valueOf(extention)).getContentType());
         Path path = Paths.get(filename1, filename2);
         if (!Files.exists(path))
             throw new FileNotFoundException();
@@ -102,6 +106,7 @@ public class SearchController {
         }
     }
 
+    // Redirect short URL
     @GetMapping("/link/{twId}")
     public void searchLink(@PathVariable String twId, HttpServletResponse response) {
         try {

@@ -26,7 +26,6 @@ import lombok.Data;
 @Table(name = "user")
 @Where(clause = "delete_flag = 0")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
