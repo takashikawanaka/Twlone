@@ -3,7 +3,7 @@
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
 ## Git Branch
-[Mysql](https://github.com/takashikawanaka/Twlone/tree/mysql) バージョン / [Elasticsearch](https://github.com/takashikawanaka/Twlone/tree/main) バージョン
+[Mysql](https://github.com/takashikawanaka/Twlone/tree/mysql) バージョン / [Elasticsearch](https://github.com/takashikawanaka/Twlone/tree/elastic) バージョン
 
 ## 実行周り
 ### テストに使用しているユーザー
