@@ -12,7 +12,6 @@ class HomeTwFormUtil {
     deletePreview(preview) { this.mediaPreview.deletePreview(preview); }
 
     refreshForm() {
-        console.log("refresh")
         this.form.reset();
         this.mediaPreview.clearPreview();
         this.wordCounter.clearCounter();
@@ -27,6 +26,9 @@ class HomeTwFormUtil {
         const regexp = /(?<!#)#(([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*[^\s\d!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^`{|}~][^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]*)+)/g
         const hashtagList = [...formData.get('content').matchAll(regexp)].map((item) => item[1])
         if (0 < hashtagList.length) formData.append('hashtag', hashtagList);
+        const regexp_url = /(https?:\/\/[-_.!*\'()a-zA-Z0-9?:#?\/@%!$&'+,;=\u3000-\u30FE\u4E00-\u9FA0\uFF01-\uFFE3]+)/g
+        const urlList = [...formData.get('content').matchAll(regexp_url)].map((item) => item[1])
+        if (0 < urlList.length) formData.append('url', urlList);
         formData.delete('mediaInput');
         fetch(baseURL() + '/user/tw', {
             method: "POST",

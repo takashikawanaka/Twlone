@@ -34,7 +34,8 @@
   <!--/* Content */-->
   <span th:fragment="content(content_list)" th:each="span : ${content_list}" th:if="${not #lists.isEmpty(content_list[0])}"><th:block th:if="${span[0].equals('none')}" th:text="${span[1]}"></th:block><a
     th:href="@{/search(word=|#${span[1]}|)}" th:text="|#${span[1]}|" class="text-blue-700 hover:underline" onclick="event.stopPropagation();" th:if="${span[0].equals('hashtag')}"></a><a
-    th:href="@{/user/{id}/(id=${span[1]})}" th:text="|@${span[1]}|" class="text-blue-700 hover:underline" onclick="event.stopPropagation();" th:if="${span[0].equals('reply')}"></a></span>
+    th:href="@{/user/{id}/(id=${span[1]})}" th:text="|@${span[1]}|" class="text-blue-700 hover:underline" onclick="event.stopPropagation();" th:if="${span[0].equals('reply')}"></a><a
+    th:href="${span[1]}" th:text="|${span[1]}|" class="text-blue-700 hover:underline" onclick="event.stopPropagation();" th:if="${span[0].equals('url')}"></a></span>
   <!--/* Media Grid */-->
   <div th:fragment="medias(id, mediaList)" class="grid gap-0.5 h-auto mt-1 rounded-lg overflow-hidden" th:with="listSize=${#lists.size(mediaList)}"
     th:style="|grid-template-columns: repeat(${listSize == 1 ? 1 : 2}, ${listSize == 1 ? '100%' : '50%'});

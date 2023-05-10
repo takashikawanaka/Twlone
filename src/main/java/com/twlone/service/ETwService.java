@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -27,25 +28,31 @@ import com.twlone.dto.PostTwDTO;
 import com.twlone.dto.TwDTO;
 import com.twlone.entity.ETw;
 import com.twlone.entity.Media.MediaType;
+import com.twlone.entity.Url;
 
 @Service
 public class ETwService {
     private final UserService userService;
+    private final UrlService urlService;
 
     private final ElasticsearchOperationsWapper operations;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private Pattern pattern;
+    private String url;
 
-    public ETwService(UserService service, ElasticsearchOperationsWapper operations) {
+    public ETwService(UserService service, UrlService service2, ElasticsearchOperations operations) {
         this.userService = service;
-
-        this.operations = operations;
+        this.urlService = service2;
+        this.operations = new ElasticsearchOperationsWapper(operations);
 
         // Remove _!?
         String symbol = "\"#$%&'()\\*\\+\\-\\.,\\/:;<=>@\\[\\\\\\]^`{|}~";
-        this.pattern = Pattern
-                .compile("((?<!#)#|(?<!@)@)([^\\s_!?" + symbol + "]+[^\\s\\d" + symbol + "]+[^\\s_" + symbol + "]*)");
+        String url = "https?:\\/\\/[-_.!*\\'()a-zA-Z0-9?:#?\\/@%!$&'+,;=\\u3000-\\u30FE\\u4E00-\\u9FA0\\uFF01-\\uFFE3]+";
+        this.pattern = Pattern.compile("((?<!#)#|(?<!@)@|" + url + ")([^\\s_!?" + symbol + "]+[^\\s\\d" + symbol
+                + "]+[^\\s_" + symbol + "]*)");
+        // Fix
+        this.url = "http://" + "localhost:8080/link/";
     }
 
     // Get ETw One
@@ -134,7 +141,6 @@ public class ETwService {
         System.out.println("ETwService: Get ETw " + eTwId);
         ETw eTw = operations.searchOneById(eTwId);
         TwDTO.TwDTOBuilder builder = this.getBuilder(eTw);
-
         if (eTw.existsReETwId()) { // Add ReTw
             builder.reTw(this.getTwDTOById(eTw.getReETwId()));
         } else if (eTw.existsReplyETwId()) { // Add ReplyTw
@@ -203,9 +209,11 @@ public class ETwService {
                 if ((userService.getExistsByUserId(str.substring(1))))
                     yield List.of("reply", matcher.group(2));
                 else
-                    yield List.of("none", matcher.group());
+                    yield List.of("none", str);
+            case 'h':
+                yield List.of("url", str);
             default: // Rewrite
-                yield List.of("none", matcher.group());
+                yield List.of("none", str);
             });
             i = matcher.end();
         }
@@ -232,6 +240,15 @@ public class ETwService {
                 }
                 eTw.setHashtagList(hashtagList);
                 eTw.setHashtagListSize(hashtagList.size());
+            }
+            if (postTw.existsURL()) {
+                List<String> urlList = postTw.getUrl();
+                for (String url : urlList) {
+                    Url entity = urlService.saveUrl(new Url(url));
+                    postTw.setContent(postTw.getContent()
+                            .replace(url, this.url + entity.getId()));
+                }
+                eTw.setUrlList(urlList);
             }
             eTw.setContent(postTw.getContent());
         }

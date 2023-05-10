@@ -2,8 +2,8 @@ package com.twlone.repository;
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import com.twlone.entity.ETw;
+import com.twlone.entity.Url;
 
-public interface ETwRepository extends ElasticsearchRepository<ETw, String> {
+public interface UrlRepository extends ElasticsearchRepository<Url, String> {
 
 }

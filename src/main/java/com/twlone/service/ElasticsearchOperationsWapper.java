@@ -15,11 +15,9 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.stereotype.Service;
 
 import com.twlone.entity.ETw;
 
-@Service
 public class ElasticsearchOperationsWapper {
     private ElasticsearchOperations elasticsearchOperations;
 

@@ -13,6 +13,7 @@ public class PostTwDTO {
     private String replyTwID;
     private List<MultipartFile> media;
     private List<String> hashtag;
+    private List<String> url;
 
     public Boolean isIllegale() {
         if (!this.isBlankContent() || !this.isBlankReTwId() || (this.existsMedia() && media.size() <= 4))
@@ -42,5 +43,9 @@ public class PostTwDTO {
 
     public Boolean existsHashTag() {
         return hashtag != null;
+    }
+
+    public Boolean existsURL() {
+        return url != null;
     }
 }

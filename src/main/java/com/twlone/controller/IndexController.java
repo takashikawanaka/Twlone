@@ -32,17 +32,14 @@ import com.twlone.service.UserService;
 public class IndexController {
     private final AuthorizationService authorizationService;
     private final UserService userService;
-    private final TwService twService;
     private final ETwService eTwService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public IndexController(AuthorizationService service, UserService service2, TwService service3,
-            ETwService service4) {
+    public IndexController(AuthorizationService service, UserService service2, ETwService service3) {
         this.authorizationService = service;
         this.userService = service2;
-        this.twService = service3;
-        this.eTwService = service4;
+        this.eTwService = service3;
     }
 
     @GetMapping("/")

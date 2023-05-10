@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +17,8 @@ public class ScheduledTasks {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private final ElasticsearchOperationsWapper operations;
 
-    public ScheduledTasks(ElasticsearchOperationsWapper operations) {
-        this.operations = operations;
+    public ScheduledTasks(ElasticsearchOperations operations) {
+        this.operations = new ElasticsearchOperationsWapper(operations);
     }
 
     @Scheduled(cron = "0 */15 * * * *")
@@ -51,11 +52,11 @@ public class ScheduledTasks {
                     "シュペッツレ", "ブレッツェン", "カイザーシュマーレン", "シュトーレン", "シュヴァインシャクセ", "ラプスカウス", "フリカデレ", "ブラットヴルスト", "唐揚げ",
                     "アジフライ", "タピオカ", "パンケーキ" };
             String[] particle = { "が", "を", "に", "へ", "の", "と", "から", "より", "で" };
-            String[] predicate = { "好き", "大好き", "嫌い", "美味しい", "マイブーム", "眠い", "痛い", "熱い", "楽しい", "悲しい", "怒り", "驚き", "恐れ", "期待",
-                    "安心", "不安", "幸せ", "悔しい", "切ない", "憧れ", "羨ましい", "食べる", "飲む", "見る", "聞く", "話す", "書く", "読む", "歩く", "走る",
-                    "泳ぐ", "飛ぶ", "跳ぶ", "踊る", "歌う", "笑う", "泣く", "叫ぶ", "怒る", "喜ぶ", "悲しむ", "驚く", "大きい", "小さい", "長い", "短い",
-                    "高い", "低い", "広い", "狭い", "厚い", "薄い", "重い", "軽い", "暑い", "寒い", "温かい", "冷たい", "新しい", "古い", "若い", "老けた",
-                    "美しい" };
+            String[] predicate = { "好き", "大好き", "嫌い", "美味しい", "マイブーム", "眠い", "痛い", "熱い", "楽しい", "悲しい", "怒り", "驚き", "恐れ",
+                    "期待", "安心", "不安", "幸せ", "悔しい", "切ない", "憧れ", "羨ましい", "食べる", "飲む", "見る", "聞く", "話す", "書く", "読む", "歩く",
+                    "走る", "泳ぐ", "飛ぶ", "跳ぶ", "踊る", "歌う", "笑う", "泣く", "叫ぶ", "怒る", "喜ぶ", "悲しむ", "驚く", "大きい", "小さい", "長い",
+                    "短い", "高い", "低い", "広い", "狭い", "厚い", "薄い", "重い", "軽い", "暑い", "寒い", "温かい", "冷たい", "新しい", "古い", "若い",
+                    "老けた", "美しい" };
             String generate = subject[random.nextInt(subject.length)] + particle[random.nextInt(particle.length)]
                     + predicate[random.nextInt(predicate.length)];
             return generate;

@@ -57,11 +57,14 @@ public class ETw {
     @Field(name = "favorite_user_list", type = FieldType.Integer, index = true)
     private List<Integer> favoriteUserList;
 
-    @Field(name = "media_list", type = FieldType.Keyword, index = true)
+    @Field(name = "media_list", type = FieldType.Keyword, index = false)
     private List<String> mediaList;
 
     @Field(name = "hashtag_list", type = FieldType.Keyword, index = true)
     private List<String> hashtagList;
+
+    @Field(name = "url_list", type = FieldType.Keyword, index = false)
+    private List<String> urlList;
 
     @Field(name = "reETw_list_size", type = FieldType.Integer, index = false)
     private Integer reETwListSize;

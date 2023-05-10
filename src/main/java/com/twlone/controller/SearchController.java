@@ -20,15 +20,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
 import com.twlone.entity.Media.MediaType;
+import com.twlone.entity.Url;
 import com.twlone.service.ETwService;
+import com.twlone.service.UrlService;
 import com.twlone.service.UserDetail;
 
 @Controller
 public class SearchController {
     private final ETwService eTwService;
+    private final UrlService urlService;
 
-    public SearchController(ETwService service) {
+    public SearchController(ETwService service, UrlService service2) {
         this.eTwService = service;
+        this.urlService = service2;
     }
 
     @GetMapping("/search")
@@ -85,7 +89,7 @@ public class SearchController {
         }
     }
 
-    public void loadFile(String filename1, String filename2, HttpServletResponse response)
+    private void loadFile(String filename1, String filename2, HttpServletResponse response)
             throws FileNotFoundException, IOException {
         String extention = filename2.substring(filename2.lastIndexOf('.') + 1);
         String mediaType = (MediaType.valueOf(extention)).getContentType();
@@ -97,4 +101,16 @@ public class SearchController {
             inputStream.transferTo(response.getOutputStream());
         }
     }
+
+    @GetMapping("/link/{twId}")
+    public void searchLink(@PathVariable String twId, HttpServletResponse response) {
+        try {
+            Url url = urlService.getUrlById(twId);
+            response.sendRedirect(url.getUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -51,8 +51,12 @@ class WordCounter {
             this.area.style.height = 'auto';
             this.area.style.height = `${this.area.scrollHeight}px`;
         }
+        let total_length = lenght;
+        const regexp_url = /(https?:\/\/[-_.!*\'()a-zA-Z0-9?:#?\/@%!$&'+,;=\u3000-\u30FE\u4E00-\u9FA0\uFF01-\uFFE3]+)/g
+        const urlList = [...this.area.value.matchAll(regexp_url)].map((item) => item[1])
+        urlList.map(url => { total_length = total_length - url.length + 50; console.log(url); })
         this.progress.style.background = `conic-gradient(${this.color(per)} ${360 * per}deg, transparent 0deg)`;
-        this.value.textContent = 280 - lenght;
+        this.value.textContent = 280 - total_length;
     }
 
     refreshCounter() { this.setCounter(this.area.value.length / 280, this.area.value.length); }
@@ -151,9 +155,12 @@ class TwFormUtils {
             console.error('Error: The content exceeds the 280 character limit.');
             return;
         }
-        const regexp = /(?<!#)#([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]+[^\s\d"#$%&'()\*\+\-\.,\/:;<=>@\[\\\]^`{|}~]+[^\s"#$%&'()\*\+\-\.,\/:;<=>@\[\\\]^_`{|}~]*)/g
-        const hashtagList = [...formData.get('content').matchAll(regexp)].map((item) => item[1])
-        if (0 < hashtagList.length) formData.append('hashtag', hashtagList);
+        const regexp_hash = /(?<!#)#([^\s!"#$%&'()\*\+\-\.,\/:;<=>?@\[\\\]^_`{|}~]+[^\s\d"#$%&'()\*\+\-\.,\/:;<=>@\[\\\]^`{|}~]+[^\s"#$%&'()\*\+\-\.,\/:;<=>@\[\\\]^_`{|}~]*)/g
+        const hashtagList = [...formData.get('content').matchAll(regexp_hash)].map((item) => item[1])
+        if (0 < hashtagList.length) formData.append('hashtag', [...new Set(hashtagList)]);
+        const regexp_url = /(https?:\/\/[-_.!*\'()a-zA-Z0-9?:#?\/@%!$&'+,;=\u3000-\u30FE\u4E00-\u9FA0\uFF01-\uFFE3]+)/g
+        const urlList = [...formData.get('content').matchAll(regexp_url)].map((item) => item[1])
+        if (0 < urlList.length) formData.append('url', [...new Set(urlList)]);
         formData.delete('mediaInput');
         fetch(location.protocol + '//' + location.host + '/user/tw', {
             method: "POST",
