@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.twlone.dto.PostTwDTO;
-import com.twlone.entity.Media.MediaType;
 import com.twlone.entity.Url;
 import com.twlone.service.ETwService;
+import com.twlone.service.ETwService.MediaType;
 import com.twlone.service.UrlService;
 import com.twlone.service.UserDetail;
 

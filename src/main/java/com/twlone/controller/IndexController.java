@@ -24,7 +24,6 @@ import com.twlone.entity.Authorization;
 import com.twlone.entity.User;
 import com.twlone.service.AuthorizationService;
 import com.twlone.service.ETwService;
-import com.twlone.service.TwService;
 import com.twlone.service.UserDetail;
 import com.twlone.service.UserService;
 

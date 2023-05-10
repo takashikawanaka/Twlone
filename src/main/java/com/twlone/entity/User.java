@@ -64,9 +64,6 @@ public class User {
     @CreationTimestamp
     private Date createdAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Tw> twList;
-
     @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "sourceUser", fetch = FetchType.LAZY)
     private List<Follow> followingList;
@@ -74,8 +71,4 @@ public class User {
     @OrderBy(value = "id desc")
     @OneToMany(mappedBy = "targetUser", fetch = FetchType.LAZY)
     private List<Follow> followerList;
-
-    @OrderBy(value = "id desc")
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Favorite> favoriteList;
 }

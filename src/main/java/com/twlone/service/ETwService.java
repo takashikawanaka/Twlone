@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.twlone.dto.PostTwDTO;
 import com.twlone.dto.TwDTO;
 import com.twlone.entity.ETw;
-import com.twlone.entity.Media.MediaType;
 import com.twlone.entity.Url;
 
 @Service
@@ -40,6 +39,21 @@ public class ETwService {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     private Pattern pattern;
     private String url;
+
+    public static enum MediaType {
+        jpg("image/jpeg"), jpeg("image/jpeg"), png("image/png"), gif("image/gif"), bmp("image/bmp"), webp("image/webp"),
+        mp4("movie/mp4"), webm("movie/webm"), ogg("movie/ogg"), quicktime("movie/quicktime"), mpeg("movie/mpeg");
+
+        private final String contentType;
+
+        MediaType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+    }
 
     public ETwService(UserService service, UrlService service2, ElasticsearchOperations operations) {
         this.userService = service;
