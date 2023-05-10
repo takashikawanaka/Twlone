@@ -2,11 +2,39 @@
 ![](https://img.shields.io/github/commit-activity/w/takashikawanaka/Twlone)  
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
-
-
-## 実行方法
+## 実行周り
 ### テストに使用しているユーザー
 ID:`test`, Pass:`ktaro`
+
+### クローン後の初回起動時のエラー
+```
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.
+
+Reason: Failed to determine a suitable driver class
+
+
+Action:
+
+Consider the following:
+	If you want an embedded database (H2, HSQL or Derby), please put it on the classpath.
+	If you have database settings to be loaded from a particular profile you may need to activate it (no profiles are currently active).
+```
+一度pom.xmlの下記の項目を取り除いてから実行してから、元に戻す
+``` xml
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
+
 ### CSSの解決(どちらか一方)
 `/src/main/resources/templates/fragment/head.html`の修正
 ``` HTML
@@ -18,6 +46,129 @@ ID:`test`, Pass:`ktaro`
 `/css/output.css`を使う場合
 ```
 npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resources\static\css\output.css
+```
+### ElasticSearch [ElasticBranch](https://github.com/takashikawanaka/Twlone/tree/elastic)
+#### 環境構築 [Reference](https://www.elastic.co/guide/en/elasticsearch/reference/8.7/docker.html)
+<details>
+<summary>.env</summary>
+
+``` env
+ELASTIC_PASSWORD=password
+KIBANA_PASSWORD=password
+STACK_VERSION=8.7.0
+CLUSTER_NAME=docker-cluster
+LICENSE=basic
+ES_PORT=9200
+KIBANA_PORT=5601
+MEM_LIMIT=1073741824
+```
+
+</details>
+
+<details>
+<summary>docker-compose.yml</summary>
+
+``` yml
+version: "2.2"
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - ${ES_PORT}:9200
+    environment:
+      - node.name=es01
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es02,es03
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  es02:
+    depends_on:
+      - es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+    environment:
+      - node.name=es02
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es01,es03
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  es03:
+    depends_on:
+      - es02
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    volumes:
+      - esdata03:/usr/share/elasticsearch/data
+    environment:
+      - node.name=es03
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es01,es02
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    depends_on:
+      - es01
+      - es02
+      - es03
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    volumes:
+      - kibanadata:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+    mem_limit: ${MEM_LIMIT}
+
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+  esdata03:
+    driver: local
+  kibanadata:
+    driver: local
+```
+
+</details>
+
+#### ランダムなつぶやき
+``` java
+//@EnableScheduling  アンコメント
+@SpringBootApplication
+public class TwloneApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(TwloneApplication.class, args);
+    }
+}
 ```
 
 ## HashTag規則
@@ -43,15 +194,27 @@ npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resou
 
 ### 追加実装予定
 - [ ] アイコン・背景画像のアップロード
-- [ ] TwテーブルをElasticSearchへ変更
-- [ ] Twテーブルに付随するテーブルをElasticSearchへ変更
+- [x] TwテーブルをElasticSearchへ変更
+- [x] Twテーブルに付随するテーブルをElasticSearchへ変更
 - [ ] Icon及び背景画像の拡大表示
 - [ ] 動画添付の実装
-- [ ] URLテーブルの実装・表示の実装
+- [x] URLテーブルの実装・表示の実装
 - [ ] メール送信によるユーザ登録の実装
 
 ## DB設計
-![ダウンロード](https://user-images.githubusercontent.com/123621760/231131617-c931c77e-5769-463c-9d2e-e730ea904046.png)
+<details>
+<summary>sql</summary>
+
+![twitter drawio](https://user-images.githubusercontent.com/123621760/236760782-1b1ff385-4d1a-40e8-b239-963651e4d22d.png)
+
+</details>
+
+<details>
+<summary>sql + elasticsearch</summary>
+
+![ダウンロード (1)](https://user-images.githubusercontent.com/123621760/236760811-1a32814a-fbe3-4235-a94e-9fe8e8348423.png)
+
+</details>
 
 ## 使用技術
 ### 開発環境・サービス
