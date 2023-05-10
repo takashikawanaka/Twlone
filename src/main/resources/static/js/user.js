@@ -84,7 +84,7 @@ class Profile {
 
     async convertP() {
         const [nameChild, userIdChild, descriptionChild]
-            = [this.name.lastElementChild, this.userId.firstElementChild.nextElementSibling, this.description.lastElementChild];
+            = [this.name.firstElementChild, this.userId.firstElementChild.nextElementSibling, this.description.firstElementChild];
         const [name_text, userId_text, description_text] = [nameChild.value, userIdChild.value, descriptionChild.value];
         await this.postUser(name_text, userId_text, description_text).then(() => {
             this.name.appendChild(utils.domUtils.parseFromString(`<span>${this.convertTag(name_text)}</span>`));
@@ -141,18 +141,22 @@ class Profile {
         name.value = '';
         if (this.name_text != name_text) {
             name.value = name_text;
+            this.name_text = name_text;
             changeFlag = true;
         }
         userId.value = '';
         if (this.userId_text != userId_text) {
             userId.value = userId_text;
+            this.userId_text = userId_text;
             changeFlag = true;
         }
         description.value = '';
+        console.log(description_text);
         if (this.description_text != description_text) {
             if (140 < description_text.length)
                 throw new Error('The description exceeds the 140 character limit.');
             description.value = description_text;
+            this.description_text = description_text;
             changeFlag = true;
         }
         //Add Image Size Check
