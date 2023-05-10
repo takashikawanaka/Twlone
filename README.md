@@ -169,7 +169,7 @@ public class TwloneApplication {
 - [x] Twテーブルに付随するテーブルをElasticSearchへ変更
 - [ ] Icon及び背景画像の拡大表示
 - [ ] 動画添付の実装
-- [ ] URLテーブルの実装・表示の実装
+- [x] URLテーブルの実装・表示の実装
 - [ ] メール送信によるユーザ登録の実装
 
 ## DB設計
