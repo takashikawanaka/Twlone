@@ -112,5 +112,4 @@ public class SearchController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
-
 }
