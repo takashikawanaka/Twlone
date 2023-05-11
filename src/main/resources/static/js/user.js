@@ -141,13 +141,11 @@ class Profile {
         name.value = '';
         if (this.name_text != name_text) {
             name.value = name_text;
-            this.name_text = name_text;
             changeFlag = true;
         }
         userId.value = '';
         if (this.userId_text != userId_text) {
             userId.value = userId_text;
-            this.userId_text = userId_text;
             changeFlag = true;
         }
         description.value = '';
@@ -156,7 +154,6 @@ class Profile {
             if (140 < description_text.length)
                 throw new Error('The description exceeds the 140 character limit.');
             description.value = description_text;
-            this.description_text = description_text;
             changeFlag = true;
         }
         //Add Image Size Check
