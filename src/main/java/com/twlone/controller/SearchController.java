@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -59,6 +60,8 @@ public class SearchController {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (ClientAbortException e) {
+            System.out.println("network disconnection");
         } catch (IOException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);

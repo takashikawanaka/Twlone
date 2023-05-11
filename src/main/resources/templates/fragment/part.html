@@ -43,7 +43,7 @@
     onclick="event.stopPropagation();">
     <div class="w-full h-full" th:each="media : ${mediaList}">
       <img th:if="${media[0].equals('image')}" th:src="@{/media/{image} (image=${media[1]})}" class="w-full h-full object-cover" onclick="openMedia(this);">
-      <video th:if="${media[0].equals('video')}" th:src="@{/media/{video} (video=${media[1]})}" class="w-full h-full" controls></video>
+      <video th:if="${media[0].equals('video')}" preload="metadata" th:src="@{/media/{video} (video=${media[1]})}" class="w-full h-full" muted></video>
     </div>
   </div>
   <!--/* Tw */-->
