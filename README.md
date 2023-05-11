@@ -267,7 +267,12 @@ GitHub Actions
 | ------------- | ------------- | ------------- | 
 | <img src="https://user-images.githubusercontent.com/123621760/232190425-d80ebe9c-1f75-48ae-b98c-324e687377c4.gif"> | <img src="https://user-images.githubusercontent.com/123621760/232190796-f3d5dbd4-e044-4439-a00d-4d7b29220fec.gif"> | <img src="https://user-images.githubusercontent.com/123621760/232190501-bca141fd-8833-4db8-9a50-4ba133041662.gif"> |
 
-| 画像添付機能 | NULL機能 | NULL機能 |
+|　画像付きつぶやき機能 | 検索機能 | プロフィール編集機能 |
 | ------------- | ------------- | ------------- | 
-| <img src="https://user-images.githubusercontent.com/123621760/232190916-c0287466-008e-4341-a065-abc77523899b.gif"> |  |  |
+| <img src="https://user-images.githubusercontent.com/123621760/232190916-c0287466-008e-4341-a065-abc77523899b.gif"> | <img src="https://github.com/takashikawanaka/Twlone/assets/123621760/0b2df476-f8bc-4a1e-a3f1-ba9f4bff984e"> | <img src="https://github.com/takashikawanaka/Twlone/assets/123621760/4c4889e1-f728-466a-b873-d2dc2eab9a87"> |  
+
+|　NULL機能 | NULL機能 | NULL機能 |
+| ------------- | ------------- | ------------- | 
+| | | |  
+
 
