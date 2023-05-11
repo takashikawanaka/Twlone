@@ -41,7 +41,10 @@
     th:style="|grid-template-columns: repeat(${listSize == 1 ? 1 : 2}, ${listSize == 1 ? '100%' : '50%'});
                   grid-template-rows: repeat(${listSize < 3 ? 1 : 2}, ${listSize < 3 ? '100%' : '50%'}); aspect-ratio: 3/2|"
     onclick="event.stopPropagation();">
-    <img th:each="media : ${mediaList}" th:src="@{/media/{image} (image=${media})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+    <div class="w-full h-full" th:each="media : ${mediaList}">
+      <img th:if="${media[0].equals('image')}" th:src="@{/media/{image} (image=${media[1]})}" class="w-full h-full object-cover" onclick="openMedia(this);">
+      <video th:if="${media[0].equals('video')}" th:src="@{/media/{video} (video=${media[1]})}" class="w-full h-full" controls></video>
+    </div>
   </div>
   <!--/* Tw */-->
   <div th:fragment="tw(tw, isReply)" th:object="${tw}" class="flex space-x-3" th:attr="data-userid=*{user.userId},data-twid=*{id}" onmousedown="mousedown()" onmousemove="mousemove()"
@@ -59,7 +62,7 @@
         <p th:text="*{#temporals.format(createdAt, dayHasPassed ? 'M月d日' : 'H時mm分')}" th:title="*{#temporals.format(createdAt, 'yyyy/MM/dd HH:mm:ss')}"></p>
       </div>
       <p th:id="'content_' + *{id}" class="mt-1 break-words whitespace-pre-wrap" th:insert="::content(*{content})"></p>
-      <div th:id="'medias_' + *{id}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
+      <div th:id="'medias_' + *{id}" th:if="*{not #lists.isEmpty(mediaList[0])}" th:insert="::medias(*{id}, *{mediaList})"></div>
       <div th:id="'reTw_' + *{id}" th:if="*{reTw} != null" th:insert="::reTw(*{id}, *{reTw})"></div>
       <!--/* Button Fragment Space */-->
       <div class="mt-2">
@@ -77,7 +80,7 @@
       th:text="'@' + *{user.userId}"></span>
     </a>
     <p th:id="'reTw_content_' + ${twid}" class="text-sm break-words whitespace-pre-wrap" th:insert="::content(*{content})"></p>
-    <div th:id="'reTw_medias_' + ${twid}" th:if="*{not #lists.isEmpty(mediaList)}" th:insert="::medias(*{id}, *{mediaList})"></div>
+    <div th:id="'reTw_medias_' + ${twid}" th:if="*{not #lists.isEmpty(mediaList[0])}" th:insert="::medias(*{id}, *{mediaList})"></div>
   </div>
 </body>
 </html>

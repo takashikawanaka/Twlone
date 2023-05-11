@@ -19,7 +19,7 @@ public class TwDTO {
     private List<TwDTO> replyTwList;
     private Integer replyTwListSize;
     private Integer favoriteListSize;
-    private List<String> mediaList;
+    private List<List<String>> mediaList;
     private Boolean isFavorite;
     private Boolean dayHasPassed;
 }

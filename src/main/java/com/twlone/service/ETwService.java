@@ -42,7 +42,7 @@ public class ETwService {
 
     public static enum MediaType {
         jpg("image/jpeg"), jpeg("image/jpeg"), png("image/png"), gif("image/gif"), bmp("image/bmp"), webp("image/webp"),
-        mp4("movie/mp4"), webm("movie/webm"), ogg("movie/ogg"), quicktime("movie/quicktime"), mpeg("movie/mpeg");
+        mp4("video/mp4"), webm("video/webm"), ogg("video/ogg"), quicktime("video/quicktime"), mpeg("video/mpeg");
 
         private final String contentType;
 
@@ -51,7 +51,12 @@ public class ETwService {
         }
 
         public String getContentType() {
-            return contentType;
+            return this.contentType;
+        }
+
+        public String getType() {
+            return List.of(MediaType.mp4, MediaType.webm, MediaType.ogg, MediaType.quicktime, MediaType.mpeg)
+                    .contains(this) ? "video" : "image";
         }
     }
 
@@ -236,6 +241,38 @@ public class ETwService {
         return splitList;
     }
 
+    private List<List<String>> convertMediaList(List<String> mediaList) {
+        if (mediaList == null)
+            return List.of(List.of());
+        List<List<String>> mediaNestList = new ArrayList<>();
+        for (String media : mediaList) {
+            String extention = media.substring(media.lastIndexOf('.') + 1);
+            mediaNestList.add(List.of((MediaType.valueOf(extention)).getType(), media));
+        }
+        return mediaNestList;
+    }
+
+    // TwDTO % Re TwDTO Builder
+    private TwDTO.TwDTOBuilder getMiniBuilder(ETw eTw) {
+        return TwDTO.builder()
+                .id(eTw.getId())
+                .content(this.splitContent(eTw.getHashtagListSize(), eTw.getContent()))
+                .user(userService.convertMiniUserDTO(eTw.getUserId()))
+                .createdAt(eTw.getCreatedAt())
+                .mediaList(this.convertMediaList(eTw.getMediaList()))
+                .dayHasPassed(!eTw.getCreatedAt()
+                        .toLocalDate()
+                        .isEqual(LocalDate.now()));
+    }
+
+    // TwDTO Builder
+    private TwDTO.TwDTOBuilder getBuilder(ETw eTw) {
+        return this.getMiniBuilder(eTw)
+                .reTwListSize(eTw.getReETwListSize())
+                .replyTwListSize(eTw.getReplyETwListSize())
+                .favoriteListSize(eTw.getFavoriteUserListSize());
+    }
+
     public void savePostTwDTO(UserDetail userDetail, PostTwDTO postTw) throws IllegalArgumentException, IOException {
         // if not contain Value throws Error
         if (postTw.isIllegale())
@@ -296,27 +333,6 @@ public class ETwService {
             operations.updateTw(updateQuery);
             System.out.println("ETwService: CountUp ReplyTw " + eTw.getReplyETwId());
         }
-    }
-
-    // TwDTO % Re TwDTO Builder
-    private TwDTO.TwDTOBuilder getMiniBuilder(ETw eTw) {
-        return TwDTO.builder()
-                .id(eTw.getId())
-                .content(this.splitContent(eTw.getHashtagListSize(), eTw.getContent()))
-                .user(userService.convertMiniUserDTO(eTw.getUserId()))
-                .createdAt(eTw.getCreatedAt())
-                .mediaList(eTw.getMediaList())
-                .dayHasPassed(!eTw.getCreatedAt()
-                        .toLocalDate()
-                        .isEqual(LocalDate.now()));
-    }
-
-    // TwDTO Builder
-    private TwDTO.TwDTOBuilder getBuilder(ETw eTw) {
-        return this.getMiniBuilder(eTw)
-                .reTwListSize(eTw.getReETwListSize())
-                .replyTwListSize(eTw.getReplyETwListSize())
-                .favoriteListSize(eTw.getFavoriteUserListSize());
     }
 
     private List<String> saveMedias(List<MultipartFile> medias, ETw eTw) throws IllegalArgumentException, IOException {

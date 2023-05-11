@@ -32,15 +32,15 @@ body {
   transform: scale(1, 1);
 }
 
-[id^="medias_"] img:nth-child(1):nth-last-child(3) {
+[id^="medias_"] div:nth-child(1):nth-last-child(3) {
   grid-row: span 2;
 }
 
-[id$="_medias"] img:nth-child(1):nth-last-child(3) {
+[id$="_medias"] div:nth-child(1):nth-last-child(3) {
   grid-row: span 2;
 }
 
-[id^="reTw_medias_"] img:nth-child(1):nth-last-child(3) {
+[id^="reTw_medias_"] div:nth-child(1):nth-last-child(3) {
   grid-row: span 2;
 }
 

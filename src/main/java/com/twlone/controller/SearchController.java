@@ -94,11 +94,11 @@ public class SearchController {
     }
 
     // Load Image File
-    private void loadFile(String filename1, String filename2, HttpServletResponse response)
+    private void loadFile(String directory, String filename, HttpServletResponse response)
             throws FileNotFoundException, IOException {
-        String extention = filename2.substring(filename2.lastIndexOf('.') + 1);
+        String extention = filename.substring(filename.lastIndexOf('.') + 1);
         response.setContentType((MediaType.valueOf(extention)).getContentType());
-        Path path = Paths.get(filename1, filename2);
+        Path path = Paths.get(directory, filename);
         if (!Files.exists(path))
             throw new FileNotFoundException();
         try (InputStream inputStream = Files.newInputStream(path)) {
