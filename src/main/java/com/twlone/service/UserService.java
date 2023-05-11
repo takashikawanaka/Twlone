@@ -73,13 +73,17 @@ public class UserService {
     }
 
     public User updateUser(User user, PostUserDTO postUser) throws IOException {
-        if (!postUser.isBlankName())
+        if (!postUser.isBlankName())// If exists new name
             user.setName(postUser.getName());
-        if (!postUser.isBlankUserId())
+        if (!postUser.isBlankUserId()) // If exists new user_id
             user.setUserId((postUser.getUserId()));
-        if (!postUser.isBlankDescription())
-            user.setDescription(postUser.getDescription());
-        if (!postUser.isEmptyIcon()) {
+        if (!postUser.isBlankDescription()) {// If exists new description
+            String description = postUser.getDescription();
+            if (description.equals("-1")) // If a description delete flag is sent
+                description = "";
+            user.setDescription(description);
+        }
+        if (!postUser.isEmptyIcon()) {// If exists new icon image
             String fileName = user.getId() + formatter.format(LocalDateTime.now()) + "." + postUser.getIconExtention();
             try (InputStream inputStream = (postUser.getIcon()).getInputStream();
                     OutputStream outputStream = Files.newOutputStream(Paths.get("./icons", fileName))) {
@@ -87,7 +91,7 @@ public class UserService {
             }
             user.setIcon(fileName);
         }
-        if (!postUser.isEmptyBack()) {
+        if (!postUser.isEmptyBack()) { // If exists new background image
             String fileName = user.getId() + formatter.format(LocalDateTime.now()) + "." + postUser.getBackExtention();
             try (InputStream inputStream = (postUser.getBack()).getInputStream();
                     OutputStream outputStream = Files.newOutputStream(Paths.get("./backs", fileName))) {
