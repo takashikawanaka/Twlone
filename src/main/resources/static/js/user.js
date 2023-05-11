@@ -18,6 +18,11 @@ class Profile {
             reader.addEventListener('load', () => { this.icon.firstElementChild.setAttribute('src', reader.result); });
             reader.readAsDataURL(e.target.files[0]);
         })
+        utils.domUtils.getElementById('userBack').addEventListener('change', e => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => { this.back.firstElementChild.setAttribute('src', reader.result); });
+            reader.readAsDataURL(e.target.files[0]);
+        })
     }
 
     switchEdit(node) {
