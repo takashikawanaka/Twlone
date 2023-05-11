@@ -1,11 +1,6 @@
 package com.twlone.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -44,36 +39,12 @@ public class UserPostController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public void postUser(@AuthenticationPrincipal UserDetail userDetail, PostUserDTO postUser) {
-        User user = userDetail.getUser();
-        if (!postUser.isBlankName())
-            user.setName(postUser.getName());
-        if (!postUser.isBlankUserId())
-            user.setUserId((postUser.getUserId()));
-        if (!postUser.isBlankDescription())
-            user.setDescription(postUser.getDescription());
-        if (!postUser.isEmptyIcon()) {
-            String fileName = user.getId() + formatter.format(LocalDateTime.now()) + "." + postUser.getIconExtention();
-            try (InputStream inputStream = (postUser.getIcon()).getInputStream();
-                    OutputStream outputStream = Files.newOutputStream(Paths.get("./icons", fileName))) {
-                inputStream.transferTo(outputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            user.setIcon(fileName);
+        try {
+            userService.updateUser(userDetail.getUser(), postUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (!postUser.isEmptyBack()) {
-            String fileName = user.getId() + formatter.format(LocalDateTime.now()) + "." + postUser.getBackExtention();
-            try (InputStream inputStream = (postUser.getBack()).getInputStream();
-                    OutputStream outputStream = Files.newOutputStream(Paths.get("./backs", fileName))) {
-                inputStream.transferTo(outputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            user.setBack(fileName);
-        }
-        userService.saveUser(user);
     }
 
     @PostMapping("/tw")
