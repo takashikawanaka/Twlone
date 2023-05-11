@@ -3,7 +3,7 @@
 このプロジェクトは、Twitterを模したSNSアプリケーションです。ユーザーは、短いメッセージを投稿し、他のユーザーの投稿を閲覧することができます。「いいね」や「シェア」などの機能があり、他のユーザーの投稿に対して反応することができます。また、投稿に画像を添付することもでき、メッセージをつなげて会話をすることも可能です。
 
 ## Git Branch
-[Mysql](https://github.com/takashikawanaka/Twlone/tree/mysql) バージョン / [Elasticsearch](https://github.com/takashikawanaka/Twlone/tree/main) バージョン
+[Mysql](https://github.com/takashikawanaka/Twlone/tree/mysql) バージョン / [Elasticsearch](https://github.com/takashikawanaka/Twlone/tree/elastic) バージョン
 
 ## 実行周り
 ### テストに使用しているユーザー
@@ -175,7 +175,6 @@ public class TwloneApplication {
 ```
 
 ## HashTag規則
-
 ハッシュタグ : `#abc`, `#ABC`, `#2023年`, `#アイウ`, `#日本語`, `#LOL😂`, `#Hello_World`, `#New_Hello_World`, `#test!?`, `#test?test!`,  
 `#ONE` `#FOR` `#ALL`    
 ハッシュタグではない : `#1`, `#A`, `#123`,`# ABC`, `##ABC`, `＃aa`, `#_test`, `#!?2023年`, `#!?_`  
@@ -196,7 +195,7 @@ public class TwloneApplication {
 - [x] ホームタイムラインの実装
 
 ### 追加実装予定
-- [ ] アイコン・背景画像のアップロード
+- [x] アイコン・背景画像のアップロード
 - [x] TwテーブルをElasticSearchへ変更
 - [x] Twテーブルに付随するテーブルをElasticSearchへ変更
 - [ ] Icon及び背景画像の拡大表示
@@ -224,6 +223,7 @@ public class TwloneApplication {
 Spring Tool Suite 4: 4.17.1.RELEASE  
 Figma(大雑把なデザインを作る際に使用)  
 InkScape(ロゴの作成、カーニング調整、SVGの出力)  
+Microsoft Edge  
 Bing Chat(質問によるJava・CSSのコード提案, エラーメッセージからの訂正提案, ダミーデータの作成, README作成アシスタント)  
 Azure WebApp(アップロード予定)  
 
@@ -231,7 +231,7 @@ Azure WebApp(アップロード予定)
 Java: 17.0.5  
 Spring Boot: 2.7.9  
 Spring Securiy: 5.7.7  
-Apache Tomcat: 9.0.71
+Apache Tomcat: 9.0.71  
 Awaitility: 4.2.0 (自動的に投稿するため)
 
 ### データベース
