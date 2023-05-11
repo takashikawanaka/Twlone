@@ -52,7 +52,7 @@
           <form th:object="${postUser}" method="post" th:action="@{/user}" class="hidden">
             <input name="userId" title="userId" th:field="*{userId}"> <input name="name" title="name" th:field="*{name}">
             <textarea name="description" title="description" th:field="*{description}"></textarea>
-            <input type="file" id="userIcon" name="icon" class="hidden" accept="video/*, image/*"> <input type="file" id="userBack" name="back" class="hidden" accept="video/*, image/*">
+            <input type="file" id="userIcon" name="icon" class="hidden" accept="image/*"> <input type="file" id="userBack" name="back" class="hidden" accept="image/*">
           </form>
         </div>
       </section>
