@@ -202,6 +202,7 @@ public class TwloneApplication {
 - [ ] 動画添付の実装
 - [x] URLテーブルの実装・表示の実装
 - [ ] メール送信によるユーザ登録の実装
+- [ ] テストの構築
 
 ## DB設計
 <details>
@@ -271,8 +272,8 @@ GitHub Actions
 | ------------- | ------------- | ------------- | 
 | <img src="https://user-images.githubusercontent.com/123621760/232190916-c0287466-008e-4341-a065-abc77523899b.gif"> | <img src="https://github.com/takashikawanaka/Twlone/assets/123621760/0b2df476-f8bc-4a1e-a3f1-ba9f4bff984e"> | <img src="https://github.com/takashikawanaka/Twlone/assets/123621760/4c4889e1-f728-466a-b873-d2dc2eab9a87"> |  
 
-|　NULL機能 | NULL機能 | NULL機能 |
+|　ホームタイムライン機能 | プロフィール画像編集機能 | NULL機能 |
 | ------------- | ------------- | ------------- | 
-| | | |  
+| <img src="https://github.com/takashikawanaka/Twlone/assets/123621760/0e276a10-772a-446a-bde6-feb7ab30c886"> | <img src="https://github.com/takashikawanaka/Twlone/assets/123621760/0e0f2dad-a493-4f02-be58-1449e99418da"> | |  
 
 
