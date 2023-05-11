@@ -195,7 +195,7 @@ public class TwloneApplication {
 - [x] ホームタイムラインの実装
 
 ### 追加実装予定
-- [ ] アイコン・背景画像のアップロード
+- [x] アイコン・背景画像のアップロード
 - [x] TwテーブルをElasticSearchへ変更
 - [x] Twテーブルに付随するテーブルをElasticSearchへ変更
 - [ ] Icon及び背景画像の拡大表示
