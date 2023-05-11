@@ -223,7 +223,7 @@ public class TwloneApplication {
 Spring Tool Suite 4: 4.17.1.RELEASE  
 Figma(大雑把なデザインを作る際に使用)  
 InkScape(ロゴの作成、カーニング調整、SVGの出力)  
-Microsoft Edge
+Microsoft Edge  
 Bing Chat(質問によるJava・CSSのコード提案, エラーメッセージからの訂正提案, ダミーデータの作成, README作成アシスタント)  
 Azure WebApp(アップロード予定)  
 
