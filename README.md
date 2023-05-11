@@ -175,7 +175,6 @@ public class TwloneApplication {
 ```
 
 ## HashTag規則
-
 ハッシュタグ : `#abc`, `#ABC`, `#2023年`, `#アイウ`, `#日本語`, `#LOL😂`, `#Hello_World`, `#New_Hello_World`, `#test!?`, `#test?test!`,  
 `#ONE` `#FOR` `#ALL`    
 ハッシュタグではない : `#1`, `#A`, `#123`,`# ABC`, `##ABC`, `＃aa`, `#_test`, `#!?2023年`, `#!?_`  
@@ -224,6 +223,7 @@ public class TwloneApplication {
 Spring Tool Suite 4: 4.17.1.RELEASE  
 Figma(大雑把なデザインを作る際に使用)  
 InkScape(ロゴの作成、カーニング調整、SVGの出力)  
+Microsoft Edge
 Bing Chat(質問によるJava・CSSのコード提案, エラーメッセージからの訂正提案, ダミーデータの作成, README作成アシスタント)  
 Azure WebApp(アップロード予定)  
 
