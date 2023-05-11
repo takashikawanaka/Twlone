@@ -73,12 +73,12 @@ class Profile {
         userIdChild.remove();
 
         const descriptionInput
-            = utils.domUtils.parseFromString(`<textarea type="text" rows=1 class="block w-full resize-none bg-transparent focus:outline-none" style="height: ${this.description.clientHeight}" form="postUser">`);
+            = utils.domUtils.parseFromString(`<textarea type="text" rows=1 class="block w-full resize-none bg-transparent focus:outline-none" style="height: ${this.description.clientHeight < 24 ? 24 : this.description.clientHeight}" form="postUser">`);
         this.description_text = Array.from(descriptionChild).map(element => element.textContent).join('\n');
         descriptionInput.value = this.description_text;
         descriptionInput.addEventListener('input', () => {
             descriptionInput.style.height = 'auto';
-            descriptionInput.style.height = `${descriptionInput.scrollHeight}px`;
+            descriptionInput.style.height = `${descriptionInput.scrollHeight < 24 ? 24 : descriptionInput.scrollHeight}px`;
         });
         Array.from(descriptionChild).forEach(element => element.remove());
         this.description.appendChild(descriptionInput);
@@ -154,10 +154,10 @@ class Profile {
             changeFlag = true;
         }
         description.value = '';
-        console.log(description_text);
         if (this.description_text != description_text) {
             if (140 < description_text.length)
                 throw new Error('The description exceeds the 140 character limit.');
+            if(description_text == '') description_text = '-1';
             description.value = description_text;
             changeFlag = true;
         }

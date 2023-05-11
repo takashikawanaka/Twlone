@@ -22,8 +22,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(PathRequest.toStaticResources()
                         .atCommonLocations())
                         .permitAll()
-                        .mvcMatchers("/search", "/user/*", "/user/*/status/*", "/media/*", "/icon/*", "/back/*",
-                                "/link/*")
+                        .mvcMatchers("/register", "/search", "/user/*", "/user/*/status/*", "/media/*", "/icon/*",
+                                "/back/*", "/link/*")
                         .permitAll()
                         .anyRequest()
                         .authenticated());

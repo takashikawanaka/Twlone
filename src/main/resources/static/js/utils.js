@@ -5,6 +5,10 @@ window.addEventListener('load', () => {
     if (checkAuthenticated()) {
         utils.twFormUtils = new TwFormUtils();
     }
+    Array.from(document.getElementsByTagName('video')).forEach(video => {
+        video.addEventListener('mouseover', () => { video.controls = true; });
+        video.addEventListener('mouseout', () => { video.controls = false; });
+    })
 })
 
 class utils {

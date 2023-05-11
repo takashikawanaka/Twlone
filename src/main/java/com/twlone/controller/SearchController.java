@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -59,6 +60,8 @@ public class SearchController {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (ClientAbortException e) {
+            System.out.println("network disconnection");
         } catch (IOException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,11 +97,11 @@ public class SearchController {
     }
 
     // Load Image File
-    private void loadFile(String filename1, String filename2, HttpServletResponse response)
+    private void loadFile(String directory, String filename, HttpServletResponse response)
             throws FileNotFoundException, IOException {
-        String extention = filename2.substring(filename2.lastIndexOf('.') + 1);
+        String extention = filename.substring(filename.lastIndexOf('.') + 1);
         response.setContentType((MediaType.valueOf(extention)).getContentType());
-        Path path = Paths.get(filename1, filename2);
+        Path path = Paths.get(directory, filename);
         if (!Files.exists(path))
             throw new FileNotFoundException();
         try (InputStream inputStream = Files.newInputStream(path)) {
