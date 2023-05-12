@@ -11,6 +11,11 @@ window.addEventListener('load', () => {
     })
 })
 
+function checkAuthenticated() {
+    if (document.querySelector('meta[name="_username"]')) return true;
+    return false;
+}
+
 class utils {
     static domUtils;
     static twFormUtils;

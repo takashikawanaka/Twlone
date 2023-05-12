@@ -5,7 +5,6 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_username" th:cotnent="${#authentication.principal.username}" th:if="${#authorization.expression('isAuthenticated()')}" />
-<script th:src="@{/js/post.js}"></script>
 <script th:src="@{/js/button.js}"></script>
 <script th:src="@{/js/utils.js}"></script>
 <script th:src="@{/js/user.js}"></script>
@@ -17,7 +16,7 @@
     <article id="main_content" th:object="${user}" class="h-auto mt-20 bg-neutral-50 drop-shadow rounded-t-3xl">
       <section id="profile" class="w-full border-b-2 border-neutral-300 shadow rounded-t-3xl">
         <div id="profile_back" class="w-full relative overflow-hidden rounded-t-3xl" style="aspect-ratio: 3/1">
-          <img th:src="@{/back/{image} (image=*{back})}" class="object-cover"> <label for="userBack"
+          <img th:src="@{/back/{image} (image=*{back})}" class="object-cover" onclick="openMedia(this);"> <label for="userBack"
             class="hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-25 hover:opacity-75 flex items-center justify-center"
             th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }"> <span class=" material-icons-round" style="font-size: 48px;"> add
           </span>
@@ -25,7 +24,7 @@
         </div>
         <div class="w-auto relative flex content-end justify-end flex-wrap mx-5" style="aspect-ratio: 8">
           <div id="profile_icon" class="w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-2/4 aspect-square rounded-3xl">
-            <img th:src="@{/icon/{image} (image=*{icon})}" class="rounded-3xl">
+            <img th:src="@{/icon/{image} (image=*{icon})}" class="rounded-3xl" onclick="openMedia(this);">
           </div>
           <label for="userIcon" class="hidden w-1/4 min-w-[96px] absolute left-0 top-0 -translate-y-1/2 aspect-square opacity-25 hover:opacity-75 flex items-center justify-center"
             th:if="${#authorization.expression('isAuthenticated()') && #authentication.principal.username == userId }"> <span class=" material-icons-round" style="font-size: 48px;"> add
@@ -58,11 +57,11 @@
       </section>
       <section id="twlist" class="w-full px-5">
         <section th:each="tw : *{twList}" th:id="'tw_' + ${tw.id}" class="min-w-[265px] pt-2 border-t-2 first:border-t-0 border-dotted border-neutral-300">
-          <div th:if="${tw.reTw != null && #lists.isEmpty(tw.content[0]) && #lists.isEmpty(tw.mediaList)}" class="flex space-x-2 ml-8">
+          <div th:if="${tw.reTw != null && #lists.isEmpty(tw.content[0]) && #lists.isEmpty(tw.mediaList[0])}" class="flex space-x-2 ml-8">
             <span class="material-icons-round" style="font-size: 18px;"> repeat </span>
             <p class="text-sm" th:text="${tw.user.name} + ' ReTwed'"></p>
           </div>
-          <div class="pt-1 pb-3" th:insert="fragment/part::tw(${tw.reTw != null && #lists.isEmpty(tw.content[0]) && #lists.isEmpty(tw.mediaList)} ? ${tw.reTw} : ${tw}, false)"></div>
+          <div class="pt-1 pb-3" th:insert="fragment/part::tw(${tw.reTw != null && #lists.isEmpty(tw.content[0]) && #lists.isEmpty(tw.mediaList[0])} ? ${tw.reTw} : ${tw}, false)"></div>
         </section>
       </section>
     </article>
