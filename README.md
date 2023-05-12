@@ -50,7 +50,7 @@ pom.xmlの下記の項目を、一度取り除いて実行してから、元に�
 ```
 npx tailwindcss -i .\src\main\resources\static\css\input.css -o .\src\main\resources\static\css\output.css
 ```
-### ElasticSearch [ElasticBranch](https://github.com/takashikawanaka/Twlone/tree/elastic)
+### ElasticSearch
 #### 環境構築 [Reference](https://www.elastic.co/guide/en/elasticsearch/reference/8.7/docker.html)
 <details>
 <summary>.env</summary>
