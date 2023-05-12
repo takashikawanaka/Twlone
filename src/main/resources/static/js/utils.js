@@ -63,7 +63,7 @@ class WordCounter {
         let total_length = lenght;
         const regexp_url = /(https?:\/\/[-_.!*\'()a-zA-Z0-9?:#?\/@%!$&'+,;=\u3000-\u30FE\u4E00-\u9FA0\uFF01-\uFFE3]+)/g
         const urlList = [...this.area.value.matchAll(regexp_url)].map((item) => item[1])
-        urlList.map(url => { total_length = total_length - url.length + 50; console.log(url); })
+        urlList.map(url => { total_length = total_length - url.length + 50; })
         this.progress.style.background = `conic-gradient(${this.color(per)} ${360 * per}deg, transparent 0deg)`;
         this.value.textContent = 280 - total_length;
     }
@@ -99,8 +99,24 @@ class MediaPreview {
                 div.appendChild(dom);
                 this.preview.appendChild(div);
 
-                reader.addEventListener('load', () => { img.setAttribute('src', reader.result); });
-                reader.readAsDataURL(files[i]);
+                if (files[i].type.startsWith('image/')) {
+                    reader.addEventListener('load', () => { img.setAttribute('src', reader.result); });
+                    reader.readAsDataURL(files[i]);
+                } else if (files[i].type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.addEventListener('seeked', () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        canvas.getContext('2d').drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                        img.setAttribute('src', canvas.toDataURL());
+                    });
+                    reader.addEventListener('load', () => {
+                        video.setAttribute('src', reader.result);
+                        video.currentTime = 0.5;
+                    });
+                    reader.readAsDataURL(files[i]);
+                }
             }
             this.mediaInput.value = '';
         }, false)
