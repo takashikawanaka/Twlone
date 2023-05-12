@@ -198,7 +198,7 @@ public class TwloneApplication {
 - [x] アイコン・背景画像のアップロード
 - [x] TwテーブルをElasticSearchへ変更
 - [x] Twテーブルに付随するテーブルをElasticSearchへ変更
-- [ ] Icon及び背景画像の拡大表示
+- [x] Icon及び背景画像の拡大表示
 - [x] 動画添付の実装
 - [x] URLテーブルの実装・表示の実装
 - [ ] メール送信によるユーザ登録の実装
