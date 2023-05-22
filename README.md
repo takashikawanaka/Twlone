@@ -203,6 +203,7 @@ public class TwloneApplication {
 - [x] URLテーブルの実装・表示の実装
 - [ ] メール送信によるユーザ登録の実装
 - [ ] テストの構築
+- [ ] つぶやき表示部のReact実装
 
 ## DB設計
 <details>
@@ -241,14 +242,16 @@ Hibernate: 5.6.15
 Elasticsearch: 8.7.0  
 Spring Data Elasticsearch: 4.4.11  
 
-### クライアント
+### フロントエンド
 Thymeleaf: 3.0.15  
+[React](https://react.dev): 実装中  
 [Tailwind CSS](https://tailwindcss.com): 3.2.7
 
 ### 開発支援ツール
 Lombok: 1.18.26  
 Spring Boot DevTools  
 Docker Desktop: 4.19.0   
+[Vite](https://vitejs.dev): 実装中   
 GitHub Actions
 
 ### 素材
